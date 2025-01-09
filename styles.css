@@ -707,13 +707,13 @@ header nav ul li a:hover {
   }
   .contact-buttons1{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     width: 45px;
-    gap:10px;
+    gap:50px;
     position: absolute;
-    left:185px;
-    top:20%;
-    justify-content: space-between;
+    left:20px;
+    top:70%;
+    justify-content: space-evenly;
     right: 5px;
    }
     /* Product Section */
