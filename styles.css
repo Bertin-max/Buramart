@@ -25,6 +25,7 @@
     align-items: center;
     flex: wrap;
    padding: 5px;
+   position: relative;
   }
   header  h1 {
     font-size: 24px;
@@ -92,6 +93,13 @@
 .small-search-bar button:hover {
   background-color: #005bb5;
 }
+.cart-icon{
+  position: relative;
+  
+}
+.cart-icon:hover{
+  border-bottom: 1px solid white;
+}
 /* Account Section Styles */
 .account {
   position: relative;
@@ -123,6 +131,7 @@
 .account-dropdown li a:hover {
   background-color: #0078d7;
   border-radius: 5px;
+  border-bottom: 1px solid white ;
 }
 .account:hover .account-dropdown{
   display: block;
@@ -140,8 +149,8 @@
     text-decoration: none;
     font-weight: bold;
    }
-  header  nav ul li a:hover {
-    background-color: #005bb5;
+  header  nav ul li a:hover{
+    border-bottom: 1px solid white;
     padding: 5px;
     border-radius: 5px;
    }
@@ -558,6 +567,11 @@ form textarea {
 }
 /* Responsive Navbar for Home Page */
 @media (max-width: 768px) {
+  .cart-icon{
+   position: relative;
+   top: 7px;
+ 
+  }
   .menu-button{
     display: flex;
   }
@@ -578,12 +592,7 @@ form textarea {
   }
 
 
-header nav ul li a:hover {
-  background-color: white; /* Add hover effect */
-  color: blue;
-  border-radius: 0%;
-  padding: 5px;
-}
+
 .search-bar{
   display: none;
 }
@@ -755,7 +764,13 @@ header nav ul li a:hover {
   display: flex;
 }
 }
-
+@media (max-width: 480px) {
+  .cart-icon{
+   position: absolute;
+    top: 12px;
+   
+  }
+}
 /* product.html*/
 .small-navbar{
   display: none;
