@@ -237,7 +237,6 @@ header .sidebar li a{
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-   
   }
   .product-card img {
     width: 100%;
@@ -670,7 +669,7 @@ header nav ul li a:hover {
     position: relative;
     width: 100%;
     gap:10px;
-    height: 220px;
+    height: 170px;
   }
   .product-card img {
     align-self: flex-start; /* Align image to the left */
