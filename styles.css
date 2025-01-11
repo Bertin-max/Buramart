@@ -97,7 +97,13 @@
   position: relative;
   
 }
-.cart-icon:hover{
+.home-icon{
+  display: none;
+}
+.hideOnMobile.active{
+  border-bottom: 1px solid white;
+}
+.cart-icon.active{
   border-bottom: 1px solid white;
 }
 /* Account Section Styles */
@@ -570,16 +576,36 @@ form textarea {
   .cart-icon{
    position: relative;
    top: 7px;
- 
+   
+  }
+  .accounts-icon{
+    display:none
+  }
+  .home-icon{
+    display: flex;
+    position: absolute;
+    left : 75%;
+    top:12px;
   }
   .menu-button{
     display: flex;
+   
   }
  .menu-button:hover{
     fill: #005bb5;
     
  }
+ .home-icon:hover{
+  border-bottom: 1px solid white;
+  border-radius: 8px;
+ }
+ .home-icon.active{
+  border-bottom: 1px solid white;
   
+ }
+
+  
+ 
   header{
     height: auto;
   }
@@ -590,8 +616,6 @@ form textarea {
   header nav ul li a {
     font-size: 16px; /* Ensure readability on smaller screens */
   }
-
-
 
 .search-bar{
   display: none;
@@ -768,8 +792,15 @@ form textarea {
   .cart-icon{
    position: absolute;
     top: 12px;
-   
+    left:80%;
   }
+  .home-icon{
+    display: flex;
+    position: absolute;
+    left : 70%;
+    top:10px;
+  }
+
 }
 /* product.html*/
 .small-navbar{
@@ -800,4 +831,57 @@ form textarea {
   top: 400px;
   left: 5px;
   gap: 30px;
+}
+
+/*styles for settings*/
+.settings-page {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.settings-page h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.settings-group {
+  margin-bottom: 20px;
+}
+.settings-group h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.setting-item label {
+  font-weight: bold;
+  color: #555;
+}
+
+.setting-item select,
+.setting-item input[type="checkbox"] {
+  font-size: 16px;
+  padding: 5px;
+}
+button.save-settings {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button.save-settings:hover {
+  background-color: #0056b3;
 }
