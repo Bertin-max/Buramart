@@ -1,14 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>product-details</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-   <!-- Header -->
-   <header> 
+const homeProductList = document.getElementById("home-list");
+const storedProduct = localStorage.getItem('products');
+const main = document.getElementById('main-content');
+let originalContent = main.innerHTML;
+function ShowSidebar(){
+  const sidebar = document.querySelector('.sidebar')
+  sidebar.style.display = 'flex'
+}
+function hideSidebar(){
+    const sidebar = document.querySelector('.sidebar')
+  sidebar.style.display = 'none'
+}
+const goBackToMain = () => {
+   main.innerHTML = originalContent;
+}
+const showProductInDetails = (product) => {
+  console.log("Clicked product:", product)
+  main.innerHTML  = `<header> 
      <img height="24px" width="30px"src="data:image/png;base64,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" alt="Burundian Flag" class="flag-icon">
     <h1>Buramart</h1>
       <div class="search-bar">
@@ -71,12 +78,12 @@
   <main>
     <div class="product-details-container">
       <div class="product-image">
-        <img src="icons&images/phone img.jpg" alt="Product 1">
+        <img src="${product.image}" alt="Product 1">
       </div>
       <div class="product-info">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.</p>
-        <p><strong>Price: $10.00</strong></p>
+        <h2>${product.name}</h2>
+        <p>${product.description}</p>
+        <p><strong>Price: $${product.price}</strong></p>
       </div>
       <div class="contact-buttons1" >
         <a href="https://wa.me/25765381604" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></a>
@@ -103,8 +110,29 @@
       </div>
        
     </section>
-  
-    
-    </main>
-</body>
-</html>
+  `;
+}
+if (storedProduct) {
+  // Convert JSON string back to array
+  const products = JSON.parse(storedProduct);  // Fixed the variable name
+
+  homeProductList.innerHTML = '';
+
+  products.forEach((product) => {  // Now iterating over the correct variable
+    homeProductList.innerHTML += `
+      <div onclick = showProductInDetails(${JSON.stringify(product).replace(/'/g, "&apos;")}) class="product-card">
+        <div>
+          <h3 style="padding: 0; margin: 0; gap: 0;">${product.name}</h3>
+          <img  src="${product.image}" alt="${product.name}"> 
+        </div> 
+        <div class="product-details">
+          <p class="price">$${product.price}</p>
+          <div class="product-details">
+            <a ><p class="description">${product.description  || ''}</p></a>
+          </div>
+        </div>
+      </div>`;
+  });
+} else {
+  alert('No product data found in Local Storage.');
+} 
