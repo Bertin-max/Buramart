@@ -1,6 +1,8 @@
 const productForm = document.getElementById("product-form");
 const productList = document.getElementById("product-list");
+
 let products = JSON.parse(localStorage.getItem('products')) || [];
+
 function attachHoverEvents() {
     const productCards = document.querySelectorAll('.product-card');
     
@@ -13,6 +15,7 @@ function attachHoverEvents() {
       });
     });
   }
+  
 function displayProducts() {
   productList.innerHTML = ''; // Clear the current list before adding new products
   
@@ -114,7 +117,6 @@ productForm.addEventListener("submit", (event) => {
       alert('Please upload an image.');
     }
   });
-
 
 // Initial display of products on page load
 displayProducts();
