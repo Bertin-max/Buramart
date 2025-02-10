@@ -823,6 +823,7 @@ form textarea {
 .product-details-container .product-image img {
   max-width: 300px;
   border-radius: 8px;
+  max-height: 300px;
 }
 .product-details-container .product-info {
   flex: 1;
