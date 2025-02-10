@@ -71,7 +71,7 @@
     <!-- Form Section -->
     <section id="form-section" class="form-section">
       <h2>Upload Your Product</h2>
-      <form action="#" method="post">
+      <form id = "product-form" action="#" method="post">
         <label for="product-name">Product Name:</label>
         <input type="text" id="product-name" name="product-name" placeholder="Enter product name" required>
 
@@ -81,8 +81,8 @@
         <label for="product-price">Price ($):</label>
         <input type="number" id="product-price" name="product-price" placeholder="Enter price" required>
 
-        <label for="product-image">Image URL:</label>
-        <input type="url" id="product-image" name="product-image" placeholder="Enter image URL" required>
+        <label for="product-image">Product Image :</label>
+        <input type="file" id="product-image" name="product-image" placeholder="Enter image URL" required>
 
         <button type="submit" class="submit-btn">Upload Product</button>
       </form>
@@ -91,32 +91,8 @@
     <!-- Uploaded Products Section -->
     <section id="uploaded-products" class="uploaded-products">
       <h2>My Uploaded Products</h2>
-      <div class="product-list">
-        <!-- Simulated Uploaded Product 1 -->
-        <div class="product-card"  >
-          <div >
-            <h3 style="padding: 0; margin: 0; gap: 0;">Product Name 1</h3>
-            <img src="icons&images/sofa-img.jpg" alt="Product 1" > 
-          </div> 
-        <div class="product-details">
-          <p class="price">$100</p>
-          <div class="product-details">
-            <p class="description">This is a great product that you’ll love!</p>
-            </div>
-          </div> 
-        </div>
-        <!-- Simulated Uploaded Product 2 -->
-        <div class="product-card"  >
-          <div >
-            <h3 style="padding: 0; margin: 0; gap: 0;">Product Name 1</h3>
-            <img src="icons&images/purf-img.jpg" alt="Product 1" > 
-          </div> 
-        <div class="product-details">
-          <p class="price">$100</p>
-          <div class="product-details">
-            <p class="description">This is a great product that you’ll love!</p>
-            </div>
-          </div> 
+      <div id = "product-list"class="product-list">
+       
         </div>
     </section>
     <footer class="footer">
@@ -150,5 +126,6 @@
       </div>
     </footer>
   </main>
+  <script src="seller.js"></script>
 </body>
 </html>
