@@ -1,4 +1,16 @@
 /* General Reset */
+:root {
+  --primary-color: #0078d7;  /* Blue */
+  --secondary-color: #ffffff; /* White */
+  --hover-color: #005bb5;    /* Darker Blue for hover effects */
+}
+
+[data-theme="dark"] {
+  --primary-color: #1e1e1e;  /* Dark Gray for background */
+  --secondary-color: #f0f0f0; /* Light Gray for text */
+  --hover-color: #333333;    /* Slightly lighter gray for hover effects */
+}
+
 *{   
     margin: 0;
     padding: 0;
@@ -17,7 +29,7 @@
   }
   /* Header Styling */
   header {
-    background-color: #0078d7;
+  background-color: var(--primary-color);
     color: white;
     padding: 20px;
     display: flex;
