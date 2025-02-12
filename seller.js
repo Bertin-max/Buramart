@@ -2,8 +2,43 @@ const productForm = document.getElementById("product-form");
 const productList = document.getElementById("product-list");
 const searchInput = document.getElementById('search-input');
 const smallsearchInput = document.getElementById('small-search-input');
+const main = document.getElementById('main-content')
 let products = JSON.parse(localStorage.getItem('products')) || [];
+function showProductInDetails(index) {
+  // Find the product by its index
+  const product = products[index];
 
+  // Get the modal overlay and content container
+  const modalOverlay = document.getElementById('modal-overlay');
+  const modalProductDetails = document.getElementById('modal-product-details');
+
+  // Set the modal content with the product details
+  modalProductDetails.innerHTML = `
+    <h3>${escapeHTML(product.name)}</h3>
+    <img src="${product.image}" alt="Product Image" >
+    <p><strong>Price:</strong> $${product.price}</p>
+    <p><strong>Description:</strong> ${product.description}</p>
+  `;
+
+  // Show the modal overlay
+  modalOverlay.style.display = 'flex';
+
+  // Add an event listener to the close button
+  const closeModalBtn = document.getElementById('close-modal-btn');
+  closeModalBtn.addEventListener('click', closeModal);
+
+  // Prevent interactions with the rest of the page
+  document.body.style.overflow = 'hidden'; // Disable scrolling
+}
+
+function closeModal() {
+  // Hide the modal overlay
+  const modalOverlay = document.getElementById('modal-overlay');
+  modalOverlay.style.display = 'none';
+
+  // Re-enable scrolling on the body
+  document.body.style.overflow = 'auto';
+}
 function escapeHTML(str) {
   return str.replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -30,13 +65,14 @@ function displayProducts() {
   
   products.forEach((product, index) => {
     productList.innerHTML += `
-      <div class="product-card">
+      <div class="product-card" >
         <div class="product-header">
           <h3 style="padding: 0; margin: 0; gap: 0;">${escapeHTML(product.name)}</h3>
           <img src="${product.image}" alt="Product Image">
           <div class="dropdown">
             <button class="dropdown-icon">...</button>
             <div class="dropdown-content">
+              <button class="show-details-btn" onclick="event.stopPropagation();showProductInDetails(${index})">Show Details</button>
               <button class="edit-btn" onclick="event.stopPropagation();editProduct(${index})">Edit</button>
               <button class="delete-btn" onclick="event.stopPropagation();deleteProduct(${index})">Delete</button>
             </div>
@@ -78,6 +114,7 @@ function deleteProduct(index) {
 }
 
 function editProduct(index) {
+  
   const product = products[index];
   products.splice(index, 1);
   localStorage.setItem('products', JSON.stringify(products));
@@ -85,7 +122,7 @@ function editProduct(index) {
   document.getElementById('product-name').value = product.name;
   document.getElementById('product-price').value = product.price;
   document.getElementById('product-description').value = product.description;
-
+ document.getElementById('product-category').value = product.category;
   // Display the existing image as a preview
   const existingImagePreview = document.getElementById('existing-image-preview');
   if (!existingImagePreview) {
@@ -112,7 +149,7 @@ productForm.addEventListener("submit", (event) => {
   const productPrice = document.getElementById('product-price').value;
   const productImageFile = document.getElementById('product-image').files[0];
   const productDescription = document.getElementById('product-description').value;
-
+  const productCategory = document.getElementById('product-category').value;
   // Check if there's an existing image preview (from editing)
   const existingImagePreview = document.getElementById('existing-image-preview');
   const existingImageSrc = existingImagePreview ? existingImagePreview.src : null;
@@ -127,6 +164,7 @@ productForm.addEventListener("submit", (event) => {
         price: productPrice,
         image: e.target.result,  // Use new uploaded image
         description: productDescription,
+        category: productCategory,
       };
 
       products.push(product);
@@ -151,6 +189,7 @@ productForm.addEventListener("submit", (event) => {
       price: productPrice,
       image: existingImageSrc,  // Keep existing image
       description: productDescription,
+      category: productCategory,
     };
 
     products.push(product);
@@ -184,7 +223,7 @@ const searchProducts = () => {
   productList.innerHTML = '';
   foundProducts.forEach(({ product, originalIndex }) => {  // Use originalIndex here
     productList.innerHTML += `
-      <div class="product-card">
+      <div class="product-card" onclick="showProductInDetails(${originalIndex})">
         <div class="product-header">
           <h3 style="padding: 0; margin: 0;">${escapeHTML(product.name)}</h3>
           <img src="${product.image}" alt="Product Image">

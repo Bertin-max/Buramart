@@ -44,6 +44,7 @@ const showProductInDetails = (index) => {
 
   main.innerHTML  = `
         <div class="product-details-container">
+          <button  onclick="location.reload()" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
       <div class="product-image">
         <img src="${product.image}" alt="${product.name}">
       </div>
@@ -116,6 +117,52 @@ const categorySearch = () => {
         </div>`;
     });
 }
+
+const categoryButtons = document.querySelectorAll('.category-btn');
+
+
+categoryButtons.forEach(button => {
+  button.addEventListener('click', function(event) {
+   
+    const buttonText = event.target.closest('.category-btn').textContent.trim();
+
+    if ( buttonText === "View All"){
+      displayProducts()
+      return
+    } else{
+      const products = JSON.parse(localStorage.getItem('products'));
+  
+
+  // Find products and keep their original index
+  const foundProducts = products
+    .map((product, index) => ({ product, originalIndex: index })) // Map products with their original index
+    .filter(item => item.product.category.toLowerCase() === buttonText.toLowerCase()); // Filter based on the search input (case-insensitive)
+
+  if (foundProducts.length === 0) {
+    homeProductList.innerHTML = "No Product Found";
+    return;
+  }
+
+  homeProductList.innerHTML = '';
+  foundProducts.forEach(({ product, originalIndex }) => {
+    homeProductList.innerHTML += `
+      <div onclick="showProductInDetails(${originalIndex})" class="product-card">
+        <div>
+          <h3 style="padding: 0; margin: 0;">${product.name}</h3>
+          <img src="${product.image}" alt="${product.name}"> 
+        </div> 
+        <div class="product-details">
+          <p class="price">$${product.price}</p>
+          <div class="product-details">
+            <a><p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
+          </div>
+        </div>
+      </div>`;
+  });
+    }
+
+  });
+});
 const searchProducts = () => {
   const products = JSON.parse(localStorage.getItem('products'));
   const searchInputValue = searchInput.value || smallsearchInput.value;

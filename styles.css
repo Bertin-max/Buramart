@@ -1005,3 +1005,46 @@ product-card {
     cursor: pointer;
   }
 }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  max-width: 600px;
+  width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: red;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  width: 30px;
+}
+.modal-content img {
+  max-width: 90%; /* Allow image to scale to a maximum of 90% of the modal container */
+  max-height: 80vh; /* Ensure image doesn't take up more than 80% of the viewport height */
+  margin: 10px 0; /* Add space around the image */
+  border-radius: 8px; /* Optional: rounded corners */
+  display: block; /* Ensures the image is not inline and centers correctly */
+  object-fit: unset;
+}
