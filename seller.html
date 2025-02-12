@@ -13,8 +13,8 @@
       <h1>Buramart</h1>
       
         <div class="search-bar">
-          <input type="text" placeholder="Search Your products..." />
-          <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button>
+          <input id = "search-input" type="text" placeholder="Search Your products..." />
+          <a href="#uploaded-products"><button onclick = "searchProducts()" type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button></a>
         </div>
         <nav>
           <ul class="sidebar">
@@ -64,8 +64,8 @@
       </header>
   
   <div class="small-search-bar">
-    <input type="text" placeholder="Search products..." />
-    <button type="submit">Search</button>
+    <input  id = "small-search-input" type="text" placeholder="Search products..." />
+    <a href="#uploaded-products"><button onclick= "searchProducts()" type="submit">Search</button></a>
   </div>
   <main>
     <!-- Form Section -->
@@ -82,7 +82,7 @@
         <input type="number" id="product-price" name="product-price" placeholder="Enter price" required>
 
         <label for="product-image">Product Image :</label>
-        <input type="file" id="product-image" name="product-image" placeholder="Enter image URL" required>
+        <input type="file" id="product-image" name="product-image" placeholder="Enter image URL" >
 
         <button type="submit" class="submit-btn">Upload Product</button>
       </form>

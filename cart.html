@@ -13,8 +13,8 @@
     <h1>Buramart</h1>
     
       <div class="search-bar">
-        <input type="text" placeholder="Search Your products..." />
-        <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button>
+        <input id = "search-input" type="text" placeholder="Search Your products..." />
+        <button onclick= "searchProducts()" type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button>
       </div>
       <nav>
         <ul class="sidebar">
@@ -67,26 +67,13 @@
     </header>
 
 <div class="small-search-bar">
-    <input type="text" placeholder="Search products..." />
-    <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button>
+    <input id="small-search-input"  type="text" placeholder="Search products..." />
+    <button onclick= "searchProducts()" type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button>
   </div>
   <section id="cart" class="cart">
     <h2>Your Cart</h2>
-    <div class="cart-list">
-      <!-- Simulated Product 1 in Cart -->
-      <div class="cart-item">
-        <img src="icons&images/teddybear-img.jpg" alt="Cart Product 1">
-        <h3>Product 1</h3>
-        <p class="price">$199</p>
-        <button class="remove-btn">Remove</button>
-      </div>
-      <!-- Simulated Product 2 in Cart -->
-      <div class="cart-item">
-        <img src="icons&images/phone img.jpg" alt="Cart Product 2">
-        <h3>Product 2</h3>
-        <p class="price">$299</p>
-        <button class="remove-btn">Remove</button>
-      </div>
+    <div id = "list" class="cart-list">
+     
     </div>
   </section>
   <footer class="footer">
@@ -119,5 +106,6 @@
       <p>© 2025 Buramart. All rights reserved.</p>
     </div>
   </footer>
+  <script src="cart.js"></script>
 </body>
 </html>
