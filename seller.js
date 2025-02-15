@@ -1,11 +1,36 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+import { getStorage ,ref, uploadBytesResumable, getDownloadURL} from "https://www.gstatic.com/firebasejs/11.3.1/firebase-storage.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCwQ9Mg5JguRfoCkihnTRdr1YQNYDiGOWo",
+  authDomain: "buramart-bd714.firebaseapp.com",
+  projectId: "buramart-bd714",
+  storageBucket: "buramart-bd714.appspot.com",
+  messagingSenderId: "555062567759",
+  appId: "1:555062567759:web:a24d239674e68fb6db1b3a",
+  measurementId: "G-5XPTB3F4GL"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+if (typeof firebase === "undefined") {
+  console.error("Firebase SDK not loaded!");
+} else {
+  console.log("Firebase loaded successfully.");
+}
+
 const productForm = document.getElementById("product-form");
 const productList = document.getElementById("product-list");
 const searchInput = document.getElementById('search-input');
 const smallsearchInput = document.getElementById('small-search-input');
 const main = document.getElementById('main-content')
-let products = JSON.parse(localStorage.getItem('products')) || [];
+let products = []
 function showProductInDetails(index) {
-  // Find the product by its index
+  // Find the product by its inde.log(x
   const product = products[index];
 
   // Get the modal overlay and content container
@@ -60,33 +85,50 @@ function attachHoverEvents() {
   });
 }
 
-function displayProducts() {
-  productList.innerHTML = ''; // Clear the current list before adding new products
-  
-  products.forEach((product, index) => {
-    productList.innerHTML += `
-      <div class="product-card" >
-        <div class="product-header">
-          <h3 style="padding: 0; margin: 0; gap: 0;">${escapeHTML(product.name)}</h3>
-          <img src="${product.image}" alt="Product Image">
-          <div class="dropdown">
-            <button class="dropdown-icon">...</button>
-            <div class="dropdown-content">
-              <button class="show-details-btn" onclick="event.stopPropagation();showProductInDetails(${index})">Show Details</button>
-              <button class="edit-btn" onclick="event.stopPropagation();editProduct(${index})">Edit</button>
-              <button class="delete-btn" onclick="event.stopPropagation();deleteProduct(${index})">Delete</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-details">
-          <p class="price">$${product.price}</p>
-          <p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
-        </div>
-      </div>
-    `;
-  });
-  attachHoverEvents();
+async function displayProducts() {
+  productList.innerHTML = ''; // Clear existing products
+
+  try {
+      const querySnapshot = await db.collection('products').orderBy('timestamp', 'desc').get();
+      products = []; // Clear the old products array
+
+      querySnapshot.forEach((doc) => {
+          const product = doc.data();
+          product.id = doc.id; // Store Firestore document ID for editing/deleting
+          products.push(product);
+      });
+
+      products.forEach((product, index) => {
+          productList.innerHTML += `
+              <div class="product-card">
+                  <div class="product-header">
+                      <h3>${escapeHTML(product.name)}</h3>
+                      <img src="${product.imageUrl}" alt="Product Image">
+                      <div class="dropdown">
+                          <button class="dropdown-icon">...</button>
+                          <div class="dropdown-content">
+                              <button class="show-details-btn" onclick="event.stopPropagation(); showProductInDetails(${index})">Show Details</button>
+                              <button class="edit-btn" onclick="event.stopPropagation(); editProduct(${index})">Edit</button>
+                              <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.id}')">Delete</button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="product-details">
+                      <p class="price">$${product.price}</p>
+                      <p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
+                  </div>
+              </div>
+          `;
+      });
+
+      attachHoverEvents(); // Reattach hover events
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      productList.innerHTML = "Failed to load products.";
+  }
 }
+
+
 
 document.addEventListener("click", (event) => {
   if (!event.target.matches('.dropdown-icon')) {
@@ -104,45 +146,54 @@ productList.addEventListener("click", (event) => {
   }
 });
 
-function deleteProduct(index) {
-  products.splice(index, 1); // Remove the product from the array
-  localStorage.setItem('products', JSON.stringify(products)); // Update local storage
-  displayProducts(); // Re-render the product list
-  setTimeout(() => {
-    alert('Product deleted successfully!');
-  }, 100);  // Delay the alert slightly
+async function deleteProduct(productId) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  try {
+      await db.collection('products').doc(productId).delete(); // Delete from Firestore
+      alert('Product deleted successfully!');
+      displayProducts(); // Refresh product list
+  } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
+  }
 }
+
 
 function editProduct(index) {
   
-  const product = products[index];
-  products.splice(index, 1);
-  localStorage.setItem('products', JSON.stringify(products));
+  
+    const product = products[index];
 
-  document.getElementById('product-name').value = product.name;
-  document.getElementById('product-price').value = product.price;
-  document.getElementById('product-description').value = product.description;
- document.getElementById('product-category').value = product.category;
-  // Display the existing image as a preview
-  const existingImagePreview = document.getElementById('existing-image-preview');
-  if (!existingImagePreview) {
-    const imgElement = document.createElement('img');
-    imgElement.id = 'existing-image-preview';
-    imgElement.src = product.image;  // Display the existing image
-    imgElement.style.maxWidth = '200px';
-    imgElement.style.marginTop = '10px';
-    document.getElementById('product-image').insertAdjacentElement('afterend', imgElement);
-  } else {
-    existingImagePreview.src = product.image;
-  }
+    document.getElementById('product-name').value = product.name;
+    document.getElementById('product-price').value = product.price;
+    document.getElementById('product-description').value = product.description;
+    document.getElementById('product-category').value = product.category;
+
+    const existingImagePreview = document.getElementById('existing-image-preview');
+    if (!existingImagePreview) {
+        const imgElement = document.createElement('img');
+        imgElement.id = 'existing-image-preview';
+        imgElement.src = product.imageUrl;  // Display existing image
+        imgElement.style.maxWidth = '200px';
+        imgElement.style.marginTop = '10px';
+        document.getElementById('product-image').insertAdjacentElement('afterend', imgElement);
+    } else {
+        existingImagePreview.src = product.imageUrl;
+    }
+
+    // Save the product ID for updating
+    document.getElementById('product-form').dataset.productId = product.id;
 
   displayProducts();
   setTimeout(() => {
     alert('You are editing the product. After submitting, it will be updated.');
   }, 100);
-}
+};
 
-productForm.addEventListener("submit", (event) => {
+
+
+productForm.addEventListener("submit", async (event) => {
   event.preventDefault();  // Prevent form from refreshing the page
 
   const productName = document.getElementById('product-name').value;
@@ -150,62 +201,60 @@ productForm.addEventListener("submit", (event) => {
   const productImageFile = document.getElementById('product-image').files[0];
   const productDescription = document.getElementById('product-description').value;
   const productCategory = document.getElementById('product-category').value;
-  // Check if there's an existing image preview (from editing)
-  const existingImagePreview = document.getElementById('existing-image-preview');
-  const existingImageSrc = existingImagePreview ? existingImagePreview.src : null;
-  const productImages = document.getElementById("product-image");
-  if (productImageFile) {
-    // If a new image is uploaded, read and use it
-    const reader = new FileReader();
+  
+  let existingImagePreview = document.getElementById("existing-image-preview");
+  
+  if (!productImageFile && !existingImagePreview) {
+      alert('Please select an image!');
+      return;
+  }
 
-    reader.onload = function(e) {
-      const product = { 
-        name: productName,
-        price: productPrice,
-        image: e.target.result,  // Use new uploaded image
-        description: productDescription,
-        category: productCategory,
-      };
+  if (productImageFile && !existingImagePreview) {
+      document.getElementById('upload-status').innerText = "Uploading...";
 
-      products.push(product);
-      localStorage.setItem('products', JSON.stringify(products));
-      document.getElementById('product-form').reset();
-      
-      if (existingImagePreview) existingImagePreview.remove();  // Remove image preview after submission
+      try {
+          // Create a reference to Firebase Storage
+          const storageRef = ref(storage, `product-images/${productImageFile.name}`);
+          
+          // Start the file upload
+          const uploadTask = uploadBytesResumable(storageRef, productImageFile);
+          
+          // Monitor the upload progress
+          uploadTask.on('state_changed',
+              (snapshot) => {
+                  const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  document.getElementById('upload-status').textContent = `Uploading: ${progress.toFixed(2)}%`;
+              },
+              (error) => {
+                  console.error("Upload failed:", error);
+                  document.getElementById('upload-status').textContent = "Image upload failed.";
+              },
+              async () => {
+                  // Get the download URL after the image is uploaded
+                  const imageURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-      setTimeout(() => {
-        alert('Product updated successfully!');
-      }, 100);
-      
-      displayProducts();
-    };
+                  // Store the product data in Firestore
+                  await addDoc(collection(db, "products"), {
+                      name: productName,
+                      description: productDescription,
+                      price: parseFloat(productPrice),
+                      imageURL: imageURL,
+                      timestamp: new Date()
+                  });
 
-    reader.readAsDataURL(productImageFile);  // Convert image to Base64
-  } else if (existingImageSrc) {
-    productImages.required = false;
-    // If no new image is uploaded, keep the existing image
-    const product = { 
-      name: productName,
-      price: productPrice,
-      image: existingImageSrc,  // Keep existing image
-      description: productDescription,
-      category: productCategory,
-    };
-
-    products.push(product);
-    localStorage.setItem('products', JSON.stringify(products));
-    document.getElementById('product-form').reset();
-    existingImagePreview.remove();  // Remove image preview after submission
-
-    setTimeout(() => {
-      alert('Product updated successfully!');
-    }, 100);
-
-    displayProducts();
-  } else {
-    alert('Please upload an image.');
+                  // Display success message and reset the form
+                  document.getElementById('upload-status').innerText = "Product uploaded successfully!";
+                  document.getElementById('product-form').reset(); // Clear form
+              }
+          );
+      } catch (error) {
+          console.error("Error uploading product:", error);
+          document.getElementById('upload-status').innerText = "Upload failed. Please try again.";
+      }
   }
 });
+
+
 const searchProducts = () => {
   const products = JSON.parse(localStorage.getItem('products'));
   const searchInputValue = searchInput.value || smallsearchInput.value;
