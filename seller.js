@@ -209,9 +209,7 @@ productForm.addEventListener("submit", async (event) => {
       return;
   }
 
-  if (productImageFile && !existingImagePreview) {
-      document.getElementById('upload-status').innerText = "Uploading...";
-
+ 
       try {
           // Create a reference to Firebase Storage
           const storageRef = ref(storage, `product-images/${productImageFile.name}`);
@@ -250,7 +248,7 @@ productForm.addEventListener("submit", async (event) => {
       } catch (error) {
           console.error("Error uploading product:", error);
           document.getElementById('upload-status').innerText = "Upload failed. Please try again.";
-      }
+      
   }
 });
 
