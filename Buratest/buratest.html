@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appwrite Simple App</title>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
+</head>
+<body>
+    <h2>Store Name and Picture with Appwrite</h2>
+    <form id="uploadForm">
+        <input type="text" id="name" placeholder="Enter your name" required><br><br>
+        <input type="file" id="picture" accept="image/*" required><br><br>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        // Initialize Appwrite
+        const { Client, Databases, Storage, ID } = Appwrite;
+        const client = new Client()
+            .setEndpoint('https://cloud.appwrite.io/v1') // Change if self-hosted
+            .setProject('67b2dd6e003b2b9d0e6b') // Replace with your project ID
+
+        const database = new Databases(client);
+        const storage = new Storage(client);
+
+        const form = document.getElementById('uploadForm');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const picture = document.getElementById('picture').files[0];
+
+            if (!name || !picture) {
+                result.textContent = 'Please provide both name and picture.';
+                return;
+            }
+
+            try {
+                // Upload the picture
+                const uploadedFile = await storage.createFile('67b2e076000411acebfd', ID.unique(), picture);
+                const fileId = uploadedFile.$id;
+
+                // Get file URL
+                const fileUrl = `https://cloud.appwrite.io/v1/storage/buckets/YOUR_BUCKET_ID/files/${fileId}/view?project=YOUR_PROJECT_ID`;
+
+                // Save the user info in the database
+                await database.createDocument('67b2ddf300101e054ccd', '67b2de05000e1a5e2a7e', ID.unique(), {
+                    name: name,
+                    picture: fileUrl
+                });
+
+                // Display the result
+                result.innerHTML = `
+                    <p>Name: ${name}</p>
+                    <img src="${fileUrl}" alt="Uploaded Picture" style="width: 150px;">
+                `;
+
+            } catch (error) {
+                console.error(error);
+                result.textContent = 'Failed to upload. Check the console for errors.';
+            }
+        });
+    </script>
+</body>
+</html>
