@@ -549,6 +549,7 @@ smallsearchInput.addEventListener("input", showSmallFilteredSearchHistory);
  let lastDocum = null;
 
  window.showSimilarProducts = async function(productName, category) {
+  loadMoreBtn.style.display = "none";
   if(loadi)return
   loadi = true;
 productName = productName;
@@ -609,6 +610,7 @@ category = category;
   loadi = false;
 };
 categoryloadMoreBtn.addEventListener('click', () =>
+
   showSimilarProducts(productNameOfProduct, categoryOfProduct)
 );
 
