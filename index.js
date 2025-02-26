@@ -615,6 +615,10 @@ categoryloadMoreBtn.addEventListener('click', () =>
 );
 
 window.rate = async function ()  {
+  if(!accountId){
+    alert('please Login to rate');
+    return
+  }
   if(document.getElementById('seller')){
   document.getElementById('seller').remove()};
   console.log(modalOverlay);
@@ -656,7 +660,7 @@ async function checkUserRating() {
 }
 
 window.submitRating = async function() {
-
+ 
   const selectedRating = document.querySelector('input[name="rating"]:checked');
   if (!selectedRating) {
       alert("Please select a rating before submitting.");
