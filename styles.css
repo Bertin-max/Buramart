@@ -37,6 +37,18 @@ z-index: 999;
   border-radius: 5px;
   height: auto;
 }
+.small-doll {
+  position: absolute;
+  left: 27%;
+  top:90px;
+  margin: 0;
+  background-color: white;
+  color: black;
+  width: 200px;
+z-index: 999;
+  border-radius: 5px;
+  height: auto;
+}
 .search-result-item {
   padding: 8px;
   cursor: pointer;
@@ -228,7 +240,7 @@ z-index: 999;
 }
 
 header .sidebar li a{
- color: rgb(4, 4, 19);
+ color: var(--primary-color);
  width: 100%;
  
 }
@@ -270,6 +282,7 @@ header .sidebar li a{
     background-color: var(--hover-color);
   }
   /* Product Section */
+
 .products {
     padding: 20px;
     background-color: var(--background-color);
@@ -278,16 +291,20 @@ header .sidebar li a{
   }
   .products h2 {
     margin-bottom: 20px;
-    color: #333;
+    color: black;
   }
   /* Product List */
-.product-list {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
+ 
+    .product-list {
+      display: flex;
+     
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+     
+    }
    
-  }
+  
   /* Product Card */
 .product-card {
  
@@ -327,7 +344,8 @@ header .sidebar li a{
 .product-card .description {
   font-size: 14px;
   color: #666;
-  margin: 10px 0;
+  margin-top: -10px;
+  margin-bottom: 10px;
 }
 /* Contact Buttons */
 .contact-buttons1 {
@@ -371,7 +389,7 @@ header .sidebar li a{
 .categories h2 {
   margin-bottom: 15px;
   font-size: 24px;
-  color: #333;
+  color: black;
 }
 /* Category List */
 .category-list {
@@ -451,8 +469,8 @@ button.btn-contact:hover{
 }
 .cart-item {
   padding: 15px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--product-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -546,7 +564,7 @@ button.btn-contact:hover{
 .form-section h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: black;
 }
 form label {
   display: block;
@@ -620,6 +638,7 @@ form textarea {
   color: #0078d7;
   font-weight: bold;
   margin-top: 2px;
+  margin-bottom: -20px;
 }
 /* Responsive Navbar for Home Page */
 @media (max-width: 768px) {
@@ -761,6 +780,34 @@ form textarea {
     margin-top: 5px;
     margin-bottom: 0;
   }
+  .product-card.loading {
+    background: var(--product-color);
+    position: relative;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    
+    opacity: 0.6;
+  }
+  
+  .image-placeholder {
+    align-self: flex-start;
+    width: 150px;
+    height: 170px;
+    background: #ccc;
+    border-radius: 5px;
+  }
+  
+  .text-placeholder {
+    width: 80%;
+    height: 15px;
+    background: #ddd;
+    border-radius: 5px;
+    
+  }
   .btn-contact{
     font-size: 14px;
 
@@ -802,9 +849,9 @@ form textarea {
 }
 /* Product List */
 .product-list {
-  display:block;
-  justify-content: center;
-  gap: 0px;
+  display:flex;
+  
+  gap: 10px;
   flex-wrap: wrap;
  
 }
@@ -940,6 +987,7 @@ product-card {
   flex-direction: column;
   align-items: center;
   width: 250px;
+  
 }
 
 .product-card img {
@@ -952,6 +1000,12 @@ product-card {
 .product-details {
   text-align: center;
   margin-top: 10px;
+ 
+  display: flex;
+  flex-direction: column;
+  
+  gap: 10px;
+  align-items: center;
 }
 
 .price {
@@ -963,6 +1017,8 @@ product-card {
   font-size: 14px;
   color: #666;
 }
+/*for loading*/
+
 
 .menu-container {
   position: absolute;
@@ -1045,6 +1101,7 @@ product-card {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
 @media (max-width: 480px) {
   .dropdown-icon {
     position: absolute;
@@ -1063,10 +1120,12 @@ product-card {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  display: none;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1100;
 }
 
 .modal-content {
@@ -1098,4 +1157,77 @@ product-card {
   border-radius: 8px; /* Optional: rounded corners */
   display: block; /* Ensures the image is not inline and centers correctly */
   object-fit: unset;
+}
+
+/*for loading*/
+.product-card.loading {
+  background: var(--product-color);
+  padding: 10px;
+  border-radius: 8px;
+  width: 200px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.6;
+}
+
+.image-placeholder {
+  width: 70%;
+  height: 120px;
+  background: #ccc;
+  border-radius: 5px;
+}
+
+.text-placeholder {
+  width: 80%;
+  height: 15px;
+  background: #ddd;
+  border-radius: 5px;
+  
+}
+/* for stars */
+.stars {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+.stars input {
+  display: none;
+}
+.stars label {
+  font-size: 2rem;
+  color: white;
+  transition: color 0.3s;
+  text-shadow: 0 0 1px black;
+  cursor: pointer;
+}
+.stars input:checked ~ label {
+  color: gold;
+}
+.average-stars {
+  display: flex;
+  justify-content: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-bottom: -5px;
+}
+.average-stars span {
+  font-size: 2rem;
+  color: white;
+  text-shadow: 0 0 1px black;
+}
+#average-stars span {
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.gold {
+  color: gold !important; /* Force color change */
+}
+
+.white {
+  color: gray !important;
 }

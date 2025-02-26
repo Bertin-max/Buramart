@@ -5,57 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up & Login</title>
     <link rel="stylesheet" href="authstyles.css">
+    
 </head>
 <body>
+    
     <div class="container">
+        <a href="index.html">Go back</a>
         <div class="form-box" id="signup-box">
             <h2>Sign Up</h2>
             <form>
                 <input type="text" placeholder="Full Name" required>
-                <input id = "signup-email"type="email" placeholder="Email" required>
-                <input id = "signup-password"type="password" placeholder="Password" required>
+                <input id="signup-email" type="email" placeholder="Email" required>
+                <input id="signup-password" type="password" placeholder="Password" required>
                 <button type="submit">Sign Up</button>
-                <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                <p>Already have an account? <a href="#" id = "show-login-prompt" >Login</a></p>
             </form>
         </div>
 
         <div class="form-box" id="login-box" style="display: none;">
             <h2>Login</h2>
-            <form>
-                <input id = "login-email"type="email" placeholder="Email" required>
-                <input id = "login-password"type="password" placeholder="Password" required>
-                <button type="submit" id = "loginbtn">Login</button>
-                <p id = "login-text">Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+            <form id = "login-form">
+                <input id="login-email" type="email" placeholder="Email" required>
+                <input id="login-password" type="password" placeholder="Password" required>
+                <button type="submit" id="login-btn">Login</button>
+                <p id="login-text">Don't have an account? <a href="#" id="show-signup-prompt">Sign Up</a></p>
             </form>
-            <button id="logout-btn" onclick="handleLogout()" style="display:none;">Logout</button>
-
+            <p id = "user-email-display"></p>
+            <button id="logout-btn"  style="display:none;">Logout</button>
         </div>
     </div>
-
-    <script>
-        function showLogin() {
-            document.getElementById('signup-box').style.display = 'none';
-            document.getElementById('login-box').style.display = 'block';
-        }
-        function showSignup() {
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('signup-box').style.display = 'block';
-        }
-        function handleLogout() {
-      logout();
-    }
+          
+    <!-- Appwrite SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
+    <script type= "module" src="user.js"></script>
+    <script type="module" src="auth.js"> 
     </script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-
-    <!-- Firebase Authentication -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    
-    <!-- Firebase Firestore -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <!-- Your Firebase Configuration -->
-    <script src="firebase-config.js"></script>
-    <script src="settings.js"></script>
-    <script src="auth.js"></script>
 </body>
 </html>

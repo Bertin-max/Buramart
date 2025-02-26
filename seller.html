@@ -15,10 +15,11 @@
         <div class="search-bar">
           <input id = "search-input" type="text" placeholder="Search Your products..." />
           <a href="#uploaded-products"><button onclick = "searchProducts()" type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button></a>
+          <div id="doll" onclick="location.href='#uploaded-products';" class ="doll">
         </div>
         <nav>
           <ul class="sidebar">
-           <li onclick=hideSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(48, 48, 199)"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a></li>
+           <li onclick=hideSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a></li>
            <li><a href="Settings.html">Settings</a></li>
             <li><a href="#form-section">Upload Product</a></li>
             <li><a href="#uploaded-products">My Products</a></li>
@@ -26,7 +27,7 @@
            <li class="account">
             <a href="#">Account</a>
             <ul class="account-dropdown">
-              <li><a href="auth.html">Login</a></li>
+              <li><a href="auth.html">SignUp</a></li>
               <li><a href="#">Register</a></li>
               <li><a href="auth.html">Switch User</a></li>
             </li>
@@ -66,6 +67,7 @@
   <div class="small-search-bar">
     <input  id = "small-search-input" type="text" placeholder="Search products..." />
     <a href="#uploaded-products"><button onclick= "searchProducts()" type="submit">Search</button></a>
+    <div id="small-doll" onclick="location.href='#products';" class ="small-doll"></div>
   </div>
   <main>
     <!-- Form Section -->
@@ -83,11 +85,11 @@
         <input type="number" id="product-price" name="product-price" placeholder="Enter price" required>
         
         <label for="product-category">Category:</label>
-        <select id="product-category" name="product-category" required>
+        <select id="product-category" name="product-category" onchange="updateSubcategories()" required>
           <option value="" disabled selected>Select a category</option>
           <option value="electronics">Electronics</option>
           <option value="clothing">Clothing</option>
-          <option value="home-appliances">Home Appliances</option>
+          <option value="homeappliances">Home-Appliances</option>
           <option value="toys">Toys</option>
           <option value="books">Books</option>
           <option value="furniture">Furniture</option>
@@ -97,10 +99,13 @@
           <option value="food">Food</option>
           <option value="automotive">Automotive</option>
         </select>
-
+        <label for="subcategory">Select Subcategory:</label>
+        <select id="subcategory">
+            <option value="">Select a subcategory</option>
+        </select> 
         <label for="product-image">Product Image :</label>
         <input type="file" id="product-image" name="product-image" placeholder="Enter image URL" >
-
+        <img id="image-preview" style="max-width: 200px; margin-top: 10px; display: none;">
         <button type="submit" class="submit-btn">Upload Product</button>
       </form>
       </div>
@@ -117,7 +122,148 @@
     <section id="uploaded-products" class="uploaded-products">
       <h2>My Uploaded Products</h2>
       <div id = "product-list"class="product-list">
-       
+        <div   class="product-card ">
+          <div>
+            <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+            <img class="image-placeholder" > 
+          </div> 
+          <div class="product-details">
+            <p class=" text-placeholder"></p>
+            
+            <p class=" text-placeholder"></p>
+            </div>
+          </div>
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+        
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+          
+          <div   class="product-card ">
+            <div>
+              <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+              <img class="image-placeholder" > 
+            </div> 
+            <div class="product-details">
+              <p class=" text-placeholder"></p>
+              
+              <p class=" text-placeholder"></p>
+              </div>
+            </div>
+            <div   class="product-card ">
+              <div>
+                <h3 style="padding: 0; margin: 0; gap: 0;"></h3>
+                <img class="image-placeholder" > 
+              </div> 
+              <div class="product-details">
+                <p class=" text-placeholder"></p>
+                
+                <p class=" text-placeholder"></p>
+                </div>
+              </div>
+      
         </div>
     </section>
     <footer class="footer">
@@ -132,18 +278,17 @@
           <h3>Quick Links</h3>
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="index.html">Products</a></li>
-            <li><a href="index.html">Categories</a></li>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="seller.html">Seller</a></li>
+            <li><a href="#form-section">Upload Product</a></li>
+            <li><a href="#uploaded-products">My products</a></li>
+           
           </ul>
         </div>
         <!-- Contact Section -->
         <div class="footer-contact">
           <h3>Contact Us</h3>
           <p>Email: support@buramart.com</p>
-          <p>Phone: +123 456 7890</p>
-          <p>WhatsApp: +123 456 7890</p>
+          <p>Phone: +257 68154810</p>
+          <p>WhatsApp: +257 69154810</p>
         </div>
       </div>
       <div class="footer-bottom">
@@ -152,40 +297,10 @@
     </footer>
     
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.js"></script>
-
-<input type="file" id="fileInput" />
-<button onclick="uploadFile()">Upload</button>
-
-<script>
-    // Initialize Supabase here
-    const supabaseUrl = 'https://quxaofzrtrccipvogbcb.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1eGFvZnpydHJjY2lwdm9nYmNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MTA2NjEsImV4cCI6MjA1NTI4NjY2MX0.AqCnvnnfwE5uVK-6eQxOQJkYfIsyEWqHIjyFapGyRuM'; // Replace with your actual anon key
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    async function uploadFile() {
-        const file = document.getElementById('fileInput').files[0];
-        if (!file) {
-            console.log('No file selected');
-            return;
-        }
-
-        const filePath = `products/${file.name}`;
-        const { data, error } = await supabase.storage
-            .from('product-images')
-            .upload(filePath, file);
-
-        if (error) {
-            console.error('Upload failed:', error.message);
-        } else {
-            console.log('Upload successful:', data);
-        }
-    }
-</script>
-
-  
-
-
+  <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>  
+  <script type="module" src="user.js"></script>
+  <script type="module" src="seller.js"></script>  
+  </body>
   
 </body>
 </html>

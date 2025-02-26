@@ -1,31 +1,91 @@
+import {  getUserDetails } from "./user.js";
+
+async function loadUserData() {
+  const userData = await getUserDetails();
+  if (userData) {
+     return  userData.userId;
+      
+  } else {
+      console.log("No user logged in.");
+  }
+}
+let accountId = await loadUserData()
+console.log(accountId);
+
+const categories = {
+  electronics: ["Smartphones", "Laptops", "Tablets", "Cameras", "Headphones", "Smartwatches", "Gaming Consoles", "Televisions", "Speakers"],
+  clothing: ["Men's Clothing", "Women's Clothing", "Kids' Clothing", "Shoes", "Bags", "Accessories", "Hats", "Watches", "Eyewear"],
+  homeappliances: ["Refrigerators", "Microwaves", "Washing Machines", "Air Conditioners", "Vacuum Cleaners", "Dishwashers", "Water Heaters", "Fans", "Coffee Makers"],
+  books: ["Fiction", "Non-Fiction", "Educational", "Comics & Graphic Novels", "Biographies", "Self-Help", "Science & Technology", "Children's Books", "Mystery & Thriller"],
+  beauty: ["Skincare", "Makeup", "Haircare", "Fragrances", "Nail Care", "Men’s Grooming", "Beauty Tools", "Bath & Body", "Oral Care"],
+  toys: ["Action Figures", "Dolls", "Board Games", "Building Blocks", "Remote Control Toys", "Educational Toys", "Outdoor Toys", "Plush Toys", "Musical Toys"],
+  furniture: ["Living Room Furniture", "Bedroom Furniture", "Dining Room Furniture", "Office Furniture", "Outdoor Furniture", "Storage Solutions", "Kids' Furniture", "Mattresses", "Lighting"],
+  sports: ["Fitness Equipment", "Outdoor Sports", "Team Sports", "Water Sports", "Winter Sports", "Cycling", "Racket Sports", "Combat Sports", "Running Gear"],
+  health: ["Vitamins & Supplements", "Personal Care", "Medical Supplies", "Fitness & Nutrition", "Wellness Devices", "Weight Management", "First Aid", "Oral Hygiene", "Mental Health"],
+  automotive: ["Car Accessories", "Motorcycle Accessories", "Car Care", "Tires & Wheels", "GPS & Navigation", "Car Electronics", "Oils & Fluids", "Replacement Parts", "Tools & Equipment"],
+  food: ["Fresh Produce", "Dairy & Eggs", "Meat & Seafood", "Snacks", "Beverages", "Canned Goods", "Bakery Items", "Condiments & Spices", "Frozen Foods"]
+};
+
+
+
+let subcategoryterm = "";
+let productNameOfProduct = '';
+let categoryOfProduct = ''
 const homeProductList = document.getElementById("home-list");
 const storedProduct = localStorage.getItem('products');
 const main = document.getElementById('main-content');
-const searchInput = document.getElementById('search-input');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalOverlay2 = document.getElementById('modal-overlay2');
+const modalProductDetails = document.getElementById('modal-product-details');
+const modalProductDetails2 = document.getElementById('modal-product-details2');
+const closeModalBtn = document.getElementById('close-modal-btn');
+const closeModalBtn2 = document.getElementById('close-modal-btn2');
+const originalModalContent = modalProductDetails.innerHTML;
+const averageStars = document.getElementById("average-stars");
+let sellerId = '';
+let selectedProductId = ''
+let searchInput = document.getElementById('search-input');
 const smallsearchInput = document.getElementById('small-search-input');
 const viewAll =  document.getElementById('view-all');
 let cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
 let originalContent = main.innerHTML;
+let originalContent2 = homeProductList.innerHTML;
 const searchResultsContainer = document.getElementById("doll");
+const smallsearchResultsContainer = document.getElementById('small-doll');
+const loadingHtml = document.querySelectorAll('.product-card');
+const loadMoreBtn = document.getElementById('load-more-btn');
+const searchloadMoreBtn = document.getElementById('search-load-more-btn');
+const categoryloadMoreBtn2 = document.getElementById('category2-load-more-btn');
+const subcategoryloadMoreBtn = document.getElementById('subcategory-load-more-btn')  ;
+const categoryloadMoreBtn = document.getElementById('category-load-more-btn');
+const client = new Appwrite.Client();
+client.setProject('67b35038002044fd8dfa');
 
-const upDateCart = (index) => {
-  const products = JSON.parse(localStorage.getItem('products'));
-  const cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || []; // Initialize cartProducts if null
-  
-  const product = products[index];
+const DATABASE_ID = '67b5a1b2003647bb7108';
+const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
+const SELLER_REGISTRATION_ID = '67b83126001bf9ce5516';
+const db = new Appwrite.Databases(client, DATABASE_ID);
+const Query = window.Appwrite.Query;
+let products = [];
+let foundProducts = [];
+let uniqueProducts = [];
 
-  // Check if the product is already in the cart based on a unique property (e.g., name)
-  const productExists = cartProducts.some(item => item.description === product.description);
+window.updateDatabaseCartProduct = async function (productId) {
+  try {
+      const response = await db.updateDocument(
+          DATABASE_ID,        // Replace with your Database ID
+          SELLER_PRODUCTS_ID,      // Replace with your Collection ID
+          productId,            // The document (product) ID to update
+          {'AddedToCart': true}           // The fields to update
+      );
 
-  if (productExists) {
-    alert("Product already Added");
-    return;
-  } else {
-    cartProducts.push(product);
-    localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
-  }
-};
-
+      console.log("Product updated:", response);
+      alert("Product updated successfully!");
+  } catch (error) {
+      console.error("Error updating product:", error);
+      alert("Failed to update product.");
+  };
+}
 function ShowSidebar(){
   const sidebar = document.querySelector('.sidebar')
   sidebar.style.display = 'flex'
@@ -34,208 +94,770 @@ function hideSidebar(){
     const sidebar = document.querySelector('.sidebar')
   sidebar.style.display = 'none'
 }
-const goBackToMain = () => {
+window.goBackToMain = () => {
    main.innerHTML = originalContent;
- 
+  
+  categorySearch()
 }
-const showProductInDetails = (index) => {
-  const products = JSON.parse(localStorage.getItem('products'));
-  const product = products[index];
+function attachHoverEvents() {
+  const productCards = document.querySelectorAll('.product-card');
+  
+  productCards.forEach(card => {
+    card.addEventListener('mouseleave', () => {
+      const dropdown = card.querySelector('.dropdown-content');
+      if (dropdown) {
+        dropdown.style.display = 'none';
+      }
+    });
+  });
+}
 
+
+window.showProductInDetails =  async function (productId) {
+
+ ;
+  uniqueProducts = [];
+  const product =  uniqueProducts.find(aproduct => aproduct.$id === productId) ||  products.find(aproduct => aproduct.$id === productId) ;
+
+  console.log(product)
+  sellerId = product.UserId;
+  selectedProductId = product.$id;
+  fetchAverageRating()
+   productNameOfProduct = product.Name;
+   categoryOfProduct = product.category;
   main.innerHTML  = `
         <div class="product-details-container">
-          <button  onclick="location.reload()" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
+          <button onclick = 'goBackToMain()' style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
       <div class="product-image">
-        <img src="${product.image}" alt="${product.name}">
+        <img src="${product.image}" alt="${product.Name}">
       </div>
       <div class="product-info">
-        <h2>${product.name}</h2>
+        <h2>${product.Name}</h2>
+         <div class="average-stars" id="average-stars">
+        ${generateStars(product.averageRating)}(${product.totalRatings}R)
+      </div>
         <p>${product.description}</p>
-        <p><strong>Price: $${product.price}</strong></p>
+        <p><strong>Price: BIF${product.price}</strong></p>
       </div>
       <div class="contact-buttons1" >
-        <a href="https://wa.me/25765381604" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></a>
-        <a href="tel:+25768154810" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg></a>
-       <a class="btn-contact" onclick = "upDateCart(${index})"><svg height="20" width="20" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></a>
+        <a id = "whatsapp-btn" href="" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></a>
+        <a href="tel:${product.whatsapp}" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg></a>
+       <a class="btn-contact" onclick = " updateDatabaseCartProduct('${product.$id}')"><svg height="20" width="20" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></a>
+        <div  class="dropdown" >
+                          <button class="dropdown-icon">...</button>
+                          <div class="dropdown-content">
+                              <button class="show-details-btn" onclick = " event.stopPropagation();showSeller()" >About Seller</button>
+                              <button class ="edit-btn" onclick = "rate()" >Rate</button>
+                             
+                          </div>
+                      </div>
        </div>
     </div>
       
   `;
+  document.addEventListener("click", (event) => {
+    if (!event.target.matches('.dropdown-icon')) {
+      const dropdowns = document.querySelectorAll('.dropdown-content');
+      dropdowns.forEach((dropdown) => {
+        dropdown.style.display = 'none';
+      });
+    }
+  });
+  
+  document.querySelector('.product-details-container').addEventListener("click", (event) => {
+    if (event.target.classList.contains("dropdown-icon")) {
+      const dropdownContent = event.target.nextElementSibling;
+      dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+    }
+  });
+  attachHoverEvents(); // Reattach hover events
+  const whatsappbtn = document.getElementById('whatsapp-btn');
+  if (product.whatsapp) {
+    whatsappbtn.href = `https://wa.me/${product.whatsapp}`;
+    whatsappbtn.style.display = "inline-block"; // Show button
+} else {
+    whatsappbtn.remove() // Hide button if no WhatsApp
+}
+  
+if (uniqueProducts.length === 0) {
+  await showSimilarProducts(product.Name, product.category);
+  console.log(product.Name)
+}
+console.log(uniqueProducts)
+document.querySelector('#products h2').textContent = "similar Products"
+homeProductList.innerHTML = '';
+uniqueProducts.forEach(( product) => {
+  homeProductList.innerHTML += `
+   
+     <div onclick = "showProductInDetails('${product.$id}'); f" class="product-card">
+        <div>
+          <h3 style="padding: 0; margin: 0; gap: 0;">${product.Name}</h3>
+          <img  src="${product.image}" alt="${product.Name}"> 
+        </div> 
+        <div class="product-details">
+         <div class="average-stars" id="average-stars">
+        ${generateStars(product.averageRating)}(${product.totalRatings}R)
+      </div>
+          <p class="price">BIF       ${product.price}</p>
+          <div class="product-details">
+            <a ><p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
+          </div>
+        </div>
+      </div>
+      </div>
+      `;
+});
   window.scrollTo({
     top: 0,
     behavior: 'smooth' });
 }
-const displayProducts = () => {
-if (storedProduct) {
-  // Convert JSON string back to array
-  const products = JSON.parse(storedProduct);  // Fixed the variable name
+window.generateStars = (averageRating) => {
+  let starsHtml = "";
+  for (let i = 1; i <= 5; i++) {
+      starsHtml += `<span class="${i <= Math.round(averageRating) ? 'gold' : 'white'}">★</span>`;
+  }
+  return starsHtml;
+}
 
-  homeProductList.innerHTML = '';
+let lastDocument = null; // Store last document for pagination
+let loading = false; // Prevent multiple requests
+
+async function fetchProducts() {
+    if (loading) return; // If already fetching, do nothing
+    loading = true; // Set loading to true to prevent multiple fetches
+   
+    try {
+        let queries = [
+          window.Appwrite.Query.orderDesc("CreatedAt"),
+            window.Appwrite.Query.limit(6),
+          
+           // Fetch 10 products at a time
+        ];
+
+        // Use cursorAfter only if lastDocument is not null
+        if (lastDocument) {
+            queries.push(window.Appwrite.Query.cursorAfter(lastDocument.$id));
+        }
+       
+        let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
+        products = [...products, ...response.documents];
+        console.log(products)
+        if (response.documents.length > 0) {
+            lastDocument = response.documents[response.documents.length - 1]; // Update last document
+            console.log("Updated lastDocument:", lastDocument);
+            displayProducts(response.documents); // Function to render products on UI
+        } if(response.documents.length < 6) {
+          loadMoreBtn.style.display = "none";
+            console.log("No more products to load.");
+        }
+    } catch (error) {
+        console.error("Error fetching products:", error);
+    }
+    
+    loading = false; // Reset loading after request is done
+}
+
+// Initial fetch
+fetchProducts();
+loadMoreBtn.addEventListener('click', fetchProducts)
+
+/*window.addEventListener("scroll", () => {
+  const scrollPosition = window.innerHeight + window.scrollY; // Current scroll position
+  const triggerPoint = document.body.offsetHeight * 0.8; // 80% of page height
+
+  if (scrollPosition >= triggerPoint && !loading) { // Only fetch if not already loading
+      console.log("Triggering fetch with lastDocument:", lastDocument);
+      console.log(searchInput.value)
+      if(searchInput.value){
+       searchProducts();
+  }else{
+    fetchProducts('') 
+  }}
+});*/
+
+
+const displayProducts = (products) => {
+
+  
+ loadingHtml.forEach((el) => el.style.display = "none")
+console.log(products)
 
   products.forEach((product,index) => {  // Now iterating over the correct variable
     homeProductList.innerHTML += `
-      <div onclick = showProductInDetails(${index}) class="product-card">
+      <div onclick = showProductInDetails('${product.$id}') class="product-card">
         <div>
-          <h3 style="padding: 0; margin: 0; gap: 0;">${product.name}</h3>
-          <img  src="${product.image}" alt="${product.name}"> 
+          <h3 style="padding: 0; margin: 0; gap: 0;">${product.Name}</h3>
+          <img  src="${product.image}" alt="${product.Name}"> 
         </div> 
         <div class="product-details">
-          <p class="price">$${product.price}</p>
+          <p class="price">BIF       ${product.price}</p>
+          <div class="average-stars" id="average-stars">
+        ${generateStars(product.averageRating)}(${product.totalRatings}R)
+      </div>
           <div class="product-details">
             <a ><p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
           </div>
         </div>
       </div>`;
   });
-} else {
-  alert('No product data found in Local Storage.');
-}
+
 } 
-const categorySearch = () => {
-  const products = JSON.parse(localStorage.getItem('products')) ;
+window.showCategoryProducts = async function(buttonText) {
+  console.log(buttonText)
+  try {
+     let queries =  [
+      window.Appwrite.Query.equal("category", buttonText.toLowerCase()),
+      window.Appwrite.Query.orderDesc("CreatedAt")]
   
-  const foundProducts = products.filter(product => product.category === categoryInputValue);
- if(foundProducts.length === 0){
-  homeProductList.innerHTML = "No Product Found";
-  return
- }
-  homeProductList.innerHTML = '';
-    foundProducts.forEach((product,index) => {  // Now iterating over the correct variable
-      homeProductList.innerHTML += `
-        <div onclick = showProductInDetails(${index}) class="product-card">
+      let categoryResponse = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries
+      );
 
-          <div>
-             <h3 style="padding: 0; margin: 0; gap: 0;">${product.name}</h3>
-            <img  src="${product.image}" alt="${product.name}"> 
-          </div> 
-          <div class="product-details">
-            <p class="price">$${product.price}</p>
-            <div class="product-details">
-              <a ><p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
-            </div>
-          </div>
-        </div>`;
-    });
-}
+      // 3. Merge results, prioritizing name matches
+       foundProducts = categoryResponse.documents
+      console.log(foundProducts)
+      // 4. Remove duplicate products (in case some appear in both searches)
+       uniqueProducts = [];
+      let seenIds = new Set();
+      
+      for (let product of foundProducts) {
+          if (!seenIds.has(product.$id)) {
+              uniqueProducts.push(product);
+              seenIds.add(product.$id);
+          }
+      }
+      
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      homeProductList.innerHTML = "Error loading products. Please try again.";
+  }
+};
 
-const categoryButtons = document.querySelectorAll('.category-btn');
-
-
-categoryButtons.forEach(button => {
-  button.addEventListener('click', function(event) {
+window.categorySearch = () => {
+ 
+  let lastDocu = null;
+  let load = false;
+  let btnText = ''
+   async function categFunction ()  {
+     loadMoreBtn.style.display = "none" ; 
+  categoryloadMoreBtn2.style.display = "block";
+       console.log(subcategoryterm ? subcategoryterm: 'nothing');
+       if(!lastDocu){
+      homeProductList.innerHTML = '';}
+           if (load) return; // If already fetching, do nothing
+           load = true; // Set loading to true to prevent multiple fetches
+          
+           try {
+               let queries = [
+                 window.Appwrite.Query.orderDesc("CreatedAt"),
+                   window.Appwrite.Query.limit(3),
+                   window.Appwrite.Query.equal('category', btnText)
+                  // Fetch 10 products at a time
+               ];
+       
+               // Use cursorAfter only if lastDocument is not null
+               if (lastDocu) {
+                   queries.push(window.Appwrite.Query.cursorAfter(lastDocu.$id));
+               }
+              
+              
+               let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
+               console.log( response.documents);
+              
+               if (response.documents.length > 0) {
+                   lastDocu = response.documents[response.documents.length - 1]; // Update last document
+                   console.log("Updated lastDocument:", lastDocu);
+                   displayProducts(response.documents); // Function to render products on UI
+               } if(response.documents.length < 3) {
+                categoryloadMoreBtn2.style.display = "none";
+                console.log("No more products to load.");
+            }
+           } catch (error) {
+               console.error("Error fetching products:", error);
+           }
+           
+           load = false; // Reset loading after request is done
+      
+   }
    
+
+const categoryButtons = document.querySelectorAll('.category-btn') 
+
+  // Attach the event listener
+  categoryloadMoreBtn2.addEventListener('click', categFunction);
+categoryButtons.forEach(button => {
+  button.addEventListener('click', async function(event) {
+    lastDocu = null
+    event.preventDefault()
+    categoryloadMoreBtn2.style.display = "none";
     const buttonText = event.target.closest('.category-btn').textContent.trim();
-
-    if ( buttonText === "View All"){
-      displayProducts()
+     console.log(buttonText)
+     if ( buttonText === "View All"){
+      document.querySelector('#products h2').textContent = "Featured Products"
+    location.reload()
       return
-    } else{
-      const products = JSON.parse(localStorage.getItem('products'));
+    }
+showSubcategories(buttonText);
+btnText = buttonText;
+ categFunction()
+  // Remove any existing event listener
   
 
-  // Find products and keep their original index
-  const foundProducts = products
-    .map((product, index) => ({ product, originalIndex: index })) // Map products with their original index
-    .filter(item => item.product.category.toLowerCase() === buttonText.toLowerCase()); // Filter based on the search input (case-insensitive)
 
-  if (foundProducts.length === 0) {
-    homeProductList.innerHTML = "No Product Found";
-    return;
-  }
 
-  homeProductList.innerHTML = '';
-  foundProducts.forEach(({ product, originalIndex }) => {
-    homeProductList.innerHTML += `
-      <div onclick="showProductInDetails(${originalIndex})" class="product-card">
-        <div>
-          <h3 style="padding: 0; margin: 0;">${product.name}</h3>
-          <img src="${product.image}" alt="${product.name}"> 
-        </div> 
-        <div class="product-details">
-          <p class="price">$${product.price}</p>
-          <div class="product-details">
-            <a><p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
-          </div>
-        </div>
-      </div>`;
-  });
-    }
+    })})}
+  
+categorySearch();
+let lastDocumen = null;
+let loadin = false;
+window.searchProducts = async function() {
+  loadMoreBtn.style.display = "none";
+  searchloadMoreBtn.style.display = "block"
+  goBackToMain();
 
-  });
-});
-
-const searchProducts = () => {
-  const products = JSON.parse(localStorage.getItem('products'));
   const searchInputValue = searchInput.value || smallsearchInput.value;
+ 
+  if (!searchInputValue) {
+      alert("Please enter a product name to search.");
+      return;
+  }
+ 
+  saveSearchHistory(searchInputValue);
+  if(!lastDocumen){
+ homeProductList.innerHTML = '';}
+      if (loadin) return; // If already fetching, do nothing
+      loadin = true; // Set loading to true to prevent multiple fetches
+     console.log(searchInputValue)
+      try {
+          let queries = [
+            window.Appwrite.Query.orderDesc("CreatedAt"),
+              window.Appwrite.Query.limit(2),
+              window.Appwrite.Query.equal('Name', searchInputValue)
+             // Fetch 10 products at a time
+          ];
+  
+          // Use cursorAfter only if lastDocument is not null
+          if (lastDocumen) {
+              queries.push(window.Appwrite.Query.cursorAfter(lastDocumen.$id));
+          }
+          
+         
+          let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
+          console.log( response.documents);
+         
+          if (response.documents.length > 0) {
+              lastDocumen = response.documents[response.documents.length - 1]; // Update last document
+              console.log("Updated lastDocument:", lastDocumen);
+              displayProducts(response.documents); // Function to render products on UI
+          } 
+          if(response.documents.length <2 ) {
+            searchloadMoreBtn.style.display = 'none';
+              console.log("No more products to load.");
+          }
+      } catch (error) {
+          console.error("Error fetching products:", error);
+      }
+      
+      loadin = false; // Reset loading after request is done
+      searchResultsContainer.style.display = "none";
+      smallsearchResultsContainer.style.display = "none"
+};
 
-  // Find products and keep their original index
-  const foundProducts = products
-    .map((product, index) => ({ product, originalIndex: index })) // Map products with their original index
-    .filter(item => item.product.name.toLowerCase() === searchInputValue.toLowerCase()); // Filter based on the search input (case-insensitive)
-
-  if (foundProducts.length === 0) {
-    homeProductList.innerHTML = "No Product Found";
-    return;
+searchloadMoreBtn.addEventListener('click', searchProducts)
+ // Function to filter products based on search input
+ function saveSearchHistory(searchTerm) {
+  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  
+  // Prevent duplicates
+  if (!history.includes(searchTerm)) {
+      history.unshift(searchTerm); // Add new search to the beginning
   }
 
-  homeProductList.innerHTML = '';
-  foundProducts.forEach(({ product, originalIndex }) => {
-    homeProductList.innerHTML += `
-      <div onclick="showProductInDetails(${originalIndex})" class="product-card">
-        <div>
-          <h3 style="padding: 0; margin: 0;">${product.name}</h3>
-          <img src="${product.image}" alt="${product.name}"> 
-        </div> 
-        <div class="product-details">
-          <p class="price">$${product.price}</p>
-          <div class="product-details">
-            <a><p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
-          </div>
-        </div>
-      </div>`;
-  });
+  // Limit history to the last 10 searches
+  if (history.length > 10) {
+      history.pop();
+  }
+
+  localStorage.setItem("searchHistory", JSON.stringify(history));
 }
- displayProducts()
-
- // Function to filter products based on search input
- const liveSearch = () => {
-     const searchTerm = searchInput.value.trim().toLowerCase(); // Get and clean user input
-     const products = JSON.parse(localStorage.getItem("products")) || [];
- 
-     // Clear previous results
-     searchResultsContainer.innerHTML = "";
- 
-     if (searchTerm === "") {
-         return; // Exit if input is empty
-     }
- 
-     // Filter products whose names start with the search term
-     const matchedProducts = [];
-const seenNames = new Set();
-
-products.forEach(product => {
-    if (product.name.toLowerCase().startsWith(searchTerm) && !seenNames.has(product.name)) {
-        matchedProducts.push(product);
-        seenNames.add(product.name);
-    }
-});
- 
-     // Display matched products
-     matchedProducts.forEach((product) => {
-         const productElement = document.createElement("div");
-         productElement.textContent = product.name;
-         productElement.classList.add("search-result-item"); // Add styling class
-         productElement.onclick = () => {
-             searchInput.value = product.name; // Set input to selected product
-             searchResultsContainer.innerHTML = ""; // Clear search results
-             searchProducts(); // Trigger the main search function
-         };
-         searchResultsContainer.appendChild(productElement);
-     });
- };
- 
- // Add event listener for live search
- searchInput.addEventListener("input", liveSearch);
-
+function showFilteredSearchHistory() {
+  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
   
+  let searchTerm = searchInput.value.trim().toLowerCase() 
+
+  searchResultsContainer.innerHTML = "";
+
+  // If input is empty, show full history
+  let filteredHistory = searchTerm 
+      ? history.filter(item => item.toLowerCase().startsWith(searchTerm)) 
+      : history;
+
+  // Display results
+  filteredHistory.forEach(term => {
+      let item = document.createElement("div");
+      item.classList.add("search-result-item");
+      item.textContent = term;
+      item.onclick = () => {
+          searchInput.value = term;
+          window.searchProducts(); // Perform search when clicking a history item
+      };
+      searchResultsContainer.appendChild(item);
+  });
+
+  searchResultsContainer.style.display = filteredHistory.length > 0 ? "block" : "none";
+}
+
+// Show full history when the user first focuses on the input
+searchInput.addEventListener("focus", showFilteredSearchHistory);
+
+// Filter history as the user types
+searchInput.addEventListener("input", showFilteredSearchHistory);
+
+function showSmallFilteredSearchHistory() {
+  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+  
+  let searchTerm =  smallsearchInput.value.trim().toLowerCase();
+
+  smallsearchResultsContainer.innerHTML = "";
+
+  // If input is empty, show full history
+  let filteredHistory = searchTerm 
+      ? history.filter(item => item.toLowerCase().startsWith(searchTerm)) 
+      : history;
+
+  // Display results
+  filteredHistory.forEach(term => {
+      let item = document.createElement("div");
+      item.classList.add("search-result-item");
+      item.textContent = term;
+      item.onclick = () => {
+          searchInput.value = term;
+          window.searchProducts(); // Perform search when clicking a history item
+      };
+      smallsearchResultsContainer.appendChild(item);
+  });
+
+  smallsearchResultsContainer.style.display = filteredHistory.length > 0 ? "block" : "none";
+}
+
+// Show full history when the user first focuses on the input
+smallsearchInput.addEventListener("focus", showSmallFilteredSearchHistory);
+
+// Filter history as the user types
+smallsearchInput.addEventListener("input", showSmallFilteredSearchHistory);
+
+ let loadi = false;
+ let lastDocum = null;
+
+ window.showSimilarProducts = async function(productName, category) {
+  if(loadi)return
+  loadi = true;
+productName = productName;
+category = category;
+  loadMoreBtn.style.display = "none";
+  categoryloadMoreBtn.style.display = "block"
+  try {
+    const orQuery = Query.or([
+      Query.equal('Name', productName),
+      Query.equal('category', category)]
+  );
+  const queries = [
+    orQuery,
+    Query.orderDesc('CreatedAt'),
+    window.Appwrite.Query.limit(2),
+  ];
+  if (lastDocum) {
+    queries.push(window.Appwrite.Query.cursorAfter(lastDocum.$id));
+}
+    const nameOrCategoryResponse = await db.listDocuments(
+      
+        DATABASE_ID,
+        SELLER_PRODUCTS_ID,
+        queries)
+  
+        foundProducts = nameOrCategoryResponse.documents;
+        console.log(foundProducts)
+              // 4. Remove duplicate products (in case some appear in both searches)
+               uniqueProducts = [];
+              let seenIds = new Set();
+              
+              for (let product of foundProducts) {
+                  if (!seenIds.has(product.$id)) {
+                      uniqueProducts.push(product);
+                      seenIds.add(product.$id);
+                  }
+              }
+       
+        if (nameOrCategoryResponse.documents.length > 0) {
+            lastDocum = nameOrCategoryResponse.documents[nameOrCategoryResponse.documents.length - 1]; // Update last document
+            console.log("Updated lastDocument:", lastDocum);
+            displayProducts(uniqueProducts); // Function to render products on UI
+        } if(nameOrCategoryResponse.documents.length < 2) {
+          categoryloadMoreBtn.style.display = "none";
+            console.log("No more products to load.");
+        }
+    
+    console.log(nameOrCategoryResponse.documents)
+        
+
+      // 3. Merge results, prioritizing name matches
+   
+      console.log(uniqueProducts)
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      homeProductList.innerHTML = "Error loading products. Please try again.";
+  }
+  loadi = false;
+};
+categoryloadMoreBtn.addEventListener('click', () =>
+  showSimilarProducts(productNameOfProduct, categoryOfProduct)
+);
+
+window.rate = async function ()  {
+  if(document.getElementById('seller')){
+  document.getElementById('seller').remove()};
+  console.log(modalOverlay);
+  modalOverlay.style.display = 'flex'; // Remove extra space in 'flex '
+  console.log(modalProductDetails);
+ 
+    // Dummy placeholder values before fetching real data
+   
+     
+    
+  // Add an event listener to the close button
+  closeModalBtn.addEventListener('click', closeModal);
+
+  console.log(modalOverlay.outerHTML);
+
+  // Prevent interactions with the rest of the page
+  document.body.style.overflow = 'hidden'; // Disable scrolling
+};
+
+function closeModal() {
+  // Hide the modal overlay
+  modalOverlay.style.display = 'none';
+  
+  // Re-enable scrolling on the body
+  document.body.style.overflow = 'auto';
+  
+  
+}
+
+// Replace with logged-in user ID
+
+const RATINGS_ID = "67bc3012002f2ad8694d";
+async function checkUserRating() {
+  const response = await db.listDocuments(DATABASE_ID, RATINGS_ID, [
+      Appwrite.Query.equal("UserId", accountId),
+      Appwrite.Query.equal("productId", selectedProductId)
+  ]);
+  return response.documents.length > 0 ? response.documents[0] : null;
+}
+
+window.submitRating = async function() {
+
+  const selectedRating = document.querySelector('input[name="rating"]:checked');
+  if (!selectedRating) {
+      alert("Please select a rating before submitting.");
+      return;
+  }
+  const rating = parseInt(selectedRating.value);
+  console.log(rating)
+  const existingRating = await checkUserRating();
+  if (existingRating) {
+      alert("You have already rated this product.");
+      return;
+  }
+  await db.createDocument(DATABASE_ID, RATINGS_ID, 'unique()', {
+      UserId: accountId,
+      productId: selectedProductId,
+      rating: rating
+  });
+  alert("Rating submitted!");
+  fetchAverageRating();
+}
+
+async function fetchAverageRating() {
+  console.log(selectedProductId)
+  const response = await db.listDocuments(DATABASE_ID, RATINGS_ID, [
+      Appwrite.Query.equal("productId", selectedProductId)
+  ]);
+  console.log(response.documents)
+  const ratings = response.documents.map(doc => doc.rating);
+  const totalRatings = ratings.length;
+  const average = ratings.reduce((a, b) => a + b, 0) / totalRatings || 0;
+  
+  document.getElementById("average-rating").innerText = `Average Rating: ${average.toFixed(1)} (${totalRatings} ratings)`;
+  
+  // Update star display
+  
+  console.log(averageStars)
+  averageStars.innerHTML = "";
+  for (let i = 1; i <= 5; i++) {
+      const star = document.createElement("span");
+      star.innerText = "★";
+      if (i <= Math.round(average)) {
+        star.classList.add("gold");
+        console.log(star.classList.value)
+    } else {
+        star.classList.add("white"); // or any other class for unfilled stars
+    }
+   
+      averageStars.appendChild(star);
+  }
+  try {
+    await db.updateDocument(DATABASE_ID, SELLER_PRODUCTS_ID, selectedProductId, {
+        averageRating: Math.round(average), 
+        totalRatings: totalRatings,
+    });
+    console.log("Updated product average rating successfully.");
+} catch (error) {
+    console.error("Failed to update product rating:", error);
+}
+}
+
+document.getElementById("submit-rating").addEventListener("click", submitRating);
+
+  fetchAverageRating();
+
+
+  window.showSeller = async () => {
+    modalOverlay2.style.display = 'flex';
+   
+    // Dummy placeholder values before fetching real data
+   
+    console.log(sellerId)
+    try {
+        
+        
+        // Fetch seller data from Appwrite
+        const respo = await db.listDocuments(DATABASE_ID, SELLER_REGISTRATION_ID,[
+          window.Appwrite.Query.equal('$id', sellerId)
+        ]);
+         const response = respo.documents;
+         console.log(response)
+        // Check if seller data exists
+        if (!respo) {
+            modalProductDetails2.innerHTML += `<p>Error: Seller not found</p>`;
+            return;
+        }
+
+        // Update modal with fetched seller data
+        modalProductDetails2.innerHTML += `
+            <div id = 'seller'>
+                <h3>Review Seller Information</h3>
+                <img src="${response[0].profile || '/icons/user.svg'}" alt="Profile Preview" 
+                     style="display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: auto;">
+                ${response[0].Name ? `<p><strong>Full Name:</strong> ${response[0].Name}</p>` : ""}
+                ${response[0].businessName ? `<p><strong>Business Name:</strong> ${response[0].businessName}</p>` : ""}
+                ${response[0].phoneNumber ? `<p><strong>Phone Number:</strong> ${response[0].phoneNumber}</p>` : ""}
+                ${response[0].whatsAppNumber ? `<p><strong>WhatsApp Number:</strong> ${response[0].whatsAppNumber}</p>` : ""}
+                ${response[0].email ? `<p><strong>Email:</strong> ${response[0].email}</p>` : ""}
+                ${response[0].location ? `<p><strong>Location:</strong> ${response[0].location}</p>` : ""}
+                ${response[0].businessDescription ? `<p><strong>Business Description:</strong> ${response[0].businessDescription}</p>` : ""}
+            </div>
+        `;
+
+    } catch (error) {
+        console.error("Error fetching seller:", error);
+        modalProductDetails2.innerHTML = `<p>Error fetching seller details</p>`;
+    }
+
+    // Prevent interactions with the rest of the page
+    document.body.style.overflow = 'hidden';
+
+    // Add close event
+    closeModalBtn2.addEventListener('click', closeModal2);
+};
+function closeModal2() {
+  // Hide the modal overlay
+  modalOverlay2.style.display = 'none';
+  
+  // Re-enable scrolling on the body
+  document.body.style.overflow = 'auto';
+  
+  
+}
+
+
+window.showSubcategories = (category) =>  {
+  // Hide categories
+  document.getElementById("categories").style.display = "none";
+  document.getElementById("subcategories-header").textContent = category;
+console.log(category)
+  // Get subcategories for the selected category
+  const subcategories = categories[category.toLowerCase().replace(/[-]/,'')] || [];
+console.log(subcategories)
+  // Show subcategories
+  const subcategoriesList = document.getElementById("subcategories-list");
+  subcategoriesList.innerHTML = ""; // Clear previous subcategories
+
+  subcategories.forEach(subcategory => {
+      const button = document.createElement("button");
+      button.innerText = subcategory;
+      button.classList.add("category-btn")
+      button.onclick = () => searchBySubcategory(subcategory);
+      subcategoriesList.appendChild(button);
+  });
+
+  document.getElementById("subcategories").style.display = "block";
+}
+
+window.goBack = () => {
+  // Show main categories again
+  document.getElementById("categories").style.display = "block";
+  document.getElementById("subcategories").style.display = "none";
+}
+async function searchBySubcategory (subcategory)  {
+  homeProductList.innerHTML = '';
+  categoryloadMoreBtn2.style.display = 'none';
+  subcategoryloadMoreBtn.style.display = 'block';
+  subcategoryterm = subcategory;
+ console.log(subcategoryterm);
+ let lastDoc = null;
+     let loa = false;
+    
+ console.log(subcategoryterm ? subcategoryterm: 'nothing')
+ async function subfunction ()  {
+  
+  if(!lastDoc){
+homeProductList.innerHTML = '';}
+     if (loa) return; // If already fetching, do nothing
+     loa = true; // Set loading to true to prevent multiple fetches
+    
+     try {
+         let queries = [
+           window.Appwrite.Query.orderDesc("CreatedAt"),
+             window.Appwrite.Query.limit(2),
+             window.Appwrite.Query.equal('subCategory', subcategoryterm)
+            // Fetch 10 products at a time
+         ];
+ 
+         // Use cursorAfter only if lastDocument is not null
+         if (lastDoc) {
+             queries.push(window.Appwrite.Query.cursorAfter(lastDoc.$id));
+         }
+        
+        
+         let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
+         console.log( response.documents);
+        
+         if (response.documents.length > 0) {
+             lastDoc = response.documents[response.documents.length - 1]; // Update last document
+             console.log("Updated lastDocument:", lastDoc);
+             displayProducts(response.documents); // Function to render products on UI
+         } if(response.documents.length < 2 ) {
+             subcategoryloadMoreBtn.style.display = "none";
+             console.log("No more products to load.");
+         }
+     } catch (error) {
+         console.error("Error fetching products:", error);
+     }
+     
+     loa = false; // Reset loading after request is done
+    }
+
+subfunction()
+ subcategoryloadMoreBtn.addEventListener('click', subfunction)
+}
+
 

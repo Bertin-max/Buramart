@@ -1,17 +1,151 @@
-// Initialize Supabase
-const supabaseUrl = 'https://quxaofzrtrccipvogbcb.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1eGFvZnpydHJjY2lwdm9nYmNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MTA2NjEsImV4cCI6MjA1NTI4NjY2MX0.AqCnvnnfwE5uVK-6eQxOQJkYfIsyEWqHIjyFapGyRuM'; // Replace with your new key
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+import { account, getUserDetails } from "./user.js";
+import { getSellerInfo } from "./user.js";
 
-console.log('Supabase initialized:', supabase);
+async function loadUserData() {
+    const userData = await getUserDetails();
+    if (userData) {
+       return  userData.userId;
+        
+    } else {
+        console.log("No user logged in.");
+    }
+}
+
+let phoneNumber = "";
+let whatsappNumber = "";
+let registered = false;
+let sellerId = "";
+async function setSellerDetails() {
+    const sellerInfo = await getSellerInfo();
+
+    if (sellerInfo) {
+        phoneNumber = sellerInfo.phone;
+        whatsappNumber = sellerInfo.whatsapp;
+        registered = sellerInfo.isRegistered;
+        sellerId = sellerInfo.sellerId;
+        console.log("Updated Values:");
+        console.log("Phone:", phoneNumber);
+        console.log("WhatsApp:", whatsappNumber);
+        console.log("Registered:", registered);
+    }
+}
+
+
+  await setSellerDetails(); // Wait until data is fetched
+  
+
+
+
+
+let accountId = await loadUserData()
+console.log(accountId);
+
+
+const client = new Appwrite.Client();
+client.setProject('67b35038002044fd8dfa');
+
+const DATABASE_ID = '67b5a1b2003647bb7108';
+const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
+const BUCKET_ID = '67b5a6a900035fb44480';
+const db = new Appwrite.Databases(client, DATABASE_ID); // Replace with your actual Database ID
+const storage = new Appwrite.Storage(client);
+
+
+if(!registered){
+  alert('please Register to sell');
+  window.location.href = "seller-registration.html";
+  
+}
+const categories = {
+  electronics: ["Smartphones", "Laptops", "Tablets", "Cameras", "Headphones", "Smartwatches", "Gaming Consoles", "Televisions", "Speakers"],
+  clothing: ["Men's Clothing", "Women's Clothing", "Kids' Clothing", "Shoes", "Bags", "Accessories", "Hats", "Watches", "Eyewear"],
+  homeappliances: ["Refrigerators", "Microwaves", "Washing Machines", "Air Conditioners", "Vacuum Cleaners", "Dishwashers", "Water Heaters", "Fans", "Coffee Makers"],
+  books: ["Fiction", "Non-Fiction", "Educational", "Comics & Graphic Novels", "Biographies", "Self-Help", "Science & Technology", "Children's Books", "Mystery & Thriller"],
+  Beauty: ["Skincare", "Makeup", "Haircare", "Fragrances", "Nail Care", "Men’s Grooming", "Beauty Tools", "Bath & Body", "Oral Care"],
+  toys: ["Action Figures", "Dolls", "Board Games", "Building Blocks", "Remote Control Toys", "Educational Toys", "Outdoor Toys", "Plush Toys", "Musical Toys"],
+  furniture: ["Living Room Furniture", "Bedroom Furniture", "Dining Room Furniture", "Office Furniture", "Outdoor Furniture", "Storage Solutions", "Kids' Furniture", "Mattresses", "Lighting"],
+  sports: ["Fitness Equipment", "Outdoor Sports", "Team Sports", "Water Sports", "Winter Sports", "Cycling", "Racket Sports", "Combat Sports", "Running Gear"],
+  health: ["Vitamins & Supplements", "Personal Care", "Medical Supplies", "Fitness & Nutrition", "Wellness Devices", "Weight Management", "First Aid", "Oral Hygiene", "Mental Health"],
+  automotive: ["Car Accessories", "Motorcycle Accessories", "Car Care", "Tires & Wheels", "GPS & Navigation", "Car Electronics", "Oils & Fluids", "Replacement Parts", "Tools & Equipment"],
+  food: ["Fresh Produce", "Dairy & Eggs", "Meat & Seafood", "Snacks", "Beverages", "Canned Goods", "Bakery Items", "Condiments & Spices", "Frozen Foods"]
+};
+
+window.updateSubcategories = () => {
+  const categorySelect = document.getElementById("product-category");
+  const subcategorySelect = document.getElementById("subcategory");
+  
+  // Get selected category value
+  const selectedCategory = categorySelect.value;
+  console.log(selectedCategory)
+  subcategorySelect.disabled = !selectedCategory;
+  // Clear existing subcategories
+  subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
+
+  // If a valid category is selected, populate subcategories
+  if (selectedCategory && categories[selectedCategory]) {
+      categories[selectedCategory].forEach(sub => {
+          let option = document.createElement("option");
+          option.value = sub;
+          option.textContent = sub;
+          subcategorySelect.appendChild(option);
+      });
+  }
+}
+
+updateSubcategories();
+
 const productForm = document.getElementById("product-form");
 const productList = document.getElementById("product-list");
 const searchInput = document.getElementById('search-input');
 const smallsearchInput = document.getElementById('small-search-input');
-const main = document.getElementById('main-content')
+const main = document.getElementById('main-content');
+const searchResultsContainer = document.getElementById("doll");
+const smallsearchResultsContainer = document.getElementById('small-doll');
 let products = []
  
-function showProductInDetails(index) {
+document.getElementById('product-image').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  const preview = document.getElementById('image-preview');
+
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+  } else {
+      preview.style.display = 'none';
+  }
+});
+function extractFileId(imageUrl) {
+  const parts = imageUrl.split("/files/");  // Split at "/files/"
+  if (parts.length < 2) return null;        // If URL is invalid, return null
+
+  const filePart = parts[1].split("/view")[0];  // Extract file ID before "/view"
+  return filePart; 
+}
+
+window.deleteProduct = async function(productId, imageUrl) {
+  
+  if (!confirm("Are you sure you want to delete this product?")) return;
+console.log(imageUrl)
+  try {
+      await db.deleteDocument(DATABASE_ID, SELLER_PRODUCTS_ID, productId);
+      alert("Product deleted successfully!");
+      const fileId = extractFileId(imageUrl);
+      if (fileId) {
+          await storage.deleteFile(BUCKET_ID, fileId);
+      }
+      // Refresh the product list
+      fetchProducts(); 
+  } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
+  }
+}
+
+window.showProductInDetails = async function(index) {
   // Find the product by its inde.log(x
   const product = products[index];
 
@@ -21,7 +155,7 @@ function showProductInDetails(index) {
 
   // Set the modal content with the product details
   modalProductDetails.innerHTML = `
-    <h3>${escapeHTML(product.name)}</h3>
+    <h3>${(product.Name)}</h3>
     <img src="${product.image}" alt="Product Image" >
     <p><strong>Price:</strong> $${product.price}</p>
     <p><strong>Description:</strong> ${product.description}</p>
@@ -66,32 +200,40 @@ function attachHoverEvents() {
     });
   });
 }
+async function fetchProducts() {
+const query = Appwrite.Query.equal('UserId', accountId);
+  try {
+      const response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, [
+        window.Appwrite.Query.orderDesc("CreatedAt"),
+      window.Appwrite.Query.equal("UserId", sellerId)]);
+      console.log(accountId)
+       products = response.documents; // Extract the products list
+      displayProducts(products);
+      console.log(products)
+  } catch (error) {
+      console.error("Error fetching products:", error);
+  }
+}
 
-async function displayProducts() {
+ fetchProducts()
+
+ function displayProducts(products) {
   productList.innerHTML = ''; // Clear existing products
 
-  try {
-      const querySnapshot = await db.collection('products').orderBy('timestamp', 'desc').get();
-      products = []; // Clear the old products array
-
-      querySnapshot.forEach((doc) => {
-          const product = doc.data();
-          product.id = doc.id; // Store Firestore document ID for editing/deleting
-          products.push(product);
-      });
+  
 
       products.forEach((product, index) => {
           productList.innerHTML += `
               <div class="product-card">
                   <div class="product-header">
-                      <h3>${escapeHTML(product.name)}</h3>
-                      <img src="${product.imageUrl}" alt="Product Image">
+                      <h3>${product.Name}</h3>
+                      <img src="${product.image}" alt="Product Image">
                       <div class="dropdown">
                           <button class="dropdown-icon">...</button>
                           <div class="dropdown-content">
                               <button class="show-details-btn" onclick="event.stopPropagation(); showProductInDetails(${index})">Show Details</button>
-                              <button class="edit-btn" onclick="event.stopPropagation(); editProduct(${index})">Edit</button>
-                              <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.id}')">Delete</button>
+                              <button class="edit-btn" onclick="event.stopPropagation(); editProduct(${index})" ;>Edit</button>
+                              <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.$id}','${product.image}')">Delete</button>
                           </div>
                       </div>
                   </div>
@@ -104,10 +246,7 @@ async function displayProducts() {
       });
 
       attachHoverEvents(); // Reattach hover events
-  } catch (error) {
-      console.error("Error fetching products:", error);
-      productList.innerHTML = "Failed to load products.";
-  }
+ 
 }
 
 
@@ -128,50 +267,29 @@ productList.addEventListener("click", (event) => {
   }
 });
 
-async function deleteProduct(productId) {
-  if (!confirm("Are you sure you want to delete this product?")) return;
 
-  try {
-      await db.collection('products').doc(productId).delete(); // Delete from Firestore
-      alert('Product deleted successfully!');
-      displayProducts(); // Refresh product list
-  } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("Failed to delete product.");
-  }
+
+
+window.editProduct = async function(index) {
+  const product = products[index];
+
+  // Fill the form with existing product details
+  document.getElementById('product-name').value = product.Name;
+  document.getElementById('product-price').value = product.price;
+  document.getElementById('product-description').value = product.description;
+  document.getElementById('product-category').value = product.category;
+  document.getElementById('product-category').value = product.category;
+  document.getElementById('subcategory').value = product.subCategory;
+  document.getElementById('image-preview').src = product.image;
+  // Show image preview
+  
+
+  // Store the product ID in dataset to delete later
+  document.getElementById('product-form').dataset.productId = product.$id;
+  document.getElementById('product-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  alert('You are now editing the product. When you submit, the old version will be deleted.');
 }
 
-
-function editProduct(index) {
-  
-  
-    const product = products[index];
-
-    document.getElementById('product-name').value = product.name;
-    document.getElementById('product-price').value = product.price;
-    document.getElementById('product-description').value = product.description;
-    document.getElementById('product-category').value = product.category;
-
-    const existingImagePreview = document.getElementById('existing-image-preview');
-    if (!existingImagePreview) {
-        const imgElement = document.createElement('img');
-        imgElement.id = 'existing-image-preview';
-        imgElement.src = product.imageUrl;  // Display existing image
-        imgElement.style.maxWidth = '200px';
-        imgElement.style.marginTop = '10px';
-        document.getElementById('product-image').insertAdjacentElement('afterend', imgElement);
-    } else {
-        existingImagePreview.src = product.imageUrl;
-    }
-
-    // Save the product ID for updating
-    document.getElementById('product-form').dataset.productId = product.id;
-
-  displayProducts();
-  setTimeout(() => {
-    alert('You are editing the product. After submitting, it will be updated.');
-  }, 100);
-};
 
 
 
@@ -182,91 +300,193 @@ function editProduct(index) {
 
 productForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-
+  console.log(registered)
+  if(!registered){
+    alert("please Login and Register as a seller")
+     productForm.reset();
+      document.getElementById('image-preview').style.display = 'none';
+      window.location.href = "index.html";
+    return
+  }
   const name = document.getElementById('product-name').value;
   const description = document.getElementById('product-description').value;
   const price = parseFloat(document.getElementById('product-price').value);
   const category = document.getElementById('product-category').value;
+  const subCategory = document.getElementById('subcategory').value;
   const imageFile = document.getElementById('product-image').files[0];
 
-  // Validate inputs
-  if (!name || !price || !imageFile) {
-    alert('Please fill in all fields and select an image.');
-    return;
+  if (!name || !price) {
+      alert('Please fill in all fields.');
+      return;
   }
 
-  // Upload image to Supabase storage
-  const { data: imageUpload, error: imageError } = await supabase.storage
-    .from('product-images')
-    .upload(`products/${imageFile.name}`, imageFile);
+  let imageUrl = '';
+  const productIdToDelete = productForm.dataset.productId; // Get product ID from dataset
 
-  if (imageError) {
-    console.error('Image upload failed:', imageError.message);
-    alert('Image upload failed.');
-    return;
-  }
+  try {
+      // If editing, first delete the old product
+      if (productIdToDelete) {
+          await db.deleteDocument(DATABASE_ID, SELLER_PRODUCTS_ID, productIdToDelete);
+          console.log(`Deleted old product: ${productIdToDelete}`);
+      }
 
-  const imageUrl = `https://https://quxaofzrtrccipvogbcb.supabase.co/storage/v1/object/public/product-images/products/${imageFile.name}`;
+      // Upload new image if a new one is selected
+      if (imageFile) {
+          const uploadResponse = await storage.createFile(BUCKET_ID, 'unique()', imageFile);
+          imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${BUCKET_ID}/files/${uploadResponse.$id}/view?project=67b35038002044fd8dfa`;
+          
+      } else {
+          // Keep existing image if no new image was uploaded
+          imageUrl = document.getElementById('image-preview')?.src || '';
+      }
 
-  // Insert product into the database
-  const { error: insertError } = await supabase.from('products').insert([
-    {
-      name,
-      description,
-      price,
-      category,
-      image_url: imageUrl,
-    },
-  ]);
+      // Create new product entry
+      await db.createDocument(DATABASE_ID, SELLER_PRODUCTS_ID, 'unique()', {
+          UserId: sellerId,
+          Name: name,
+          image: imageUrl,
+          category: category,
+          description: description,
+          price: price,
+          phone: phoneNumber,
+          subCategory: subCategory,
+          whatsapp: whatsappNumber,
+          CreatedAt: new Date(),
+      });
 
-  if (insertError) {
-    console.error('Failed to add product:', insertError.message);
-    alert('Failed to add product.');
-  } else {
-    alert('Product uploaded successfully!');
-    productForm.reset();
+      alert('Product updated successfully!');
+      document.getElementById('uploaded-products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      fetchProducts(); // Refresh product list
+
+      productForm.reset();
+      document.getElementById('image-preview').style.display = 'none'
+      delete productForm.dataset.productId; // Clear product ID
+      const existingImagePreview = document.getElementById('existing-image-preview');
+      if (existingImagePreview) existingImagePreview.remove(); // Remove preview image
+
+  } catch (error) {
+      console.error('Error updating product:', error);
+      alert('Failed to update product.');
   }
 });
 
 
 
 
-const searchProducts = () => {
-  const products = JSON.parse(localStorage.getItem('products'));
+window.searchProducts = async function () {
+ 
   const searchInputValue = searchInput.value || smallsearchInput.value;
 
   // Map products with their original index before filtering
   const foundProducts = products
     .map((product, index) => ({ product, originalIndex: index })) // Keep track of original index
-    .filter(item => item.product.name.toLowerCase() === searchInputValue.toLowerCase()); // Case-insensitive search
-
+    .filter(item => item.product.Name.toLowerCase() === searchInputValue.toLowerCase()); // Case-insensitive search
+console.log(foundProducts)
   if (foundProducts.length === 0) {
     productList.innerHTML = "You Have no Product under such name";
     return;
   }
 
   productList.innerHTML = '';
-  foundProducts.forEach(({ product, originalIndex }) => {  // Use originalIndex here
+  foundProducts.forEach((product, originalIndex) => {
     productList.innerHTML += `
-      <div class="product-card" onclick="showProductInDetails(${originalIndex})">
-        <div class="product-header">
-          <h3 style="padding: 0; margin: 0;">${escapeHTML(product.name)}</h3>
-          <img src="${product.image}" alt="Product Image">
-          <div class="dropdown">
-            <button class="dropdown-icon">...</button>
-            <div class="dropdown-content">
-              <button class="edit-btn" onclick="event.stopPropagation();editProduct(${originalIndex})">Edit</button>
-              <button class="delete-btn" onclick="event.stopPropagation();deleteProduct(${originalIndex})">Delete</button>
+        <div class="product-card">
+            <div class="product-header">
+                <h3>${product.product.Name}</h3>
+                <img src="${product.product.image}" alt="Product Image">
+                <div class="dropdown">
+                    <button class="dropdown-icon">...</button>
+                    <div class="dropdown-content">
+                        <button class="show-details-btn" onclick="event.stopPropagation(); showProductInDetails(${product.originalIndex})">Show Details</button>
+                        <button class="edit-btn" onclick="event.stopPropagation(); editProduct(${product.originalIndex})">Edit</button>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.product.$id}')">Delete</button>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="product-details">
+                <p class="price">$${product.product.price}</p>
+                <p class="description">${product.product.description.length > 50 ? product.product.description.substring(0, 50) + '...' : product.product.description}</p>
+            </div>
         </div>
-        <div class="product-details">
-          <p class="price">$${product.price}</p>
-          <p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
-        </div>
-      </div>`; 
-  });
+    `;
+});
 }
+const liveSearch = async () => {
+  const searchTerm = searchInput.value.trim().toLowerCase(); // Get and clean user input
+ 
 
-// Initial display of products on page load
-displayProducts();
+  // Clear previous results
+  searchResultsContainer.innerHTML = "";
+
+  if (searchTerm === "") {
+      return; // Exit if input is empty
+  }
+
+  // Filter products whose names start with the search term
+  const matchedProducts = [];
+const seenNames = new Set();
+
+products.forEach(product => {
+ if (product.Name.toLowerCase().startsWith(searchTerm) && !seenNames.has(product.Name)) {
+     matchedProducts.push(product);
+     seenNames.add(product.Name);
+ }
+});
+
+  // Display matched products
+  matchedProducts.forEach((product) => {
+      const productElement = document.createElement("div");
+      productElement.textContent = product.Name;
+      productElement.classList.add("search-result-item"); // Add styling class
+      productElement.onclick = () => {
+          searchInput.value = product.Name; // Set input to selected product
+          searchResultsContainer.innerHTML = ""; // Clear search results
+          searchProducts(); // Trigger the main search function
+      };
+      searchResultsContainer.appendChild(productElement);
+  });
+};
+const smallliveSearch = () => {
+  const searchTerm = smallsearchInput.value.trim().toLowerCase() ; // Get and clean user input
+ 
+
+  // Clear previous results
+  smallsearchResultsContainer.innerHTML = "";
+
+  if (searchTerm === "") {
+      return; // Exit if input is empty
+  }
+
+  // Filter products whose names start with the search term
+  const matchedProducts = [];
+const seenNames = new Set();
+
+products.forEach(product => {
+ if (product.Name.toLowerCase().startsWith(searchTerm) && !seenNames.has(product.Name)) {
+     matchedProducts.push(product);
+     seenNames.add(product.Name);
+ }
+});
+
+  // Display matched products
+  matchedProducts.forEach((product) => {
+      const productElement = document.createElement("div");
+      productElement.textContent = product.Name;
+      productElement.classList.add("search-result-item"); // Add styling class
+      productElement.onclick = () => {
+          searchInput.value = product.Name; // Set input to selected product
+          searchResultsContainer.innerHTML = ""; // Clear search results
+          searchProducts(); // Trigger the main search function
+      };
+      smallsearchResultsContainer.appendChild(productElement);
+  });
+};
+
+ smallsearchInput.addEventListener('input',smallliveSearch)
+// Add event listener for live search
+searchInput.addEventListener("input", liveSearch);
+
+
+
+
+
