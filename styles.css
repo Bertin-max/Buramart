@@ -785,8 +785,9 @@ form textarea {
 .average-stars-display{
   display: flex;
   justify-content: flex-start;
-  margin-left: -35%;
+  margin-left: -20%;
 }
+
   .product-card img {
     align-self: flex-start; /* Align image to the left */
     height: auto;

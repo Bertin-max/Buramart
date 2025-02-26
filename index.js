@@ -215,7 +215,7 @@ uniqueProducts.forEach(( product) => {
 window.generateStars = (averageRating) => {
   let starsHtml = "";
   for (let i = 1; i <= 5; i++) {
-      starsHtml += `<span class="${i <= Math.round(averageRating) ? 'gold' : 'white'}">★</span>`;
+      starsHtml += `<span class="${i <= Math.round(averageRating) ? 'gold' : 'white'}  ">★</span>`;
   }
   return starsHtml;
 }
