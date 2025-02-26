@@ -195,12 +195,13 @@ uniqueProducts.forEach(( product) => {
           <img  src="${product.image}" alt="${product.Name}"> 
         </div> 
         <div class="product-details">
-         <div class="average-stars" id="average-stars">
+         
+          <p class="price">BIF       ${product.price}</p>
+          <div class="average-stars-display" id="average-stars">
         ${generateStars(product.averageRating)}(${product.totalRatings}R)
       </div>
-          <p class="price">BIF       ${product.price}</p>
           <div class="product-details">
-            <a ><p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
+            <p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
           </div>
         </div>
       </div>
@@ -291,11 +292,11 @@ console.log(products)
         </div> 
         <div class="product-details">
           <p class="price">BIF       ${product.price}</p>
-          <div class="average-stars" id="average-stars">
+          <div class="average-stars-display" id="average-stars">
         ${generateStars(product.averageRating)}(${product.totalRatings}R)
       </div>
           <div class="product-details">
-            <a ><p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p></a>
+            <p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
           </div>
         </div>
       </div>`;
