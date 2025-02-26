@@ -1,0 +1,7 @@
+[
+    {
+      "origin": ["https://bertin-max.github.io"],
+      "method": ["GET", "POST", "PUT", "DELETE"],
+      "maxAgeSeconds": 3600
+    }
+  ]

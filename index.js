@@ -6,7 +6,7 @@ const smallsearchInput = document.getElementById('small-search-input');
 const viewAll =  document.getElementById('view-all');
 let cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
 let originalContent = main.innerHTML;
-
+const searchResultsContainer = document.getElementById("doll");
 
 const upDateCart = (index) => {
   const products = JSON.parse(localStorage.getItem('products'));
@@ -163,6 +163,7 @@ categoryButtons.forEach(button => {
 
   });
 });
+
 const searchProducts = () => {
   const products = JSON.parse(localStorage.getItem('products'));
   const searchInputValue = searchInput.value || smallsearchInput.value;
@@ -195,6 +196,46 @@ const searchProducts = () => {
   });
 }
  displayProducts()
+
+ // Function to filter products based on search input
+ const liveSearch = () => {
+     const searchTerm = searchInput.value.trim().toLowerCase(); // Get and clean user input
+     const products = JSON.parse(localStorage.getItem("products")) || [];
+ 
+     // Clear previous results
+     searchResultsContainer.innerHTML = "";
+ 
+     if (searchTerm === "") {
+         return; // Exit if input is empty
+     }
+ 
+     // Filter products whose names start with the search term
+     const matchedProducts = [];
+const seenNames = new Set();
+
+products.forEach(product => {
+    if (product.name.toLowerCase().startsWith(searchTerm) && !seenNames.has(product.name)) {
+        matchedProducts.push(product);
+        seenNames.add(product.name);
+    }
+});
+ 
+     // Display matched products
+     matchedProducts.forEach((product) => {
+         const productElement = document.createElement("div");
+         productElement.textContent = product.name;
+         productElement.classList.add("search-result-item"); // Add styling class
+         productElement.onclick = () => {
+             searchInput.value = product.name; // Set input to selected product
+             searchResultsContainer.innerHTML = ""; // Clear search results
+             searchProducts(); // Trigger the main search function
+         };
+         searchResultsContainer.appendChild(productElement);
+     });
+ };
+ 
+ // Add event listener for live search
+ searchInput.addEventListener("input", liveSearch);
 
   
 

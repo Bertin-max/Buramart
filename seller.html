@@ -26,9 +26,9 @@
            <li class="account">
             <a href="#">Account</a>
             <ul class="account-dropdown">
-              <li><a href="#">Login</a></li>
+              <li><a href="auth.html">Login</a></li>
               <li><a href="#">Register</a></li>
-              <li><a href="#">Switch User</a></li>
+              <li><a href="auth.html">Switch User</a></li>
             </li>
             </ul>
           </li>
@@ -105,6 +105,7 @@
       </form>
       </div>
     </section>
+    <div id="upload-status"></div>
     <!-- Modal Overlay -->
 <div id="modal-overlay" class="modal-overlay" style="display: none;">
   <div class="modal-content">
@@ -149,7 +150,43 @@
         <p>© 2025 Buramart. All rights reserved.</p>
       </div>
     </footer>
+    
   </main>
-  <script src="seller.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.js"></script>
+
+<input type="file" id="fileInput" />
+<button onclick="uploadFile()">Upload</button>
+
+<script>
+    // Initialize Supabase here
+    const supabaseUrl = 'https://quxaofzrtrccipvogbcb.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1eGFvZnpydHJjY2lwdm9nYmNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MTA2NjEsImV4cCI6MjA1NTI4NjY2MX0.AqCnvnnfwE5uVK-6eQxOQJkYfIsyEWqHIjyFapGyRuM'; // Replace with your actual anon key
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function uploadFile() {
+        const file = document.getElementById('fileInput').files[0];
+        if (!file) {
+            console.log('No file selected');
+            return;
+        }
+
+        const filePath = `products/${file.name}`;
+        const { data, error } = await supabase.storage
+            .from('product-images')
+            .upload(filePath, file);
+
+        if (error) {
+            console.error('Upload failed:', error.message);
+        } else {
+            console.log('Upload successful:', data);
+        }
+    }
+</script>
+
+  
+
+
+  
 </body>
 </html>
+

@@ -1,11 +1,18 @@
+// Initialize Supabase
+const supabaseUrl = 'https://quxaofzrtrccipvogbcb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF1eGFvZnpydHJjY2lwdm9nYmNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MTA2NjEsImV4cCI6MjA1NTI4NjY2MX0.AqCnvnnfwE5uVK-6eQxOQJkYfIsyEWqHIjyFapGyRuM'; // Replace with your new key
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+console.log('Supabase initialized:', supabase);
 const productForm = document.getElementById("product-form");
 const productList = document.getElementById("product-list");
 const searchInput = document.getElementById('search-input');
 const smallsearchInput = document.getElementById('small-search-input');
 const main = document.getElementById('main-content')
-let products = JSON.parse(localStorage.getItem('products')) || [];
+let products = []
+ 
 function showProductInDetails(index) {
-  // Find the product by its index
+  // Find the product by its inde.log(x
   const product = products[index];
 
   // Get the modal overlay and content container
@@ -60,33 +67,50 @@ function attachHoverEvents() {
   });
 }
 
-function displayProducts() {
-  productList.innerHTML = ''; // Clear the current list before adding new products
-  
-  products.forEach((product, index) => {
-    productList.innerHTML += `
-      <div class="product-card" >
-        <div class="product-header">
-          <h3 style="padding: 0; margin: 0; gap: 0;">${escapeHTML(product.name)}</h3>
-          <img src="${product.image}" alt="Product Image">
-          <div class="dropdown">
-            <button class="dropdown-icon">...</button>
-            <div class="dropdown-content">
-              <button class="show-details-btn" onclick="event.stopPropagation();showProductInDetails(${index})">Show Details</button>
-              <button class="edit-btn" onclick="event.stopPropagation();editProduct(${index})">Edit</button>
-              <button class="delete-btn" onclick="event.stopPropagation();deleteProduct(${index})">Delete</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-details">
-          <p class="price">$${product.price}</p>
-          <p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
-        </div>
-      </div>
-    `;
-  });
-  attachHoverEvents();
+async function displayProducts() {
+  productList.innerHTML = ''; // Clear existing products
+
+  try {
+      const querySnapshot = await db.collection('products').orderBy('timestamp', 'desc').get();
+      products = []; // Clear the old products array
+
+      querySnapshot.forEach((doc) => {
+          const product = doc.data();
+          product.id = doc.id; // Store Firestore document ID for editing/deleting
+          products.push(product);
+      });
+
+      products.forEach((product, index) => {
+          productList.innerHTML += `
+              <div class="product-card">
+                  <div class="product-header">
+                      <h3>${escapeHTML(product.name)}</h3>
+                      <img src="${product.imageUrl}" alt="Product Image">
+                      <div class="dropdown">
+                          <button class="dropdown-icon">...</button>
+                          <div class="dropdown-content">
+                              <button class="show-details-btn" onclick="event.stopPropagation(); showProductInDetails(${index})">Show Details</button>
+                              <button class="edit-btn" onclick="event.stopPropagation(); editProduct(${index})">Edit</button>
+                              <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.id}')">Delete</button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="product-details">
+                      <p class="price">$${product.price}</p>
+                      <p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
+                  </div>
+              </div>
+          `;
+      });
+
+      attachHoverEvents(); // Reattach hover events
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      productList.innerHTML = "Failed to load products.";
+  }
 }
+
+
 
 document.addEventListener("click", (event) => {
   if (!event.target.matches('.dropdown-icon')) {
@@ -104,108 +128,109 @@ productList.addEventListener("click", (event) => {
   }
 });
 
-function deleteProduct(index) {
-  products.splice(index, 1); // Remove the product from the array
-  localStorage.setItem('products', JSON.stringify(products)); // Update local storage
-  displayProducts(); // Re-render the product list
-  setTimeout(() => {
-    alert('Product deleted successfully!');
-  }, 100);  // Delay the alert slightly
+async function deleteProduct(productId) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  try {
+      await db.collection('products').doc(productId).delete(); // Delete from Firestore
+      alert('Product deleted successfully!');
+      displayProducts(); // Refresh product list
+  } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
+  }
 }
+
 
 function editProduct(index) {
   
-  const product = products[index];
-  products.splice(index, 1);
-  localStorage.setItem('products', JSON.stringify(products));
+  
+    const product = products[index];
 
-  document.getElementById('product-name').value = product.name;
-  document.getElementById('product-price').value = product.price;
-  document.getElementById('product-description').value = product.description;
- document.getElementById('product-category').value = product.category;
-  // Display the existing image as a preview
-  const existingImagePreview = document.getElementById('existing-image-preview');
-  if (!existingImagePreview) {
-    const imgElement = document.createElement('img');
-    imgElement.id = 'existing-image-preview';
-    imgElement.src = product.image;  // Display the existing image
-    imgElement.style.maxWidth = '200px';
-    imgElement.style.marginTop = '10px';
-    document.getElementById('product-image').insertAdjacentElement('afterend', imgElement);
-  } else {
-    existingImagePreview.src = product.image;
-  }
+    document.getElementById('product-name').value = product.name;
+    document.getElementById('product-price').value = product.price;
+    document.getElementById('product-description').value = product.description;
+    document.getElementById('product-category').value = product.category;
+
+    const existingImagePreview = document.getElementById('existing-image-preview');
+    if (!existingImagePreview) {
+        const imgElement = document.createElement('img');
+        imgElement.id = 'existing-image-preview';
+        imgElement.src = product.imageUrl;  // Display existing image
+        imgElement.style.maxWidth = '200px';
+        imgElement.style.marginTop = '10px';
+        document.getElementById('product-image').insertAdjacentElement('afterend', imgElement);
+    } else {
+        existingImagePreview.src = product.imageUrl;
+    }
+
+    // Save the product ID for updating
+    document.getElementById('product-form').dataset.productId = product.id;
 
   displayProducts();
   setTimeout(() => {
     alert('You are editing the product. After submitting, it will be updated.');
   }, 100);
-}
+};
 
-productForm.addEventListener("submit", (event) => {
-  event.preventDefault();  // Prevent form from refreshing the page
 
-  const productName = document.getElementById('product-name').value;
-  const productPrice = document.getElementById('product-price').value;
-  const productImageFile = document.getElementById('product-image').files[0];
-  const productDescription = document.getElementById('product-description').value;
-  const productCategory = document.getElementById('product-category').value;
-  // Check if there's an existing image preview (from editing)
-  const existingImagePreview = document.getElementById('existing-image-preview');
-  const existingImageSrc = existingImagePreview ? existingImagePreview.src : null;
-  const productImages = document.getElementById("product-image");
-  if (productImageFile) {
-    // If a new image is uploaded, read and use it
-    const reader = new FileReader();
 
-    reader.onload = function(e) {
-      const product = { 
-        name: productName,
-        price: productPrice,
-        image: e.target.result,  // Use new uploaded image
-        description: productDescription,
-        category: productCategory,
-      };
 
-      products.push(product);
-      localStorage.setItem('products', JSON.stringify(products));
-      document.getElementById('product-form').reset();
-      
-      if (existingImagePreview) existingImagePreview.remove();  // Remove image preview after submission
 
-      setTimeout(() => {
-        alert('Product updated successfully!');
-      }, 100);
-      
-      displayProducts();
-    };
+// seller.js
 
-    reader.readAsDataURL(productImageFile);  // Convert image to Base64
-  } else if (existingImageSrc) {
-    productImages.required = false;
-    // If no new image is uploaded, keep the existing image
-    const product = { 
-      name: productName,
-      price: productPrice,
-      image: existingImageSrc,  // Keep existing image
-      description: productDescription,
-      category: productCategory,
-    };
 
-    products.push(product);
-    localStorage.setItem('products', JSON.stringify(products));
-    document.getElementById('product-form').reset();
-    existingImagePreview.remove();  // Remove image preview after submission
+productForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-    setTimeout(() => {
-      alert('Product updated successfully!');
-    }, 100);
+  const name = document.getElementById('product-name').value;
+  const description = document.getElementById('product-description').value;
+  const price = parseFloat(document.getElementById('product-price').value);
+  const category = document.getElementById('product-category').value;
+  const imageFile = document.getElementById('product-image').files[0];
 
-    displayProducts();
+  // Validate inputs
+  if (!name || !price || !imageFile) {
+    alert('Please fill in all fields and select an image.');
+    return;
+  }
+
+  // Upload image to Supabase storage
+  const { data: imageUpload, error: imageError } = await supabase.storage
+    .from('product-images')
+    .upload(`products/${imageFile.name}`, imageFile);
+
+  if (imageError) {
+    console.error('Image upload failed:', imageError.message);
+    alert('Image upload failed.');
+    return;
+  }
+
+  const imageUrl = `https://https://quxaofzrtrccipvogbcb.supabase.co/storage/v1/object/public/product-images/products/${imageFile.name}`;
+
+  // Insert product into the database
+  const { error: insertError } = await supabase.from('products').insert([
+    {
+      name,
+      description,
+      price,
+      category,
+      image_url: imageUrl,
+    },
+  ]);
+
+  if (insertError) {
+    console.error('Failed to add product:', insertError.message);
+    alert('Failed to add product.');
   } else {
-    alert('Please upload an image.');
+    alert('Product uploaded successfully!');
+    productForm.reset();
   }
 });
+
+
+
+
 const searchProducts = () => {
   const products = JSON.parse(localStorage.getItem('products'));
   const searchInputValue = searchInput.value || smallsearchInput.value;
