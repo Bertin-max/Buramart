@@ -216,7 +216,13 @@ const query = Appwrite.Query.equal('UserId', accountId);
 }
 
  fetchProducts()
-
+ window.generateStars = (averageRating) => {
+  let starsHtml = "";
+  for (let i = 1; i <= 5; i++) {
+      starsHtml += `<span class="${i <= Math.round(averageRating) ? 'gold' : 'white'}">★</span>`;
+  }
+  return starsHtml;
+}
  function displayProducts(products) {
   productList.innerHTML = ''; // Clear existing products
 
@@ -239,6 +245,9 @@ const query = Appwrite.Query.equal('UserId', accountId);
                   </div>
                   <div class="product-details">
                       <p class="price">$${product.price}</p>
+                       <div class="average-stars" id="average-stars">
+        ${generateStars(product.averageRating)}(${product.totalRatings}R)
+      </div>
                       <p class="description">${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
                   </div>
               </div>
@@ -405,6 +414,9 @@ console.log(foundProducts)
             </div>
             <div class="product-details">
                 <p class="price">$${product.product.price}</p>
+                       <div class="average-stars" id="average-stars">
+        ${generateStars(0)}(0R)
+      </div>
                 <p class="description">${product.product.description.length > 50 ? product.product.description.substring(0, 50) + '...' : product.product.description}</p>
             </div>
         </div>
