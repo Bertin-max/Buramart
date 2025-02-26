@@ -86,11 +86,11 @@ window.updateDatabaseCartProduct = async function (productId) {
       alert("Failed to update product.");
   };
 }
-function ShowSidebar(){
+window.ShowSidebar = function () {
   const sidebar = document.querySelector('.sidebar')
   sidebar.style.display = 'flex'
 }
-function hideSidebar(){
+window.hideSidebar = function (){
     const sidebar = document.querySelector('.sidebar')
   sidebar.style.display = 'none'
 }
