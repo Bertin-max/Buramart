@@ -340,6 +340,9 @@ window.categorySearch = () => {
   let btnText = ''
    async function categFunction ()  {
      loadMoreBtn.style.display = "none" ; 
+     categoryloadMoreBtn.style.display = "none";
+     searchloadMoreBtn.style.display = "none";
+     subcategoryloadMoreBtn.style.display = "none";
   categoryloadMoreBtn2.style.display = "block";
        console.log(subcategoryterm ? subcategoryterm: 'nothing');
        if(!lastDocu){
@@ -550,7 +553,11 @@ smallsearchInput.addEventListener("input", showSmallFilteredSearchHistory);
  let lastDocum = null;
 
  window.showSimilarProducts = async function(productName, category) {
-  loadMoreBtn.style.display = "none";
+ 
+  loadMoreBtn.style.display = "none" ; 
+     categoryloadMoreBtn2.style.display = "none";
+     searchloadMoreBtn.style.display = "none";
+     subcategoryloadMoreBtn.style.display = "none";
   if(loadi)return
   loadi = true;
 productName = productName;
@@ -816,6 +823,10 @@ window.goBack = () => {
 }
 async function searchBySubcategory (subcategory)  {
   homeProductList.innerHTML = '';
+  loadMoreBtn.style.display = "none" ; 
+     categoryloadMoreBtn.style.display = "none";
+     searchloadMoreBtn.style.display = "none";
+   
   categoryloadMoreBtn2.style.display = 'none';
   subcategoryloadMoreBtn.style.display = 'block';
   subcategoryterm = subcategory;
