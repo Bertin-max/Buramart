@@ -88,14 +88,18 @@ window.updateDatabaseCartProduct = async function (productId) {
       alert("Failed to add product to cart.");
   };
 }
-window.ShowSidebar = function () {
-  const sidebar = document.querySelector('.sidebar')
-  sidebar.style.display = 'flex'
+window.showSidebar = function () {
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.style.display = 'flex';
 }
+document.getElementById('showsidebarbtn').addEventListener('click', showSidebar)
+const hidesidebarbtn = document.getElementById('hidesidebarbtn');
+
 window.hideSidebar = function (){
     const sidebar = document.querySelector('.sidebar')
   sidebar.style.display = 'none'
 }
+hidesidebarbtn.addEventListener('click', hideSidebar)
 window.goBackToMain = () => {
    main.innerHTML = originalContent;
   

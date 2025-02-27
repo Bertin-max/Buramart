@@ -32,6 +32,7 @@ document.querySelector('#login-box form').addEventListener('submit', async (e) =
     try {
         await account.createEmailPasswordSession(email, password);
         alert('Login successful!');
+        window.location.href = "index.html"; // Change URL to your target page
 
         document.getElementById('logout-btn').style.display = 'block';
         document.getElementById('login-form').style.display = 'none'

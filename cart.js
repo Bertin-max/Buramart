@@ -117,6 +117,10 @@ window.deleteProduct = async (productId) => {
                 return response.documents[0]; // Return the fetched product
             })
         );
+        if(crtproducts.length === 0){
+          cartList.innerHTML = '<p style="margin: auto; text-align: center; font-size: 18px; color: gray;">Your cart is empty</p>';
+          return
+        }
         products = crtproducts;
         console.log(products);
         displayProducts(crtproducts); // Now products are fully fetched
