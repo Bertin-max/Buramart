@@ -64,6 +64,7 @@ client.setProject('67b35038002044fd8dfa');
 const DATABASE_ID = '67b5a1b2003647bb7108';
 const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
 const SELLER_REGISTRATION_ID = '67b83126001bf9ce5516';
+const CART_ID = '67c05ddb0001a5f11990';
 const db = new Appwrite.Databases(client, DATABASE_ID);
 const Query = window.Appwrite.Query;
 let products = [];
@@ -71,19 +72,20 @@ let foundProducts = [];
 let uniqueProducts = [];
 
 window.updateDatabaseCartProduct = async function (productId) {
+  if(!accountId){
+    alert('please login to add the cart');
+    return;
+  }
   try {
-      const response = await db.updateDocument(
-          DATABASE_ID,        // Replace with your Database ID
-          SELLER_PRODUCTS_ID,      // Replace with your Collection ID
-          productId,            // The document (product) ID to update
-          {'AddedToCart': true}           // The fields to update
-      );
+    await db.createDocument(DATABASE_ID, CART_ID, 'unique()', {
+       productId: productId,
+       UserId: accountId,
+    })
 
-      console.log("Product updated:", response);
-      alert("Product updated successfully!");
+      alert("Product added to cart successfully!");
   } catch (error) {
       console.error("Error updating product:", error);
-      alert("Failed to update product.");
+      alert("Failed to add product to cart.");
   };
 }
 window.ShowSidebar = function () {

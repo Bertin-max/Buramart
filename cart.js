@@ -23,6 +23,7 @@ client.setProject('67b35038002044fd8dfa');
 
 const DATABASE_ID = '67b5a1b2003647bb7108';
 const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
+const CART_ID = '67c05ddb0001a5f11990';
 const db = new Appwrite.Databases(client, DATABASE_ID);
 let products = [];
 
@@ -30,11 +31,11 @@ let products = [];
 const goBackToProducts = () => {
   displayProducts();  // This function should render the original product list
 };
-window.showProductInDetails = (index) => {
-  
+window.showProductInDetails = (productId) => {
+  console.log(products)
   //const products = JSON.parse(localStorage.getItem('cartProducts'));
-  const product = products[index];
-  
+  const product = products.find(product => product.$id === productId);
+  console.log(product);
    
 
   main.innerHTML  = `
@@ -83,63 +84,68 @@ window.deleteProduct = async (productId) => {
       alert('Cart Product deleted successfully!');
     }, 100);  // Delay the alert slightly}*/
     try {
-      const response = await db.updateDocument(
-          DATABASE_ID,        // Replace with your Database ID
-          SELLER_PRODUCTS_ID,      // Replace with your Collection ID
-          productId,            // The document (product) ID to update
-          {'AddedToCart': false}           // The fields to update
-      );
+      const response = await db.listDocuments(DATABASE_ID,CART_ID, [
+        window.Appwrite.Query.equal('productId', productId)
+      ]);
+      console.log(response.documents)
+      let productIdToDelete = response.documents[0].$id;
+      await db.deleteDocument(DATABASE_ID, CART_ID, productIdToDelete);
+          
 
-      console.log("Product updated:", response);
       location.reload();
-      alert("Product updated successfully!");
+      alert("Product removed successfully!");
      
   } catch (error) {
       console.error("Error updating product:", error);
-      alert("Failed to update product.");
+      alert("Failed to delete product. Please try again");
   };
   }
   async function fetchProducts() {
-   
-      try {
-          const response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, [
-           
-          window.Appwrite.Query.equal("AddedToCart", true)]);
-          
-           products = response.documents; // Extract the products list
-           displayProducts(products)
-          console.log(products)
-      } catch (error) {
-          console.error("Error fetching products:", error);
-      }
+    try {
+        const resp = await db.listDocuments(DATABASE_ID, CART_ID, [
+            window.Appwrite.Query.equal("UserId", accountId)
+        ]);
+
+        const productes = resp.documents;
+        console.log(productes);
+
+        const crtproducts = await Promise.all(
+            productes.map(async (el) => {
+                const response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, [
+                    window.Appwrite.Query.equal("$id", el.productId)
+                ]);
+                return response.documents[0]; // Return the fetched product
+            })
+        );
+        products = crtproducts;
+        console.log(products);
+        displayProducts(crtproducts); // Now products are fully fetched
+        
+
+    } catch (error) {
+        console.error("Error fetching products:", error);
     }
-    
-     fetchProducts()
+}
+
+fetchProducts();
+
 function displayProducts(products) {
-   /* cartList.innerHTML = ''; // Clear the current list before adding new products  
-    cartProducts.forEach((product, index) => {
-      cartList.innerHTML += `
-        <div class="cart-item" onclick= "showProductInDetails(${index})">
-        <img src="${product.image}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <p class="price">BIF  ${product.price}</p>
-        <button class="remove-btn" onclick = deleteProduct(${index})>Remove</button>
-      </div>`
-      
-    });*/
-     cartList.innerHTML = ''
+    cartList.innerHTML = '';
     products.forEach((product, index) => {
-     
-      cartList.innerHTML += `
-        <div class="cart-item" >
-        <div  onclick= "showProductInDetails(${index})">
-        <img src="${product.image}" alt="${product.Name}">
-        <h3>${product.Name}</h3>
-        <p class="price">BIF  ${product.price}</p>
-        <div>
-        <button class="remove-btn" onclick = deleteProduct('${product.$id}','${product.image}')>Remove</button>
-      </div>`})
-  }
+        cartList.innerHTML += `
+        <div class="cart-item">
+            <div onclick="showProductInDetails('${product.$id}')">
+                <img src="${product.image}" alt="${product.Name}">
+                <h3>${product.Name}</h3>
+                <p class="price">BIF  ${product.price}</p>
+                <div>
+                    <button class="remove-btn" onclick="deleteProduct('${product.$id}')">Remove</button>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
 
 window.searchProducts = () => {
  
