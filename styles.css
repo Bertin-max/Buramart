@@ -772,7 +772,7 @@ form textarea {
     position: relative;
     width: 100%;
     margin-bottom: 0px;
-    height: 170px;
+    height: auto;
   }
   .price {
     align-self: flex-start;
