@@ -173,7 +173,8 @@ window.showProductInDetails =  async function (productId) {
   attachHoverEvents(); // Reattach hover events
   const whatsappbtn = document.getElementById('whatsapp-btn');
   if (product.whatsapp) {
-    whatsappbtn.href = `https://wa.me/${product.whatsapp}`;
+    whatsappbtn.href = `https://wa.me/${product.whatsapp.replace(/\D/g, "")}`;
+    console.log(product.whatsapp.replace(/\D/g, "") )
     whatsappbtn.style.display = "inline-block"; // Show button
 } else {
     whatsappbtn.remove() // Hide button if no WhatsApp

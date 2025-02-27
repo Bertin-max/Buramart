@@ -1,3 +1,15 @@
+import {  getUserDetails } from "./user.js";
+async function loadUserData() {
+  const userData = await getUserDetails();
+  if (userData) {
+     return  userData.userId;
+      
+  } else {
+      console.log("No user logged in.");
+  }
+}
+let accountId = await loadUserData()
+console.log(accountId);
 let cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
 const smallsearchInput = document.getElementById('small-search-input')
 const cartList = document.getElementById("list");
