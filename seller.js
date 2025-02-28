@@ -333,6 +333,7 @@ productForm.addEventListener('submit', async (event) => {
   const productIdToDelete = productForm.dataset.productId; // Get product ID from dataset
 
   try {
+    document.getElementById('submit-btn').style.display = "none";
       // If editing, first delete the old product
       if (productIdToDelete) {
           await db.deleteDocument(DATABASE_ID, SELLER_PRODUCTS_ID, productIdToDelete);
@@ -374,8 +375,9 @@ productForm.addEventListener('submit', async (event) => {
       if (existingImagePreview) existingImagePreview.remove(); // Remove preview image
 
   } catch (error) {
+    document.getElementById('submit-btn').style.display = "none";
       console.error('Error updating product:', error);
-      alert('Failed to update product.');
+      alert('Failed to update product. Please try again');
   }
 });
 

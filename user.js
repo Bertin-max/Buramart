@@ -45,6 +45,7 @@ async function getSellerInfo() {
                 phone: sellerData.phoneNumber || "Not provided",
                 whatsapp: sellerData.whatsAppNumber || "Not provided",
                 sellerId: sellerData.$id,
+              
             };
 
             console.log("Seller Info:", sellerInfo);
@@ -57,6 +58,41 @@ async function getSellerInfo() {
         return null;
     }
 }
+async function getAccountStatus() {
+    try {
+        const userData = await getUserDetails();
+        if (!userData) {
+            console.log("No user logged in.");
+            return null;
+        }
 
+        console.log("User Email:", userData.userEmail); 
+
+        const response = await db.listDocuments(DATABASE_ID, SELLER_REGISTRATION_ID, [
+            window.Appwrite.Query.equal("email", userData.userEmail),
+            window.Appwrite.Query.equal("alreadyClaimed", true), 
+        ]);
+
+        console.log("Fetched Seller Documents:", response.documents);
+
+        if (response.documents.length > 0) {
+            let sellerData = response.documents[0]; // Get the first (and likely only) seller entry
+            
+            let sellerInfo = {
+                
+                alreadyClaimed: sellerData.alreadyClaimed,
+            };
+
+            console.log("Seller Info:", sellerInfo);
+            return sellerInfo;
+        } else {
+            return { alreadyClaimed: false };
+        }
+    } catch (error) {
+        console.error("Error fetching account status:", error);
+        return null;
+    }
+}
 // ✅ Export the function
 export { getSellerInfo };
+export { getAccountStatus};

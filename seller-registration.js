@@ -1,23 +1,35 @@
-document.getElementById('loadingModal').style.display = 'flex'; // Show loading modal
+document.getElementById("modal").classList.add("active");
 
 import { getUserDetails } from "./user.js";
 import { getSellerInfo } from "./user.js";
-
+import { getAccountStatus } from "./user.js";
 // Load User Data
 async function loadUserData() {
     const userData = await getUserDetails();
     return userData ? userData.userEmail : null;
 }
 
-let registered = false;
+let registered = '';
+let accountAlreadyClaimed = false;
+async function accountStatus() {
+    const sellerInfo = await getAccountStatus();
 
+    if (sellerInfo) {
+        
+        accountAlreadyClaimed = sellerInfo.alreadyClaimed;
+        
+    }
+}
+await accountStatus()
+console.log(accountAlreadyClaimed)
 async function setSellerDetails() {
     const sellerInfo = await getSellerInfo();
 
     if (sellerInfo) {
         
         registered = sellerInfo.isRegistered;
-
+      
+       
         console.log("Updated Values:");
         console.log("Phone:", phoneNumber);
         console.log("WhatsApp:", whatsappNumber);
@@ -27,7 +39,7 @@ async function setSellerDetails() {
 
 
 await setSellerDetails();
-document.getElementById('loadingModal').style.display = 'none';
+document.getElementById("modal").classList.remove("active");
 const client = new Appwrite.Client();
 client.setProject('67b35038002044fd8dfa');
 
@@ -72,7 +84,7 @@ if (registered && accountEmail) {
                     <p><strong>Location:</strong> <span id="reviewLocation">${seller[0].location}</span></p>
                     <p><strong>Business Description:</strong> <span id="reviewDescription">${seller[0].businessDescription}</span></p>
                      <a href="index.html" style = "margin-right: 20px">Go back</a>
-                    <button type="button" onclick="editProfile('${seller[0].$id}')">Edit</button>
+                    <button type="button" id = "edit-btn" onclick="editProfile('${seller[0].$id}')">Edit</button>
                     <button id="update-btn">Update</button>
                 `;
                 console.log(seller[0].$id)
@@ -92,7 +104,8 @@ displaySeller()
 
 // Function to Fill Form for Editing
 window.editProfile = async (sellerId) => {
-   
+    if (!confirm("Are you sure you want to change your profile!, it may take days for you to be able to sell again or view your products")) return;
+
     db.getDocument(DATABASE_ID, SELLER_REGISTRATION_ID, sellerId)
         .then((seller) => {
             document.getElementById('fullName').value = seller.Name;
@@ -128,6 +141,7 @@ window.editProfile = async (sellerId) => {
 
 // **Update Function for Existing Seller**
 window.updateProfile = async (sellerId) => {
+    document.getElementById("modal").classList.add("active");
     const fullName = document.getElementById('fullName').value;
     const businessName = document.getElementById('businessName').value;
     const phoneNumber = document.getElementById('phoneNumber').value;
@@ -143,6 +157,8 @@ window.updateProfile = async (sellerId) => {
     }
 
     try {
+        document.getElementById('edit-btn').style.display = "none";
+        document.getElementById('update-btn').style.display = "none";
         let imageUrl = document.getElementById('profilePreview').src; // Keep existing image if not updated
 
         if (imageFile) {
@@ -160,16 +176,22 @@ window.updateProfile = async (sellerId) => {
             email: email,
             location: location,
             businessDescription: businessDescription,
-            profile: imageUrl
+            profile: imageUrl,
+            Registered: false,
         });
 
         alert('Profile updated successfully!');
           // Wait before fetching new data (to prevent UI refresh from showing old data)
           displaySeller();
-          document.getElementById('loadingModal').style.display = 'none'; // Hide loading modal after checks
+          document.getElementById("modal").classList.remove("active");
+          window.location.href = "index.html"; // Hide loading modal after checks
     } catch (error) {
+        document.getElementById("modal").classList.add("active");
+        document.getElementById('edit-btn').style.display = "flex";
+        document.getElementById('update-btn').style.display = "flex";
+        document.getElementById('loadingModal').style.display = 'none';
         console.error('Error updating profile:', error);
-        alert('Failed to update profile.');
+        alert('Failed to update profile. please verify Internet Connection and try again');
     }
 };
 
@@ -177,9 +199,15 @@ window.updateProfile = async (sellerId) => {
 
 
 
-
+console.log(accountAlreadyClaimed)
 
 window.nextStep = function(step) {
+   
+  
+    if(accountAlreadyClaimed){
+        alert('an account Already Exists with this email');
+        return
+    }
     document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
     document.getElementById('step' + step).style.display = 'block';
     
@@ -202,6 +230,7 @@ window.prevStep = function (step) {
     document.getElementById('profilePicture').value = "";
 }
 document.getElementById('register-btn').addEventListener('click', async (event) => {
+    document.getElementById("modal").classList.add("active");
     event.preventDefault();
   
   const fullName = document.getElementById('fullName').value;
@@ -222,7 +251,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
     
   
     try {
-        
+        document.getElementById('register-btn').style.display = "none";
   
         // Upload new image if a new one is selected
         if (imageFile) {
@@ -243,13 +272,15 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
              businessDescription: businessDescription,
         });
   
-        alert('Product updated successfully!');
+        alert('Profile created successfully! please wait a few days for us to comfirm your registration');
         // Refresh product list
   
         document.getElementById('sellerRegistrationForm').reset();
-       
+        document.getElementById("modal").classList.remove("active");
   
     } catch (error) {
+        document.getElementById("modal").classList.remove("active");
+        document.getElementById('register-btn').style.display = "block";
         console.error('Error updating product:', error);
         alert('Failed to update product.');
     }

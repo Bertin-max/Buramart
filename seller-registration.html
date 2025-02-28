@@ -39,6 +39,7 @@
 
     <div class="registration-container">
         <h2>Seller Registration</h2>
+        
         <form id="sellerRegistrationForm">
             <div class="step" id="step1">
                 <label for="fullName">Full Name</label>
@@ -50,8 +51,9 @@
                 <label for="profilePicture">Profile Picture</label>
                 <input type="file" id="profilePicture" name="profilePicture" accept="image/*"  onchange="showPreview(event)">
                 <img id="profilePreview" src="icons/user.svg" alt="" style="margin-top: 10px; display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
-                
+                <a href="index.html">Go back</a>
                 <button type="button" onclick="nextStep(2)">Next</button>
+                
             </div>
             
             <div class="step" id="step2" style="display: none;">
@@ -86,8 +88,8 @@
                 <img id="reviewProfilePreview" src="icons/user.svg" alt="Profile Preview" style="display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: auto;">
                 <p><strong>Full Name:</strong> <span id="reviewFullName"></span></p>
                 <p><strong>Business Name:</strong> <span id="reviewBusinessName"></span></p>
-                <p><strong>Phone Number:</strong> <span id="reviewPhoneNumber"></span></p>
-                <p><strong>WhatsApp Number:</strong> <span id="reviewWhatsappNumber"></span></p>
+                <p><strong>Phone Number(with the country code):</strong> <span id="reviewPhoneNumber"></span></p>
+                <p><strong>WhatsApp Number(with the country code):</strong> <span id="reviewWhatsappNumber"></span></p>
                 <p><strong>Email:</strong> <span id="reviewEmail"></span></p>
                 <p><strong>Location:</strong> <span id="reviewLocation"></span></p>
                 <p><strong>Business Description:</strong> <span id="reviewDescription"></span></p>
@@ -97,6 +99,10 @@
             </div>
         </form>
     </div>
+    <div class="modal" id="modal">
+  
+        <div class="spinner"></div>
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>  
     <script type="module" src="user.js"></script>
     <script type = "module" src="seller-registration.js"></script>

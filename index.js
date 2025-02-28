@@ -123,6 +123,7 @@ window.showProductInDetails =  async function (productId) {
 
  ;
   uniqueProducts = [];
+  console.log(uniqueProducts)
   const product =  uniqueProducts.find(aproduct => aproduct.$id === productId) ||  products.find(aproduct => aproduct.$id === productId) ;
 
   console.log(product)
@@ -235,6 +236,7 @@ async function fetchProducts() {
     loading = true; // Set loading to true to prevent multiple fetches
    
     try {
+      document.getElementById("modal").classList.add("active");
         let queries = [
           window.Appwrite.Query.orderDesc("CreatedAt"),
             window.Appwrite.Query.limit(6),
@@ -258,8 +260,10 @@ async function fetchProducts() {
           loadMoreBtn.style.display = "none";
             console.log("No more products to load.");
         }
+        document.getElementById("modal").classList.remove("active");
     } catch (error) {
         console.error("Error fetching products:", error);
+        document.getElementById("modal").classList.remove("active");
     }
     
     loading = false; // Reset loading after request is done
@@ -346,6 +350,7 @@ window.categorySearch = () => {
   let load = false;
   let btnText = ''
    async function categFunction ()  {
+    document.getElementById("modal").classList.add("active");
      loadMoreBtn.style.display = "none" ; 
      categoryloadMoreBtn.style.display = "none";
      searchloadMoreBtn.style.display = "none";
@@ -373,7 +378,9 @@ window.categorySearch = () => {
               
                let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
                console.log( response.documents);
-              
+              response.documents.forEach((prod) => {
+                 uniqueProducts.push(prod);
+              })
                if (response.documents.length > 0) {
                    lastDocu = response.documents[response.documents.length - 1]; // Update last document
                    console.log("Updated lastDocument:", lastDocu);
@@ -382,8 +389,11 @@ window.categorySearch = () => {
                 categoryloadMoreBtn2.style.display = "none";
                 console.log("No more products to load.");
             }
+            document.getElementById("modal").classList.remove("active");
            } catch (error) {
                console.error("Error fetching products:", error);
+               homeProductList.innerHTML = "Error loading products, Please ensure you have a stable network"
+               document.getElementById("modal").classList.remove("active");
            }
            
            load = false; // Reset loading after request is done
@@ -403,8 +413,10 @@ categoryButtons.forEach(button => {
     const buttonText = event.target.closest('.category-btn').textContent.trim();
      console.log(buttonText)
      if ( buttonText === "View All"){
+      document.getElementById("modal").classList.add("active");
       document.querySelector('#products h2').textContent = "Featured Products"
     location.reload()
+    document.getElementById("modal").classList.remove("active");
       return
     }
 showSubcategories(buttonText);
@@ -421,6 +433,7 @@ categorySearch();
 let lastDocumen = null;
 let loadin = false;
 window.searchProducts = async function() {
+  document.getElementById("modal").classList.add("active");
   loadMoreBtn.style.display = "none";
   searchloadMoreBtn.style.display = "block"
   goBackToMain();
@@ -464,8 +477,11 @@ window.searchProducts = async function() {
             searchloadMoreBtn.style.display = 'none';
               console.log("No more products to load.");
           }
+          document.getElementById("modal").classList.remove("active");
       } catch (error) {
           console.error("Error fetching products:", error);
+          homeProductList.innerHTML = "Error loading products. Please try again.";
+          document.getElementById("modal").classList.remove("active");
       }
       
       loadin = false; // Reset loading after request is done
@@ -560,7 +576,7 @@ smallsearchInput.addEventListener("input", showSmallFilteredSearchHistory);
  let lastDocum = null;
 
  window.showSimilarProducts = async function(productName, category) {
- 
+  document.getElementById("modal").classList.add("active");
   loadMoreBtn.style.display = "none" ; 
      categoryloadMoreBtn2.style.display = "none";
      searchloadMoreBtn.style.display = "none";
@@ -613,7 +629,7 @@ category = category;
         }
     
     console.log(nameOrCategoryResponse.documents)
-        
+    document.getElementById("modal").classList.remove("active");
 
       // 3. Merge results, prioritizing name matches
    
@@ -621,6 +637,7 @@ category = category;
   } catch (error) {
       console.error("Error fetching products:", error);
       homeProductList.innerHTML = "Error loading products. Please try again.";
+      document.getElementById("modal").classList.remove("active");
   }
   loadi = false;
 };
@@ -843,7 +860,7 @@ async function searchBySubcategory (subcategory)  {
     
  console.log(subcategoryterm ? subcategoryterm: 'nothing')
  async function subfunction ()  {
-  
+  document.getElementById("modal").classList.add("active");
   if(!lastDoc){
 homeProductList.innerHTML = '';}
      if (loa) return; // If already fetching, do nothing
@@ -874,8 +891,11 @@ homeProductList.innerHTML = '';}
              subcategoryloadMoreBtn.style.display = "none";
              console.log("No more products to load.");
          }
+         document.getElementById("modal").classList.remove("active");
      } catch (error) {
+      document.getElementById("modal").classList.add("active");
          console.error("Error fetching products:", error);
+         alert('please check Your Internet Connection')
      }
      
      loa = false; // Reset loading after request is done

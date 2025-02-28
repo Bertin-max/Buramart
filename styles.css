@@ -4,7 +4,7 @@
   --primary-color: #0078d7;  /* Blue */
   --secondary-color: #ffffff; /* White */
   --hover-color: #005bb5; /* Darker Blue for hover effects */
-  --text-color:    #f3f3f3 ;
+  --text-color: #555    ;
   --background-color: white; 
   --label-color: #555;
   --hero-color:  #f3f3f3;
@@ -17,7 +17,7 @@
   --primary-color: #1e1e1e;  /* Dark Gray for background */
   --secondary-color: white; /* Light Gray for text */
   --hover-color: #333;
-  --text-color:   #555 ; 
+  --text-color: #f3f3f3   ; 
   --background-color:  #333;  /* Slightly lighter gray for hover effects */
  --hero-color: #333;
   --label-color: #f0f0f0;
@@ -1248,4 +1248,43 @@ product-card {
 
 .white {
   color: rgb(212, 204, 204) !important;
+}
+/* for loading modal*/
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 255, 0.3);
+  border-top: 5px solid blue;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
 }
