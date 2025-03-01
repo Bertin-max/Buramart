@@ -240,7 +240,7 @@ async function fetchProducts() {
     try {
       document.getElementById("modal").classList.add("active");
         let queries = [
-          window.Appwrite.Query.orderDesc("random"),
+          window.Appwrite.Query.orderDesc("$createdAt"),
             window.Appwrite.Query.limit(6),
           
            // Fetch 10 products at a time
