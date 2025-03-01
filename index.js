@@ -445,7 +445,7 @@ window.searchProducts = async function() {
       return;
   }
  
-  saveSearchHistory(searchInputValue);
+  
   if(!lastDocumen){
  homeProductList.innerHTML = '';}
       if (loadin) return; // If already fetching, do nothing
