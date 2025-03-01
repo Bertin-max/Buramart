@@ -105,7 +105,7 @@ displaySeller()
 // Function to Fill Form for Editing
 window.editProfile = async (sellerId) => {
     if (!confirm("Are you sure you want to change your profile!, it may take days for you to be able to sell again or view your products")) return;
-
+    accountAlreadyClaimed = false;
     db.getDocument(DATABASE_ID, SELLER_REGISTRATION_ID, sellerId)
         .then((seller) => {
             document.getElementById('fullName').value = seller.Name;
@@ -141,6 +141,7 @@ window.editProfile = async (sellerId) => {
 
 // **Update Function for Existing Seller**
 window.updateProfile = async (sellerId) => {
+  
     document.getElementById("modal").classList.add("active");
     const fullName = document.getElementById('fullName').value;
     const businessName = document.getElementById('businessName').value;
@@ -153,6 +154,7 @@ window.updateProfile = async (sellerId) => {
 
     if (!fullName || !phoneNumber || !location) {
         alert('Please fill in your name, phone number, and location.');
+        document.getElementById("modal").classList.remove("active");
         return;
     }
 
