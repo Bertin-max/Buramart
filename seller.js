@@ -391,6 +391,7 @@ productForm.addEventListener('submit', async (event) => {
           subCategory: subCategory,
           whatsapp: whatsappNumber,
           CreatedAt: new Date(),
+          random: Math.random(),
       });
 
       alert('Product updated successfully!');

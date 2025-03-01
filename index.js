@@ -43,7 +43,8 @@ const closeModalBtn2 = document.getElementById('close-modal-btn2');
 const originalModalContent = modalProductDetails.innerHTML;
 const averageStars = document.getElementById("average-stars");
 let sellerId = '';
-let selectedProductId = ''
+let selectedProductId = '';
+let selectedProductCategory = '';
 let searchInput = document.getElementById('search-input');
 const smallsearchInput = document.getElementById('small-search-input');
 const viewAll =  document.getElementById('view-all');
@@ -102,7 +103,7 @@ window.hideSidebar = function (){
 hidesidebarbtn.addEventListener('click', hideSidebar)
 window.goBackToMain = () => {
    main.innerHTML = originalContent;
-  
+ 
   categorySearch()
 }
 function attachHoverEvents() {
@@ -129,6 +130,7 @@ window.showProductInDetails =  async function (productId) {
   console.log(product)
   sellerId = product.UserId;
   selectedProductId = product.$id;
+  selectedProductCategory = product.category;
   fetchAverageRating()
    productNameOfProduct = product.Name;
    categoryOfProduct = product.category;
@@ -238,7 +240,7 @@ async function fetchProducts() {
     try {
       document.getElementById("modal").classList.add("active");
         let queries = [
-          window.Appwrite.Query.orderDesc("CreatedAt"),
+          window.Appwrite.Query.orderDesc("random"),
             window.Appwrite.Query.limit(6),
           
            // Fetch 10 products at a time
@@ -750,20 +752,30 @@ window.submitRating = async function() {
       alert("Please select a rating before submitting.");
       return;
   }
+  document.getElementById("modal").classList.add("active");
   const rating = parseInt(selectedRating.value);
   console.log(rating)
   const existingRating = await checkUserRating();
   if (existingRating) {
       alert("You have already rated this product.");
+      document.getElementById("modal").classList.remove("active");
       return;
+      
   }
   await db.createDocument(DATABASE_ID, RATINGS_ID, 'unique()', {
       UserId: accountId,
       productId: selectedProductId,
       rating: rating
   });
-  alert("Rating submitted!");
+ 
+  alert("Rating submitted! To see the new rating, refresh and search for the product Again");
   fetchAverageRating();
+  
+ uniqueProducts = [];
+
+  document.getElementById("modal").classList.remove("active");
+ 
+ 
 }
 
 async function fetchAverageRating() {
@@ -803,6 +815,7 @@ async function fetchAverageRating() {
 } catch (error) {
     console.error("Failed to update product rating:", error);
 }
+
 }
 
 document.getElementById("submit-rating").addEventListener("click", submitRating);
@@ -818,7 +831,7 @@ document.getElementById("submit-rating").addEventListener("click", submitRating)
     console.log(sellerId)
     try {
         
-        
+      document.getElementById("modal").classList.add("active");
         // Fetch seller data from Appwrite
         const respo = await db.listDocuments(DATABASE_ID, SELLER_REGISTRATION_ID,[
           window.Appwrite.Query.equal('$id', sellerId)
@@ -846,9 +859,10 @@ document.getElementById("submit-rating").addEventListener("click", submitRating)
                 ${response[0].businessDescription ? `<p><strong>Business Description:</strong> ${response[0].businessDescription}</p>` : ""}
             </div>
         `;
-
+        document.getElementById("modal").classList.remove("active");
     } catch (error) {
         console.error("Error fetching seller:", error);
+        document.getElementById("modal").classList.remove("active");
         modalProductDetails2.innerHTML = `<p>Error fetching seller details</p>`;
     }
 

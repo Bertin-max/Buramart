@@ -1264,6 +1264,7 @@ product-card {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  z-index: 10000;
 }
 
 .modal.active {
