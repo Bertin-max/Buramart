@@ -490,33 +490,27 @@ window.searchProducts = async function() {
 };
 
 searchloadMoreBtn.addEventListener('click', searchProducts)
- // Function to filter products based on search input
- function saveSearchHistory(searchTerm) {
-  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  
-  // Prevent duplicates
-  if (!history.includes(searchTerm)) {
-      history.unshift(searchTerm); // Add new search to the beginning
-  }
 
-  // Limit history to the last 10 searches
-  if (history.length > 10) {
-      history.pop();
-  }
+const showFilteredSearchHistory = async () => {
+  const collectionId = "67c2c8900005644a66d9";
+  const documentId = "67c2cbee00257344ec2b";
 
-  localStorage.setItem("searchHistory", JSON.stringify(history));
-}
-function showFilteredSearchHistory() {
-  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  
+  try {
+      // Get stored product names
+      const doc = await db.getDocument(DATABASE_ID, collectionId, documentId);
+      const productNames = doc.names || [];
+  console.log(productNames)
+      // Filter results based on search query
+      const results = productNames
+     
   let searchTerm = searchInput.value.trim().toLowerCase() 
 
   searchResultsContainer.innerHTML = "";
 
   // If input is empty, show full history
   let filteredHistory = searchTerm 
-      ? history.filter(item => item.toLowerCase().startsWith(searchTerm)) 
-      : history;
+      ? results.filter(item => item.toLowerCase().startsWith(searchTerm)) 
+      : results;
 
   // Display results
   filteredHistory.forEach(term => {
@@ -531,25 +525,58 @@ function showFilteredSearchHistory() {
   });
 
   searchResultsContainer.style.display = filteredHistory.length > 0 ? "block" : "none";
-}
+      console.log("Search results:", results);
+      // Display search results in UI
+  } catch (error) {
+      console.error("Error fetching search data:", error);
+  }
+  
+};
+
+// Call this function when user types in the search bar
+
 
 // Show full history when the user first focuses on the input
-searchInput.addEventListener("focus", showFilteredSearchHistory);
+
 
 // Filter history as the user types
-searchInput.addEventListener("input", showFilteredSearchHistory);
+searchInput.addEventListener("input", function () {
+  if (searchInput.value.length > 0) {
+     showFilteredSearchHistory();
+  } else {
+      clearSearchHistory(); // Add this function to clear the displayed results
+  }
+});
+function clearSearchHistory() {
+  // Example: Remove search history results from the UI
+  document.getElementById("doll").innerHTML = ""; 
+}
 
-function showSmallFilteredSearchHistory() {
-  let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-  
-  let searchTerm =  smallsearchInput.value.trim().toLowerCase();
+
+
+
+
+
+const showSmallFilteredSearchHistory = async () => {
+  const collectionId = "67c2c8900005644a66d9";
+  const documentId = "67c2cbee00257344ec2b";
+
+  try {
+      // Get stored product names
+      const doc = await db.getDocument(DATABASE_ID, collectionId, documentId);
+      const productNames = doc.names || [];
+  console.log(productNames)
+      // Filter results based on search query
+      const results = productNames
+     
+  let searchTerm = smallsearchInput.value.trim().toLowerCase() 
 
   smallsearchResultsContainer.innerHTML = "";
 
   // If input is empty, show full history
   let filteredHistory = searchTerm 
-      ? history.filter(item => item.toLowerCase().startsWith(searchTerm)) 
-      : history;
+      ? results.filter(item => item.toLowerCase().startsWith(searchTerm)) 
+      : results;
 
   // Display results
   filteredHistory.forEach(term => {
@@ -557,20 +584,45 @@ function showSmallFilteredSearchHistory() {
       item.classList.add("search-result-item");
       item.textContent = term;
       item.onclick = () => {
-          searchInput.value = term;
+          smallsearchInput.value = term;
           window.searchProducts(); // Perform search when clicking a history item
       };
       smallsearchResultsContainer.appendChild(item);
   });
 
   smallsearchResultsContainer.style.display = filteredHistory.length > 0 ? "block" : "none";
-}
+      console.log("Search results:", results);
+      // Display search results in UI
+  } catch (error) {
+      console.error("Error fetching search data:", error);
+  }
+  
+};
+
+// Call this function when user types in the search bar
+
 
 // Show full history when the user first focuses on the input
-smallsearchInput.addEventListener("focus", showSmallFilteredSearchHistory);
+
 
 // Filter history as the user types
-smallsearchInput.addEventListener("input", showSmallFilteredSearchHistory);
+smallsearchInput.addEventListener("input", function () {
+  if (smallsearchInput.value.length > 0) {
+     showSmallFilteredSearchHistory();
+  } else {
+      clearSmallSearchHistory(); // Add this function to clear the displayed results
+  }
+});
+function clearSmallSearchHistory() {
+  // Example: Remove search history results from the UI
+  document.getElementById("small-doll").innerHTML = ""; 
+}
+
+
+
+
+
+
 
  let loadi = false;
  let lastDocum = null;

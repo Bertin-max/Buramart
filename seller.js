@@ -201,6 +201,7 @@ function attachHoverEvents() {
   });
 }
 async function fetchProducts() {
+  document.getElementById("modal").classList.add("active");
 const query = Appwrite.Query.equal('UserId', accountId);
   try {
       const response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, [
@@ -210,8 +211,10 @@ const query = Appwrite.Query.equal('UserId', accountId);
        products = response.documents; // Extract the products list
       displayProducts(products);
       console.log(products)
+      document.getElementById("modal").classList.remove("active");
   } catch (error) {
       console.error("Error fetching products:", error);
+      document.getElementById("modal").classList.remove("active");
   }
 }
 
@@ -296,7 +299,7 @@ window.editProduct = async function(index) {
   // Store the product ID in dataset to delete later
   document.getElementById('product-form').dataset.productId = product.$id;
   document.getElementById('product-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  alert('You are now editing the product. When you submit, the old version will be deleted.');
+  alert('You are now editing the product. When you submit, the old version will be deleted. and you will lose all the stars you got on the product');
 }
 
 
@@ -304,7 +307,32 @@ window.editProduct = async function(index) {
 
 
 
-// seller.js
+const updateSearchKeywords = async (productName) => {
+    
+    const collectionId = "67c2c8900005644a66d9";
+    const documentId = "67c2cbee00257344ec2b"; // The single document storing all names
+
+    try {
+        // Get the current names array
+        const doc = await db.getDocument(DATABASE_ID, collectionId, documentId);
+        let namesArray = doc.names || [];
+
+        // Add the new product name
+        if (!namesArray.includes(productName)) {
+            namesArray.push(productName);
+            await db.updateDocument(DATABASE_ID, collectionId, documentId, {
+                names: namesArray
+            });
+            console.log("Product name added to search index!");
+        }
+    } catch (error) {
+        console.error("Error updating search collection:", error);
+    }
+};
+
+// Example: Call this function when a seller uploads a product
+
+
 
 
 productForm.addEventListener('submit', async (event) => {
@@ -328,11 +356,12 @@ productForm.addEventListener('submit', async (event) => {
       alert('Please fill in all fields.');
       return;
   }
-
+  updateSearchKeywords(name);
   let imageUrl = '';
   const productIdToDelete = productForm.dataset.productId; // Get product ID from dataset
 
   try {
+    document.getElementById("modal").classList.add("active");
     document.getElementById('submit-btn').style.display = "none";
       // If editing, first delete the old product
       if (productIdToDelete) {
@@ -373,11 +402,13 @@ productForm.addEventListener('submit', async (event) => {
       delete productForm.dataset.productId; // Clear product ID
       const existingImagePreview = document.getElementById('existing-image-preview');
       if (existingImagePreview) existingImagePreview.remove(); // Remove preview image
+      document.getElementById("modal").classList.remove("active");
 
   } catch (error) {
     document.getElementById('submit-btn').style.display = "none";
       console.error('Error updating product:', error);
       alert('Failed to update product. Please try again');
+      document.getElementById("modal").classList.remove("active");
   }
 });
 
