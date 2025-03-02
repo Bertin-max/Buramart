@@ -188,7 +188,7 @@ window.updateProfile = async (sellerId) => {
           document.getElementById("modal").classList.remove("active");
           window.location.href = "index.html"; // Hide loading modal after checks
     } catch (error) {
-        document.getElementById("modal").classList.add("active");
+        document.getElementById("modal").classList.remove("active");
         document.getElementById('edit-btn').style.display = "flex";
         document.getElementById('update-btn').style.display = "flex";
         document.getElementById('loadingModal').style.display = 'none';
