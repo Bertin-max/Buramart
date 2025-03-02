@@ -429,10 +429,10 @@ categoryButtons.forEach(button => {
     }
     document.getElementById('view-all').classList.remove('first');
     console.log(previousbtn)
-    if(previousbtn !== false){
+    if(previousbtn){
       previousbtn.classList.remove('first');
     }
-   let buttonClicked = event.target;
+   let buttonClicked = event.target.closest('.category-btn');
    previousbtn = buttonClicked;
    
    
