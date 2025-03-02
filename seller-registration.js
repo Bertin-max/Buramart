@@ -193,6 +193,7 @@ window.updateProfile = async (sellerId) => {
         document.getElementById('update-btn').style.display = "flex";
         document.getElementById('loadingModal').style.display = 'none';
         console.error('Error updating profile:', error);
+        document.getElementById('show-error').textContent = error;
         alert('Failed to update profile. please verify Internet Connection and try again');
     }
 };
@@ -270,6 +271,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
             phoneNumber: phoneNumber,
             whatsAppNumber:whatsAppNumber,
             email: email,
+            profile: imageUrl,
              location: location,
              businessDescription: businessDescription,
         });

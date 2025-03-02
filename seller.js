@@ -61,7 +61,7 @@ const categories = {
   clothing: ["Men's Clothing", "Women's Clothing", "Kids' Clothing", "Shoes", "Bags", "Accessories", "Hats", "Watches", "Eyewear"],
   homeappliances: ["Refrigerators", "Microwaves", "Washing Machines", "Air Conditioners", "Vacuum Cleaners", "Dishwashers", "Water Heaters", "Fans", "Coffee Makers"],
   books: ["Fiction", "Non-Fiction", "Educational", "Comics & Graphic Novels", "Biographies", "Self-Help", "Science & Technology", "Children's Books", "Mystery & Thriller"],
-  Beauty: ["Skincare", "Makeup", "Haircare", "Fragrances", "Nail Care", "Men’s Grooming", "Beauty Tools", "Bath & Body", "Oral Care"],
+  beauty: ["Skincare", "Makeup", "Haircare", "Fragrances", "Nail Care", "Men’s Grooming", "Beauty Tools", "Bath & Body", "Oral Care"],
   toys: ["Action Figures", "Dolls", "Board Games", "Building Blocks", "Remote Control Toys", "Educational Toys", "Outdoor Toys", "Plush Toys", "Musical Toys"],
   furniture: ["Living Room Furniture", "Bedroom Furniture", "Dining Room Furniture", "Office Furniture", "Outdoor Furniture", "Storage Solutions", "Kids' Furniture", "Mattresses", "Lighting"],
   sports: ["Fitness Equipment", "Outdoor Sports", "Team Sports", "Water Sports", "Winter Sports", "Cycling", "Racket Sports", "Combat Sports", "Running Gear"],
@@ -247,7 +247,7 @@ const query = Appwrite.Query.equal('UserId', accountId);
                       </div>
                   </div>
                   <div class="product-details">
-                      <p class="price">$${product.price}</p>
+                      <p class="price">BIF ${product.price}</p>
                        <div class="average-stars" id="average-stars">
         ${generateStars(product.averageRating)}(${product.totalRatings}R)
       </div>
@@ -404,9 +404,10 @@ productForm.addEventListener('submit', async (event) => {
       const existingImagePreview = document.getElementById('existing-image-preview');
       if (existingImagePreview) existingImagePreview.remove(); // Remove preview image
       document.getElementById("modal").classList.remove("active");
+      document.getElementById('submit-btn').style.display = "block";
 
   } catch (error) {
-    document.getElementById('submit-btn').style.display = "none";
+    document.getElementById('submit-btn').style.display = "block";
       console.error('Error updating product:', error);
       alert('Failed to update product. Please try again');
       document.getElementById("modal").classList.remove("active");
@@ -449,13 +450,14 @@ console.log(foundProducts)
             <div class="product-details">
                 <p class="price">$${product.product.price}</p>
                        <div class="average-stars" id="average-stars">
-        ${generateStars(0)}(0R)
+        ${generateStars(product.product.averageRating)}(${product.product.totalRatings}R)
       </div>
                 <p class="description">${product.product.description.length > 50 ? product.product.description.substring(0, 50) + '...' : product.product.description}</p>
             </div>
         </div>
     `;
 });
+window.location.href = "#uploaded-products"
 }
 const liveSearch = async () => {
   const searchTerm = searchInput.value.trim().toLowerCase(); // Get and clean user input
