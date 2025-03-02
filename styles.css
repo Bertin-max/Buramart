@@ -431,13 +431,13 @@ header .sidebar li a{
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 /* "View All" Button Style */
-.category-btn:first-child {
+.category-btn.first {
   background-color:#0078d7;
   color: var(--secondary-color);
   border: none;
 }
-.category-btn:first-child:hover {
-  background-color: var(--hover-color);
+.category-btn.first:hover {
+  background-color: #005bb5;
 }
 button.btn-contact{
   margin-top: 10px;
@@ -1288,4 +1288,10 @@ product-card {
   to {
       transform: rotate(360deg);
   }
+}
+.actv{
+  background-color: blue;
+}
+.remv{
+  background-color: white;
 }

@@ -30,7 +30,8 @@ const categories = {
 
 let subcategoryterm = "";
 let productNameOfProduct = '';
-let categoryOfProduct = ''
+let categoryOfProduct = '';
+let subcat = [];
 const homeProductList = document.getElementById("home-list");
 const storedProduct = localStorage.getItem('products');
 const main = document.getElementById('main-content');
@@ -404,15 +405,20 @@ window.categorySearch = () => {
    
 
 const categoryButtons = document.querySelectorAll('.category-btn') 
-
+let previousbtn = false;
   // Attach the event listener
   categoryloadMoreBtn2.addEventListener('click', categFunction);
 categoryButtons.forEach(button => {
   button.addEventListener('click', async function(event) {
+  
+ 
+ 
     lastDocu = null
     event.preventDefault()
     categoryloadMoreBtn2.style.display = "none";
     const buttonText = event.target.closest('.category-btn').textContent.trim();
+    document.getElementById('product-title').textContent = `products in ${buttonText}`;
+   
      console.log(buttonText)
      if ( buttonText === "View All"){
       document.getElementById("modal").classList.add("active");
@@ -421,6 +427,17 @@ categoryButtons.forEach(button => {
     document.getElementById("modal").classList.remove("active");
       return
     }
+    document.getElementById('view-all').classList.remove('first');
+    console.log(previousbtn)
+    if(previousbtn !== false){
+      previousbtn.classList.remove('first');
+    }
+   let buttonClicked = event.target;
+   previousbtn = buttonClicked;
+   
+   
+   console.log(buttonClicked)
+    buttonClicked.classList.add('first');
 showSubcategories(buttonText);
 btnText = buttonText;
  categFunction()
@@ -890,6 +907,7 @@ window.showSubcategories = (category) =>  {
 console.log(category)
   // Get subcategories for the selected category
   const subcategories = categories[category.toLowerCase().replace(/[-]/,'')] || [];
+  subcat = subcategories;
 console.log(subcategories)
   // Show subcategories
   const subcategoriesList = document.getElementById("subcategories-list");
@@ -899,19 +917,31 @@ console.log(subcategories)
       const button = document.createElement("button");
       button.innerText = subcategory;
       button.classList.add("category-btn")
-      button.onclick = () => searchBySubcategory(subcategory);
+      button.onclick = () => searchBySubcategory(subcategory,button);
+    
       subcategoriesList.appendChild(button);
   });
 
   document.getElementById("subcategories").style.display = "block";
 }
-
 window.goBack = () => {
   // Show main categories again
   document.getElementById("categories").style.display = "block";
   document.getElementById("subcategories").style.display = "none";
 }
-async function searchBySubcategory (subcategory)  {
+let previoussub = false;
+
+ 
+
+
+async function searchBySubcategory (subcategory,button)  {
+  if(previoussub !== false){
+    previoussub.classList.remove('first')
+  }
+  previoussub = button
+  button.classList.add('first');
+  console.log(document.getElementById('product-title'))
+  document.getElementById('product-title').textContent = subcategory;
   homeProductList.innerHTML = '';
   loadMoreBtn.style.display = "none" ; 
      categoryloadMoreBtn.style.display = "none";
@@ -959,7 +989,7 @@ homeProductList.innerHTML = '';}
          }
          document.getElementById("modal").classList.remove("active");
      } catch (error) {
-      document.getElementById("modal").classList.add("active");
+      document.getElementById("modal").classList.remove("active");
          console.error("Error fetching products:", error);
          alert('please check Your Internet Connection')
      }
