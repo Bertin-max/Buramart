@@ -464,7 +464,7 @@ window.searchProducts = async function() {
       return;
   }
  
-  document.getElementById('product-list').textContent = searchInputValue;
+  document.getElementById('product-title').textContent = searchInputValue;
   if(!lastDocumen){
  homeProductList.innerHTML = '';}
       if (loadin) return; // If already fetching, do nothing
