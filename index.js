@@ -540,10 +540,11 @@ categoryButtons.forEach(button => {
 
 let loadin = false;
 window.searchProducts = async function() {
+  window.location.href='#products';
   searchloadMoreBtn.style.display = "none";
   categoryloadMoreBtn.style.display = "none";
   categoryloadMoreBtn2.style.display = "none";
-  
+ subcategoryloadMoreBtn.style.display = "none";
   loadMoreBtn.style.display = "none";
   uniqueProducts = [];
   lastDocum = null;
@@ -958,6 +959,7 @@ let loa = false;
 
 
 async function searchBySubcategory (subcategory,button)  {
+  window.location.href='#products'
   lastDocum = null;
   uniqueProducts = []
   if(previoussub !== false){
