@@ -72,7 +72,10 @@ const Query = window.Appwrite.Query;
 let products = [];
 let foundProducts = [];
 let uniqueProducts = [];
-
+let unrep = [] ;
+let previousButton = null;
+let lastDocumen = null;
+let search = null;
 window.updateDatabaseCartProduct = async function (productId) {
   if(!accountId){
     alert('please login to add the cart');
@@ -103,10 +106,115 @@ window.hideSidebar = function (){
 }
 hidesidebarbtn.addEventListener('click', hideSidebar)
 window.goBackToMain = () => {
-   main.innerHTML = originalContent;
- 
-  categorySearch()
+  document.getElementById('categories').style.display = "block";
+  document.getElementById('home').style.display = "block";
+  if( document.querySelector(".product-details-container")){
+  document.getElementById("main-content").querySelector(".product-details-container").remove();}
+  document.getElementById("subcategories").style.display = "none";
+
+
+
+  const categoryButtons = document.querySelectorAll('.category-btn') 
+
+  console.log(previousButton)
+    // Attach the event listener
+   // categoryloadMoreBtn2.addEventListener('click', categFunction);
+  categoryButtons.forEach(button => {
+    button.addEventListener('click',  async function(event) {
+     
+     homeProductList.innerHTML = '';
+     lastDocum = null;
+    
+    
+      const buttonClicked = event.target.closest('.category-btn');
+      
+      event.preventDefault()
+      categoryloadMoreBtn2.style.display = "none";
+      const buttonText = event.target.closest('.category-btn').textContent.trim();
+      console.log(buttonText)
+      document.getElementById('product-title').textContent = `products in ${buttonText}`;
+      if ( buttonText === "View All"){
+        document.getElementById("modal").classList.add("active");
+        document.querySelector('#products h2').textContent = "Featured Products"
+      location.reload()
+      document.getElementById("modal").classList.remove("active");
+        return
+      }
+     productNameOfProduct = 'noth';
+     categoryOfProduct = buttonText;
+     previousButton = buttonClicked;
+    
+     
+     showSubcategories(buttonText);
+     if(previousButton){
+      await showSimilarProducts ('noth', buttonText)
+      return
+    }
+   await    showSimilarProducts('noth', buttonText)
+  
+  
+  
+    })})
+    
+
 }
+
+window.goBack = () => {
+  // Show main categories again
+  document.getElementById("categories").style.display = "block";
+  document.getElementById("subcategories").style.display = "none";
+
+
+   
+
+  const categoryButtons = document.querySelectorAll('.category-btn') 
+
+  console.log(previousButton)
+    // Attach the event listener
+   // categoryloadMoreBtn2.addEventListener('click', categFunction);
+  categoryButtons.forEach(button => {
+    button.addEventListener('click',  async function(event) {
+     
+     homeProductList.innerHTML = '';
+     lastDocum = null;
+    
+    
+      const buttonClicked = event.target.closest('.category-btn');
+      
+      event.preventDefault()
+      categoryloadMoreBtn2.style.display = "none";
+      const buttonText = event.target.closest('.category-btn').textContent.trim();
+      console.log(buttonText)
+      document.getElementById('product-title').textContent = `products in ${buttonText}`;
+      if ( buttonText === "View All"){
+        document.getElementById("modal").classList.add("active");
+        document.querySelector('#products h2').textContent = "Featured Products"
+      location.reload()
+      document.getElementById("modal").classList.remove("active");
+        return
+      }
+     productNameOfProduct = 'noth';
+     categoryOfProduct = buttonText;
+     previousButton = buttonClicked;
+    
+     
+     showSubcategories(buttonText);
+     if(previousButton){
+      await showSimilarProducts ('noth', buttonText)
+      return
+    }
+   await    showSimilarProducts('noth', buttonText)
+  
+  
+  
+    })})
+    
+
+
+
+
+}
+
 function attachHoverEvents() {
   const productCards = document.querySelectorAll('.product-card');
   
@@ -122,12 +230,28 @@ function attachHoverEvents() {
 
 
 window.showProductInDetails =  async function (productId) {
-
- ;
-  uniqueProducts = [];
+  search = null;
+  lastDocum = null;
+  if( document.querySelector(".product-details-container")){
+    document.getElementById("main-content").querySelector(".product-details-container").remove();
+  }
+  document.getElementById('categories').style.display = "none";
+  document.getElementById('home').style.display = "none";
+  if(document.getElementById("subcategories")){
+  document.getElementById("subcategories").style.display = "none";}
+  loadMoreBtn.style.display = "none" ; 
+  categoryloadMoreBtn2.style.display = "none";
+  searchloadMoreBtn.style.display = "none";
+  subcategoryloadMoreBtn.style.display = "none";
+  categoryloadMoreBtn.style.display = "block";
+  
   console.log(uniqueProducts)
   const product =  uniqueProducts.find(aproduct => aproduct.$id === productId) ||  products.find(aproduct => aproduct.$id === productId) ;
-
+  if (!product) {
+    console.error("Product not found:", productId);
+    alert("Product not found!");
+    return;
+  }
   console.log(product)
   sellerId = product.UserId;
   selectedProductId = product.$id;
@@ -135,7 +259,7 @@ window.showProductInDetails =  async function (productId) {
   fetchAverageRating()
    productNameOfProduct = product.Name;
    categoryOfProduct = product.category;
-  main.innerHTML  = `
+  main.innerHTML  += `
         <div class="product-details-container">
           <button onclick = 'goBackToMain()' style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
       <div class="product-image">
@@ -189,36 +313,14 @@ window.showProductInDetails =  async function (productId) {
 } else {
     whatsappbtn.remove() // Hide button if no WhatsApp
 }
-  
-if (uniqueProducts.length === 0) {
+
+
   await showSimilarProducts(product.Name, product.category);
   console.log(product.Name)
-}
+
 console.log(uniqueProducts)
 document.querySelector('#products h2').textContent = "similar Products"
-homeProductList.innerHTML = '';
-uniqueProducts.forEach(( product) => {
-  homeProductList.innerHTML += `
-   
-     <div onclick = "showProductInDetails('${product.$id}'); f" class="product-card">
-        <div>
-          <h3 style="padding: 0; margin: 0; gap: 0;">${product.Name}</h3>
-          <img  src="${product.image}" alt="${product.Name}"> 
-        </div> 
-        <div class="product-details">
-         
-          <p class="price">BIF       ${product.price}</p>
-          <div class="average-stars-display" id="average-stars">
-        ${generateStars(product.averageRating)}(${product.totalRatings}R)
-      </div>
-          <div class="product-details">
-            <p class="description"> ${product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description}</p>
-          </div>
-        </div>
-      </div>
-      </div>
-      `;
-});
+
   window.scrollTo({
     top: 0,
     behavior: 'smooth' });
@@ -276,19 +378,7 @@ async function fetchProducts() {
 fetchProducts();
 loadMoreBtn.addEventListener('click', fetchProducts)
 
-/*window.addEventListener("scroll", () => {
-  const scrollPosition = window.innerHeight + window.scrollY; // Current scroll position
-  const triggerPoint = document.body.offsetHeight * 0.8; // 80% of page height
 
-  if (scrollPosition >= triggerPoint && !loading) { // Only fetch if not already loading
-      console.log("Triggering fetch with lastDocument:", lastDocument);
-      console.log(searchInput.value)
-      if(searchInput.value){
-       searchProducts();
-  }else{
-    fetchProducts('') 
-  }}
-});*/
 
 
 const displayProducts = (products) => {
@@ -317,144 +407,148 @@ console.log(products)
   });
 
 } 
-window.showCategoryProducts = async function(buttonText) {
-  console.log(buttonText)
-  try {
-     let queries =  [
-      window.Appwrite.Query.equal("category", buttonText.toLowerCase()),
-      window.Appwrite.Query.orderDesc("CreatedAt")]
-  
-      let categoryResponse = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries
-      );
 
-      // 3. Merge results, prioritizing name matches
-       foundProducts = categoryResponse.documents
-      console.log(foundProducts)
-      // 4. Remove duplicate products (in case some appear in both searches)
-       uniqueProducts = [];
-      let seenIds = new Set();
-      
-      for (let product of foundProducts) {
-          if (!seenIds.has(product.$id)) {
-              uniqueProducts.push(product);
-              seenIds.add(product.$id);
-          }
-      }
-      
-  } catch (error) {
-      console.error("Error fetching products:", error);
-      homeProductList.innerHTML = "Error loading products. Please try again.";
-  }
-};
 
-window.categorySearch = () => {
- 
-  let lastDocu = null;
-  let load = false;
-  let btnText = ''
-   async function categFunction ()  {
-    document.getElementById("modal").classList.add("active");
-     loadMoreBtn.style.display = "none" ; 
-     categoryloadMoreBtn.style.display = "none";
-     searchloadMoreBtn.style.display = "none";
-     subcategoryloadMoreBtn.style.display = "none";
-  categoryloadMoreBtn2.style.display = "block";
-       console.log(subcategoryterm ? subcategoryterm: 'nothing');
-       if(!lastDocu){
-      homeProductList.innerHTML = '';}
-           if (load) return; // If already fetching, do nothing
-           load = true; // Set loading to true to prevent multiple fetches
-          
-           try {
-               let queries = [
-                 window.Appwrite.Query.orderDesc("CreatedAt"),
-                   window.Appwrite.Query.limit(3),
-                   window.Appwrite.Query.equal('category', btnText)
-                  // Fetch 10 products at a time
-               ];
-       
-               // Use cursorAfter only if lastDocument is not null
-               if (lastDocu) {
-                   queries.push(window.Appwrite.Query.cursorAfter(lastDocu.$id));
-               }
-              
-              
-               let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
-               console.log( response.documents);
-              response.documents.forEach((prod) => {
-                 uniqueProducts.push(prod);
-              })
-               if (response.documents.length > 0) {
-                   lastDocu = response.documents[response.documents.length - 1]; // Update last document
-                   console.log("Updated lastDocument:", lastDocu);
-                   displayProducts(response.documents); // Function to render products on UI
-               } if(response.documents.length < 3) {
-                categoryloadMoreBtn2.style.display = "none";
-                console.log("No more products to load.");
-            }
-            document.getElementById("modal").classList.remove("active");
-           } catch (error) {
-               console.error("Error fetching products:", error);
-               homeProductList.innerHTML = "Error loading products, Please ensure you have a stable network"
-               document.getElementById("modal").classList.remove("active");
-           }
-           
-           load = false; // Reset loading after request is done
-      
-   }
+   let loadi = false;
+   let lastDocum = null;
    
+   window.showSimilarProducts = async function(productName, category) {
+    document.getElementById("modal").classList.add("active");
+    loadMoreBtn.style.display = "none" ; 
+       categoryloadMoreBtn2.style.display = "none";
+       searchloadMoreBtn.style.display = "none";
+       subcategoryloadMoreBtn.style.display = "none";
+    if(loadi)return
+    loadi = true;
+  productName = productName;
+  category = category;
+   
+    categoryloadMoreBtn.style.display = "block"
+    try {
+      const orQuery = Query.or([
+        Query.equal('Name', productName),
+        Query.equal('category', category)]
+    );
+    const queries = [
+      orQuery,
+      Query.orderDesc('CreatedAt'),
+      window.Appwrite.Query.limit(2),
+    ];
+    if (lastDocum) {
+      queries.push(window.Appwrite.Query.cursorAfter(lastDocum.$id));
+  }
+  console.log(lastDocum);
+  if(lastDocum == null && search == null ){
+  homeProductList.innerHTML = '';}
+  
+      const nameOrCategoryResponse = await db.listDocuments(
+        
+          DATABASE_ID,
+          SELLER_PRODUCTS_ID,
+          queries)
+         
+          foundProducts = nameOrCategoryResponse.documents;
+          console.log(foundProducts)
+                // 4. Remove duplicate products (in case some appear in both searches)
+           
+             
+             
+                let seenIds = new Set();
+                
+                for (let product of foundProducts) {
+                    if (!seenIds.has(product.$id)) {
+                      unrep.push(product)
+                        uniqueProducts.push(product);
+                        seenIds.add(product.$id);
+                    }
+                }
+         
+          if (nameOrCategoryResponse.documents.length > 0) {
+              lastDocum = nameOrCategoryResponse.documents[nameOrCategoryResponse.documents.length - 1]; // Update last document
+              console.log("Updated lastDocument:", lastDocum);
+             
+            displayProducts(nameOrCategoryResponse.documents)
+              // Function to render products on UI
+          } if(nameOrCategoryResponse.documents.length < 2) {
+            categoryloadMoreBtn.style.display = "none";
+              console.log("No more products to load.");
+          }
+      
+      console.log(nameOrCategoryResponse.documents)
+      document.getElementById("modal").classList.remove("active");
+  
+        // 3. Merge results, prioritizing name matches
+     
+        console.log(uniqueProducts)
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        homeProductList.innerHTML = "Error loading products. Please try again.";
+        document.getElementById("modal").classList.remove("active");
+    }
+    loadi = false;
+  };
+  categoryloadMoreBtn.addEventListener('click', () =>
+  
+    showSimilarProducts(productNameOfProduct, categoryOfProduct)
+  );
+
 
 const categoryButtons = document.querySelectorAll('.category-btn') 
-let previousbtn = false;
+
+
   // Attach the event listener
-  categoryloadMoreBtn2.addEventListener('click', categFunction);
+ // categoryloadMoreBtn2.addEventListener('click', categFunction);
 categoryButtons.forEach(button => {
-  button.addEventListener('click', async function(event) {
+  button.addEventListener('click',  async function(event) {
+    if(previousButton){
+   homeProductList.innerHTML = '';
+   lastDocum = null;
   
- 
- 
-    lastDocu = null
+};
+
+    const buttonClicked = event.target.closest('.category-btn');
+    
     event.preventDefault()
     categoryloadMoreBtn2.style.display = "none";
-    const buttonText = event.target.closest('.category-btn').textContent.trim();
+    const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
+    console.log(buttonText)
     document.getElementById('product-title').textContent = `products in ${buttonText}`;
-   
-     console.log(buttonText)
-     if ( buttonText === "View All"){
+    if ( buttonText === "View All"){
       document.getElementById("modal").classList.add("active");
       document.querySelector('#products h2').textContent = "Featured Products"
     location.reload()
     document.getElementById("modal").classList.remove("active");
       return
     }
-    document.getElementById('view-all').classList.remove('first');
-    console.log(previousbtn)
-    if(previousbtn){
-      previousbtn.classList.remove('first');
-    }
-   let buttonClicked = event.target.closest('.category-btn');
-   previousbtn = buttonClicked;
-   
-   
-   console.log(buttonClicked)
-    buttonClicked.classList.add('first');
-showSubcategories(buttonText);
-btnText = buttonText;
- categFunction()
-  // Remove any existing event listener
+    
+    showSubcategories(buttonText);
+   productNameOfProduct = 'noth';
+   categoryOfProduct = buttonText;
+   previousButton = buttonClicked;
+   if(previousButton){
+    await showSimilarProducts ('noth', buttonText)
+    return
+  }
+ await    showSimilarProducts('noth', buttonText)
+
+
+
+  })})
   
+// categorySearch()
 
 
-
-    })})}
-  
-categorySearch();
-let lastDocumen = null;
 let loadin = false;
 window.searchProducts = async function() {
-  document.getElementById("modal").classList.add("active");
+  searchloadMoreBtn.style.display = "none";
+  categoryloadMoreBtn.style.display = "none";
+  categoryloadMoreBtn2.style.display = "none";
+  
   loadMoreBtn.style.display = "none";
-  searchloadMoreBtn.style.display = "block"
+  uniqueProducts = [];
+  lastDocum = null;
+  document.getElementById("modal").classList.add("active");
+ 
   goBackToMain();
 
   const searchInputValue = searchInput.value || smallsearchInput.value;
@@ -465,37 +559,34 @@ window.searchProducts = async function() {
   }
  
   document.getElementById('product-title').textContent = searchInputValue;
-  if(!lastDocumen){
- homeProductList.innerHTML = '';}
+  
+ homeProductList.innerHTML = '';
       if (loadin) return; // If already fetching, do nothing
       loadin = true; // Set loading to true to prevent multiple fetches
      console.log(searchInputValue)
       try {
           let queries = [
             window.Appwrite.Query.orderDesc("CreatedAt"),
-              window.Appwrite.Query.limit(2),
+              window.Appwrite.Query.limit(30),
               window.Appwrite.Query.equal('Name', searchInputValue)
              // Fetch 10 products at a time
           ];
   
-          // Use cursorAfter only if lastDocument is not null
-          if (lastDocumen) {
-              queries.push(window.Appwrite.Query.cursorAfter(lastDocumen.$id));
-          }
           
-         
+      
           let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
-          console.log( response.documents);
-         
+        
+        
           if (response.documents.length > 0) {
-              lastDocumen = response.documents[response.documents.length - 1]; // Update last document
+            search = true;
+            
+              response.documents.forEach((prod) =>
+              uniqueProducts.push(prod)
+              ) // Update last document
               console.log("Updated lastDocument:", lastDocumen);
               displayProducts(response.documents); // Function to render products on UI
           } 
-          if(response.documents.length <2 ) {
-            searchloadMoreBtn.style.display = 'none';
-              console.log("No more products to load.");
-          }
+         
           document.getElementById("modal").classList.remove("active");
       } catch (error) {
           console.error("Error fetching products:", error);
@@ -508,7 +599,7 @@ window.searchProducts = async function() {
       smallsearchResultsContainer.style.display = "none"
 };
 
-searchloadMoreBtn.addEventListener('click', searchProducts)
+
 
 const showFilteredSearchHistory = async () => {
   const collectionId = "67c2c8900005644a66d9";
@@ -537,6 +628,7 @@ const showFilteredSearchHistory = async () => {
       item.classList.add("search-result-item");
       item.textContent = term;
       item.onclick = () => {
+        searchResultsContainer.style.display = 'none'
           searchInput.value = term;
           window.searchProducts(); // Perform search when clicking a history item
       };
@@ -561,14 +653,17 @@ const showFilteredSearchHistory = async () => {
 // Filter history as the user types
 searchInput.addEventListener("input", function () {
   if (searchInput.value.length > 0) {
+    console.log("showFilteredSearchHistory called");
      showFilteredSearchHistory();
   } else {
+    console.log("showFilteredSearchHistory not called");
       clearSearchHistory(); // Add this function to clear the displayed results
   }
 });
 function clearSearchHistory() {
   // Example: Remove search history results from the UI
   document.getElementById("doll").innerHTML = ""; 
+  document.getElementById('doll').style.display = "none";
 }
 
 
@@ -603,6 +698,7 @@ const showSmallFilteredSearchHistory = async () => {
       item.classList.add("search-result-item");
       item.textContent = term;
       item.onclick = () => {
+        smallsearchResultsContainer.style.display = 'none'
           smallsearchInput.value = term;
           window.searchProducts(); // Perform search when clicking a history item
       };
@@ -627,14 +723,17 @@ const showSmallFilteredSearchHistory = async () => {
 // Filter history as the user types
 smallsearchInput.addEventListener("input", function () {
   if (smallsearchInput.value.length > 0) {
+    console.log("showFilteredSearchHistory called");
      showSmallFilteredSearchHistory();
   } else {
+    console.log("showFilteredSearchHistory not called");
       clearSmallSearchHistory(); // Add this function to clear the displayed results
   }
 });
 function clearSmallSearchHistory() {
   // Example: Remove search history results from the UI
   document.getElementById("small-doll").innerHTML = ""; 
+ 
 }
 
 
@@ -643,79 +742,7 @@ function clearSmallSearchHistory() {
 
 
 
- let loadi = false;
- let lastDocum = null;
-
- window.showSimilarProducts = async function(productName, category) {
-  document.getElementById("modal").classList.add("active");
-  loadMoreBtn.style.display = "none" ; 
-     categoryloadMoreBtn2.style.display = "none";
-     searchloadMoreBtn.style.display = "none";
-     subcategoryloadMoreBtn.style.display = "none";
-  if(loadi)return
-  loadi = true;
-productName = productName;
-category = category;
-  loadMoreBtn.style.display = "none";
-  categoryloadMoreBtn.style.display = "block"
-  try {
-    const orQuery = Query.or([
-      Query.equal('Name', productName),
-      Query.equal('category', category)]
-  );
-  const queries = [
-    orQuery,
-    Query.orderDesc('CreatedAt'),
-    window.Appwrite.Query.limit(2),
-  ];
-  if (lastDocum) {
-    queries.push(window.Appwrite.Query.cursorAfter(lastDocum.$id));
-}
-    const nameOrCategoryResponse = await db.listDocuments(
-      
-        DATABASE_ID,
-        SELLER_PRODUCTS_ID,
-        queries)
-  
-        foundProducts = nameOrCategoryResponse.documents;
-        console.log(foundProducts)
-              // 4. Remove duplicate products (in case some appear in both searches)
-               uniqueProducts = [];
-              let seenIds = new Set();
-              
-              for (let product of foundProducts) {
-                  if (!seenIds.has(product.$id)) {
-                      uniqueProducts.push(product);
-                      seenIds.add(product.$id);
-                  }
-              }
-       
-        if (nameOrCategoryResponse.documents.length > 0) {
-            lastDocum = nameOrCategoryResponse.documents[nameOrCategoryResponse.documents.length - 1]; // Update last document
-            console.log("Updated lastDocument:", lastDocum);
-            displayProducts(uniqueProducts); // Function to render products on UI
-        } if(nameOrCategoryResponse.documents.length < 2) {
-          categoryloadMoreBtn.style.display = "none";
-            console.log("No more products to load.");
-        }
-    
-    console.log(nameOrCategoryResponse.documents)
-    document.getElementById("modal").classList.remove("active");
-
-      // 3. Merge results, prioritizing name matches
-   
-      console.log(uniqueProducts)
-  } catch (error) {
-      console.error("Error fetching products:", error);
-      homeProductList.innerHTML = "Error loading products. Please try again.";
-      document.getElementById("modal").classList.remove("active");
-  }
-  loadi = false;
-};
-categoryloadMoreBtn.addEventListener('click', () =>
-
-  showSimilarProducts(productNameOfProduct, categoryOfProduct)
-);
+ 
 
 window.rate = async function ()  {
   if(!accountId){
@@ -899,7 +926,6 @@ function closeModal2() {
   
 }
 
-
 window.showSubcategories = (category) =>  {
   // Hide categories
   document.getElementById("categories").style.display = "none";
@@ -924,17 +950,16 @@ console.log(subcategories)
 
   document.getElementById("subcategories").style.display = "block";
 }
-window.goBack = () => {
-  // Show main categories again
-  document.getElementById("categories").style.display = "block";
-  document.getElementById("subcategories").style.display = "none";
-}
+
 let previoussub = false;
 
- 
+let lastDoc = null;
+let loa = false;
 
 
 async function searchBySubcategory (subcategory,button)  {
+  lastDocum = null;
+  uniqueProducts = []
   if(previoussub !== false){
     previoussub.classList.remove('first')
   }
@@ -951,13 +976,21 @@ async function searchBySubcategory (subcategory,button)  {
   subcategoryloadMoreBtn.style.display = 'block';
   subcategoryterm = subcategory;
  console.log(subcategoryterm);
- let lastDoc = null;
-     let loa = false;
+
     
+    lastDoc = null;
  console.log(subcategoryterm ? subcategoryterm: 'nothing')
- async function subfunction ()  {
+ 
+
+await subfunction()
+subcategoryloadMoreBtn.removeEventListener("click", subfunction);
+subcategoryloadMoreBtn.addEventListener("click", subfunction);
+}
+
+
+async function subfunction ()  {
   document.getElementById("modal").classList.add("active");
-  if(!lastDoc){
+  if(lastDoc == null){
 homeProductList.innerHTML = '';}
      if (loa) return; // If already fetching, do nothing
      loa = true; // Set loading to true to prevent multiple fetches
@@ -980,7 +1013,10 @@ homeProductList.innerHTML = '';}
          console.log( response.documents);
         
          if (response.documents.length > 0) {
-             lastDoc = response.documents[response.documents.length - 1]; // Update last document
+             lastDoc = response.documents[response.documents.length - 1];
+             response.documents.forEach((prod) => {
+              uniqueProducts.push(prod)
+             })   // Update last document
              console.log("Updated lastDocument:", lastDoc);
              displayProducts(response.documents); // Function to render products on UI
          } if(response.documents.length < 2 ) {
@@ -996,9 +1032,3 @@ homeProductList.innerHTML = '';}
      
      loa = false; // Reset loading after request is done
     }
-
-subfunction()
- subcategoryloadMoreBtn.addEventListener('click', subfunction)
-}
-
-
