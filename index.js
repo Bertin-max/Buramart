@@ -540,7 +540,7 @@ categoryButtons.forEach(button => {
 
 let loadin = false;
 window.searchProducts = async function() {
-  window.location.href='#products';
+  document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
   searchloadMoreBtn.style.display = "none";
   categoryloadMoreBtn.style.display = "none";
   categoryloadMoreBtn2.style.display = "none";
