@@ -959,7 +959,7 @@ let loa = false;
 
 
 async function searchBySubcategory (subcategory,button)  {
-  window.location.href='#products'
+  location.href='#products';
   lastDocum = null;
   uniqueProducts = []
   if(previoussub !== false){
