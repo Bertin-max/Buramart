@@ -653,12 +653,12 @@ const showFilteredSearchHistory = async () => {
 
 // Filter history as the user types
 searchInput.addEventListener("input", function () {
-  if (searchInput.value.length > 0) {
+  if (searchInput.value.trim().length > 0) {  // Trimmed input check
     console.log("showFilteredSearchHistory called");
-     showFilteredSearchHistory();
+    showFilteredSearchHistory();
   } else {
     console.log("showFilteredSearchHistory not called");
-      clearSearchHistory(); // Add this function to clear the displayed results
+    clearSearchHistory(); 
   }
 });
 function clearSearchHistory() {
@@ -723,12 +723,12 @@ const showSmallFilteredSearchHistory = async () => {
 
 // Filter history as the user types
 smallsearchInput.addEventListener("input", function () {
-  if (smallsearchInput.value.length > 0) {
+  if (smallsearchInput.value.trim().length > 0) {  // Trimmed input check
     console.log("showFilteredSearchHistory called");
-     showSmallFilteredSearchHistory();
+    showSmallFilteredSearchHistory();
   } else {
     console.log("showFilteredSearchHistory not called");
-      clearSmallSearchHistory(); // Add this function to clear the displayed results
+    clearSmallSearchHistory(); 
   }
 });
 function clearSmallSearchHistory() {
