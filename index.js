@@ -130,7 +130,7 @@ window.goBackToMain = () => {
       
       event.preventDefault()
       categoryloadMoreBtn2.style.display = "none";
-      const buttonText = event.target.closest('.category-btn').textContent.trim();
+      const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');;
       console.log(buttonText)
       document.getElementById('product-title').textContent = `products in ${buttonText}`;
       if ( buttonText === "View All"){
@@ -183,7 +183,7 @@ window.goBack = () => {
       
       event.preventDefault()
       categoryloadMoreBtn2.style.display = "none";
-      const buttonText = event.target.closest('.category-btn').textContent.trim();
+      const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
       console.log(buttonText)
       document.getElementById('product-title').textContent = `products in ${buttonText}`;
       if ( buttonText === "View All"){
