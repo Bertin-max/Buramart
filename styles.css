@@ -11,6 +11,7 @@
  --form-color:  #ffffff;
  --product-color:  #ffffff;
  --border-color: #ddd;
+ --auth-color: #f4f4f4;
 }
 
 [data-theme="dark"] {
@@ -24,6 +25,7 @@
   --form-color: #1e1e1e;
   --product-color:  #1e1e1e;
   --border-color: black;
+  --auth-color: #333;
 }
 .doll {
   position: absolute;
@@ -572,13 +574,15 @@ form label {
   margin: 10px 0 5px;
   color: #555;
 }
-form input, form textarea {
+form input, form textarea, form select {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  background-color: var(--auth-color);
+  color: var(--text-color);
 }
 form textarea {
   resize: vertical;
@@ -1386,4 +1390,134 @@ input:checked + .slider:before {
     padding: 3px;
     height: 25px;
   }
+}
+
+
+/* for auth.html */
+
+.body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--auth-color);
+}
+
+.containerofauth {
+    width: 300px;
+    background: var(--product-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-boxofauth {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputofauth {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.buttonofauth {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttonofauth:hover {
+    background: #0056b3;
+}
+
+p {
+    font-size: 14px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+
+/*for registration.html*/
+
+.body {
+  font-family: Arial, sans-serif;
+  background-color: var(--auth-color); /* Light blue background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.registration-container {
+  background: var(--product-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  padding-right: 30px;
+}
+
+.h2ofreg {
+  color: #1565c0; /* Dark blue title */
+}
+
+.formofreg {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: bold;
+  margin-top: 10px;
+  color: #0d47a1; /* Deep blue */
+  text-align: left;
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #64b5f6; /* Light blue border */
+  border-radius: 5px;
+  outline: none;
+  background-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.input:focus, .textarea:focus {
+  border-color: #1e88e5; /* Highlight on focus */
+}
+
+.button {
+  background: #1e88e5; /* Blue button */
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.button:hover {
+  background: #1565c0; /* Darker blue on hover */
 }

@@ -1,4 +1,4 @@
-document.getElementById("modal").classList.add("active");
+ document.getElementById("modal").classList.add("active");
 
 import { getUserDetails } from "./user.js";
 import { getSellerInfo } from "./user.js";
@@ -54,7 +54,7 @@ console.log(accountEmail);
 if(!accountEmail){
     alert('please Login before registering');
     window.location.href = "index.html";
-}
+  }
 
 if (registered && accountEmail) {
    window.displaySeller = async function ()  {

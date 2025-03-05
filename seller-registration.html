@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Registration - Buramart</title>
-    <link rel="stylesheet" href="seller-registration.css">
+    <link rel="stylesheet" href="styles.css">
     <script>
         function showPreview(event) {
             const file = event.target.files[0];
@@ -20,53 +20,49 @@
     </script>
 </head>
 <body>
-    <div id = "show-error">
-</div>
-
+   
+    <main class="body">
     <div class="registration-container">
-        <h2>Seller Registration</h2>
+        <h2 class="h2ofreg">Seller Registration</h2>
         
-        <form id="sellerRegistrationForm">
+        <form class = "formofreg" id="sellerRegistrationForm">
             <div class="step" id="step1">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" name="fullName" required>
+                <label  class="label" for="fullName">Full Name</label>
+                <input class = "input" type="text" id="fullName" name="fullName" required>
                 
-                <label for="businessName">Business Name</label>
-                <input type="text" id="businessName" name="businessName" required>
+                <label class = "label" for="businessName">Business Name</label>
+                <input class = "input" type="text" id="businessName" name="businessName" required>
                 
-                <label for="profilePicture">Profile Picture</label>
-                <input type="file" id="profilePicture" name="profilePicture" accept="image/*"  onchange="showPreview(event)">
+                <label class = "label" for="profilePicture">Profile Picture</label>
+                <input class = "input" type="file" id="profilePicture" name="profilePicture" accept="image/*"  onchange="showPreview(event)">
                 <img id="profilePreview" src="icons/user.svg" alt="" style="margin-top: 10px; display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
                 <a href="index.html">Go back</a>
-                <button type="button" onclick="nextStep(2)">Next</button>
+                <button class = "button" type="button" onclick="nextStep(2)">Next</button>
                 
             </div>
             
             <div class="step" id="step2" style="display: none;">
-                <label for="phoneNumber">Phone Number</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                <label class = "label" for="phoneNumber">Phone Number</label>
+                <input class = "input" type="tel" id="phoneNumber" name="phoneNumber" required>
                 
-                <label for="whatsappNumber">WhatsApp Number</label>
-                <input type="tel" id="whatsappNumber" name="whatsappNumber" required>
                 
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" >
                 
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" required>
                 
-                <button type="button" onclick="prevStep(1)">Back</button>
-                <button type="button" onclick="nextStep(3)">Next</button>
+                <label class = "label" for="location">Location</label>
+                <input class = "input" type="text" id="location" name="location" required>
+                
+                <button class = "button" type="button" onclick="prevStep(1)">Back</button>
+                <button class = "button" type="button" onclick="nextStep(3)">Next</button>
             </div>
             
             <div class="step" id="step3" style="display: none;">
-                <label for="description">Business Description</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
+                <label class = "label"for="description">Business Description</label>
+                <textarea class = "input" id="description" name="description" rows="4" required></textarea>
                 
                
                 
-                <button type="button" onclick="prevStep(2)">Back</button>
-                <button type="button" onclick="nextStep(4)">Review</button>
+                <button class = "button" type="button" onclick="prevStep(2)">Back</button>
+                <button class = "button" type="button" onclick="nextStep(4)">Review</button>
             </div>
             
             <div class="step" id="step4" style="display: none;">
@@ -80,8 +76,8 @@
                 <p><strong>Location:</strong> <span id="reviewLocation"></span></p>
                 <p><strong>Business Description:</strong> <span id="reviewDescription"></span></p>
                  <a href="index.html" style="margin-right: 20px;">Go back</a>
-                <button type="button" onclick="prevStep(3)">Back</button>
-                <button id = "register-btn" type="submit">Register</button>
+                <button class = "button" type="button" onclick="prevStep(3)">Back</button>
+                <button class = "button" id = "register-btn" type="submit">Register</button>
             </div>
         </form>
     </div>
@@ -89,6 +85,8 @@
   
         <div class="spinner"></div>
       </div>
+      </main>
+      <script src="settings.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>  
     <script type="module" src="user.js"></script>
     <script type = "module" src="seller-registration.js"></script>
