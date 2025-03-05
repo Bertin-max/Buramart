@@ -52,22 +52,22 @@ const storage = new Appwrite.Storage(client);
 
 
 if(!registered){
-  alert('please Register to sell');
+  alert('Veuillez vous inscrire pour vendre');
   window.location.href = "seller-registration.html";
   
 }
 const categories = {
-  electronics: ["Smartphones", "Laptops", "Tablets", "Cameras", "Headphones", "Smartwatches", "Gaming Consoles", "Televisions", "Speakers"],
-  clothing: ["Men's Clothing", "Women's Clothing", "Kids' Clothing", "Shoes", "Bags", "Accessories", "Hats", "Watches", "Eyewear"],
-  homeappliances: ["Refrigerators", "Microwaves", "Washing Machines", "Air Conditioners", "Vacuum Cleaners", "Dishwashers", "Water Heaters", "Fans", "Coffee Makers"],
-  books: ["Fiction", "Non-Fiction", "Educational", "Comics & Graphic Novels", "Biographies", "Self-Help", "Science & Technology", "Children's Books", "Mystery & Thriller"],
-  beauty: ["Skincare", "Makeup", "Haircare", "Fragrances", "Nail Care", "Men’s Grooming", "Beauty Tools", "Bath & Body", "Oral Care"],
-  toys: ["Action Figures", "Dolls", "Board Games", "Building Blocks", "Remote Control Toys", "Educational Toys", "Outdoor Toys", "Plush Toys", "Musical Toys"],
-  furniture: ["Living Room Furniture", "Bedroom Furniture", "Dining Room Furniture", "Office Furniture", "Outdoor Furniture", "Storage Solutions", "Kids' Furniture", "Mattresses", "Lighting"],
-  sports: ["Fitness Equipment", "Outdoor Sports", "Team Sports", "Water Sports", "Winter Sports", "Cycling", "Racket Sports", "Combat Sports", "Running Gear"],
-  health: ["Vitamins & Supplements", "Personal Care", "Medical Supplies", "Fitness & Nutrition", "Wellness Devices", "Weight Management", "First Aid", "Oral Hygiene", "Mental Health"],
-  automotive: ["Car Accessories", "Motorcycle Accessories", "Car Care", "Tires & Wheels", "GPS & Navigation", "Car Electronics", "Oils & Fluids", "Replacement Parts", "Tools & Equipment"],
-  food: ["Fresh Produce", "Dairy & Eggs", "Meat & Seafood", "Snacks", "Beverages", "Canned Goods", "Bakery Items", "Condiments & Spices", "Frozen Foods"]
+  electronique: ["Smartphones", "Ordinateurs portables", "Tablettes", "Appareils photo", "Casques audio", "Montres connectées", "Consoles de jeu", "Télévisions", "Haut-parleurs"],
+  vêtements: ["Vêtements homme", "Vêtements femme", "Vêtements enfants", "Chaussures", "Sacs", "Accessoires", "Chapeaux", "Montres", "Lunettes"],
+  électroménager: ["Réfrigérateurs", "Micro-ondes", "Machines à laver", "Climatiseurs", "Aspirateurs", "Lave-vaisselle", "Chauffe-eau", "Ventilateurs", "Cafetières"],
+  livres: ["Fiction", "Non-fiction", "Éducatif", "Bandes dessinées & Romans graphiques", "Biographies", "Développement personnel", "Science & Technologie", "Livres pour enfants", "Policier & Thriller"],
+  beauté: ["Soins de la peau", "Maquillage", "Soins capillaires", "Parfums", "Soins des ongles", "Soins pour hommes", "Outils de beauté", "Bain & Corps", "Hygiène bucco-dentaire"],
+  jouets: ["Figurines", "Poupées", "Jeux de société", "Blocs de construction", "Jouets télécommandés", "Jouets éducatifs", "Jouets d'extérieur", "Peluches", "Jouets musicaux"],
+  meubles: ["Meubles de salon", "Meubles de chambre", "Meubles de salle à manger", "Meubles de bureau", "Meubles d'extérieur", "Solutions de rangement", "Meubles pour enfants", "Matelas", "Éclairage"],
+  sport: ["Équipement de fitness", "Sports de plein air", "Sports collectifs", "Sports nautiques", "Cyclisme", "Sports de raquette", "Sports de combat", "Équipement de course"],
+  santé: ["Vitamines & Compléments", "Soins personnels", "Fournitures médicales", "Fitness & Nutrition", "Dispositifs de bien-être", "Gestion du poids", "Premiers secours", "Hygiène bucco-dentaire", "Santé mentale"],
+  automobile: ["Accessoires auto", "Accessoires moto", "Entretien auto", "Pneus & Roues", "GPS & Navigation", "Électronique auto", "Huiles & Fluides", "Pièces de rechange", "Outils & Équipements"],
+  alimentation: ["Fruits & Légumes", "Produits laitiers & Œufs", "Viande & Fruits de mer", "Snacks", "Boissons", "Produits en conserve", "Boulangerie", "Condiments & Épices", "Produits surgelés"]
 };
 
 window.updateSubcategories = () => {
@@ -79,7 +79,7 @@ window.updateSubcategories = () => {
   console.log(selectedCategory)
   subcategorySelect.disabled = !selectedCategory;
   // Clear existing subcategories
-  subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
+  subcategorySelect.innerHTML = '<option value="">Sélectionnez une sous-catégorie</option>';
 
   // If a valid category is selected, populate subcategories
   if (selectedCategory && categories[selectedCategory]) {
@@ -128,11 +128,11 @@ function extractFileId(imageUrl) {
 
 window.deleteProduct = async function(productId, imageUrl) {
   
-  if (!confirm("Are you sure you want to delete this product?")) return;
+  if (!confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) return;
 console.log(imageUrl)
   try {
       await db.deleteDocument(DATABASE_ID, SELLER_PRODUCTS_ID, productId);
-      alert("Product deleted successfully!");
+      alert("Produit supprime avec succes!");
       const fileId = extractFileId(imageUrl);
       if (fileId) {
           await storage.deleteFile(BUCKET_ID, fileId);
@@ -141,7 +141,7 @@ console.log(imageUrl)
       fetchProducts(); 
   } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Failed to delete product.");
+      alert("Échec de la suppression du produit.");
   }
 }
 
@@ -157,7 +157,9 @@ window.showProductInDetails = async function(index) {
   modalProductDetails.innerHTML = `
     <h3>${(product.Name)}</h3>
     <img src="${product.image}" alt="Product Image" >
-    <p><strong>Price:</strong> $${product.price}</p>
+    <p><strong>Prix:</strong> BIF ${product.price}</p>
+    <p><strong>Categorie:</strong>${product.category}</p>
+    <p><strong>Sous-category:</strong>${product.subCategory}</p>
     <p><strong>Description:</strong> ${product.description}</p>
   `;
 
@@ -299,7 +301,7 @@ window.editProduct = async function(index) {
   // Store the product ID in dataset to delete later
   document.getElementById('product-form').dataset.productId = product.$id;
   document.getElementById('product-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  alert('You are now editing the product. When you submit, the old version will be deleted. and you will lose all the stars you got on the product');
+  alert("Vous êtes en train de modifier le produit. Lorsque vous soumettrez, l'ancienne version sera supprimée et vous perdrez toutes les étoiles que vous avez obtenues sur le produit.");
 }
 
 
@@ -339,7 +341,7 @@ productForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   console.log(registered)
   if(!registered){
-    alert("please Login and Register as a seller")
+    alert("Veuillez vous connecter et vous inscrire en tant que vendeur")
      productForm.reset();
       document.getElementById('image-preview').style.display = 'none';
       window.location.href = "index.html";
@@ -353,7 +355,7 @@ productForm.addEventListener('submit', async (event) => {
   const imageFile = document.getElementById('product-image').files[0];
 
   if (!name || !price) {
-      alert('Please fill in all fields.');
+      alert('Veuillez remplir tous les details.');
       return;
   }
   updateSearchKeywords(name);
@@ -394,7 +396,7 @@ productForm.addEventListener('submit', async (event) => {
           random: Math.random(),
       });
 
-      alert('Product updated successfully!');
+      alert('Produit téléchargé avec succès !');
       document.getElementById('uploaded-products').scrollIntoView({ behavior: 'smooth', block: 'start' });
       fetchProducts(); // Refresh product list
 
@@ -409,7 +411,7 @@ productForm.addEventListener('submit', async (event) => {
   } catch (error) {
     document.getElementById('submit-btn').style.display = "block";
       console.error('Error updating product:', error);
-      alert('Failed to update product. Please try again');
+      alert('Échec du téléchargement du produit. Veuillez réessayer.');
       document.getElementById("modal").classList.remove("active");
   }
 });
@@ -427,7 +429,7 @@ window.searchProducts = async function () {
     .filter(item => item.product.Name.toLowerCase() === searchInputValue.toLowerCase()); // Case-insensitive search
 console.log(foundProducts)
   if (foundProducts.length === 0) {
-    productList.innerHTML = "You Have no Product under such name";
+    productList.innerHTML = "Vous n'avez aucun produit sous ce nom";
     return;
   }
 

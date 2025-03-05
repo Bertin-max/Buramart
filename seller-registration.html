@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Registration - Buramart</title>
+    <title>Inscription de Vendeur - Buramart</title>
     <link rel="stylesheet" href="styles.css">
     <script>
         function showPreview(event) {
@@ -23,26 +23,26 @@
    
     <main class="body">
     <div class="registration-container">
-        <h2 class="h2ofreg">Seller Registration</h2>
+        <h2 class="h2ofreg">Inscription de Vendeur</h2>
         
         <form class = "formofreg" id="sellerRegistrationForm">
             <div class="step" id="step1">
-                <label  class="label" for="fullName">Full Name</label>
+                <label  class="label" for="fullName">Nom Complet</label>
                 <input class = "input" type="text" id="fullName" name="fullName" required>
                 
-                <label class = "label" for="businessName">Business Name</label>
+                <label class = "label" for="businessName">Nom du Business</label>
                 <input class = "input" type="text" id="businessName" name="businessName" required>
                 
-                <label class = "label" for="profilePicture">Profile Picture</label>
+                <label class = "label" for="profilePicture">Photo de profile</label>
                 <input class = "input" type="file" id="profilePicture" name="profilePicture" accept="image/*"  onchange="showPreview(event)">
                 <img id="profilePreview" src="icons/user.svg" alt="" style="margin-top: 10px; display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
-                <a href="index.html">Go back</a>
-                <button class = "button" type="button" onclick="nextStep(2)">Next</button>
+                <a href="index.html">Retour</a>
+                <button class = "button" type="button" onclick="nextStep(2)">Suivant</button>
                 
             </div>
             
             <div class="step" id="step2" style="display: none;">
-                <label class = "label" for="phoneNumber">Phone Number</label>
+                <label class = "label" for="phoneNumber">Numero de telephone (Avec le code du pays)</label>
                 <input class = "input" type="tel" id="phoneNumber" name="phoneNumber" required>
                 
                 
@@ -51,33 +51,33 @@
                 <label class = "label" for="location">Location</label>
                 <input class = "input" type="text" id="location" name="location" required>
                 
-                <button class = "button" type="button" onclick="prevStep(1)">Back</button>
-                <button class = "button" type="button" onclick="nextStep(3)">Next</button>
+                <button class = "button" type="button" onclick="prevStep(1)">Retour</button>
+                <button class = "button" type="button" onclick="nextStep(3)">Suivant</button>
             </div>
             
             <div class="step" id="step3" style="display: none;">
-                <label class = "label"for="description">Business Description</label>
+                <label class = "label"for="description"> Description du Business</label>
                 <textarea class = "input" id="description" name="description" rows="4" required></textarea>
                 
                
                 
-                <button class = "button" type="button" onclick="prevStep(2)">Back</button>
-                <button class = "button" type="button" onclick="nextStep(4)">Review</button>
+                <button class = "button" type="button" onclick="prevStep(2)">Retour</button>
+                <button class = "button" type="button" onclick="nextStep(4)">Suivant</button>
             </div>
             
             <div class="step" id="step4" style="display: none;">
                 <h3>Review Your Information</h3>
                 <img id="reviewProfilePreview" src="icons/user.svg" alt="Profile Preview" style="display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: auto;">
-                <p><strong>Full Name:</strong> <span id="reviewFullName"></span></p>
-                <p><strong>Business Name:</strong> <span id="reviewBusinessName"></span></p>
-                <p><strong>Phone Number(with the country code):</strong> <span id="reviewPhoneNumber"></span></p>
-                <p><strong>WhatsApp Number(with the country code):</strong> <span id="reviewWhatsappNumber"></span></p>
+                <p><strong>Nom Complet:</strong> <span id="reviewFullName"></span></p>
+                <p><strong>Nom du Business:</strong> <span id="reviewBusinessName"></span></p>
+                <p><strong>Numero de telephone:</strong> <span id="reviewPhoneNumber"></span></p>
+              
                 <p><strong>Email:</strong> <span id="reviewEmail"></span></p>
                 <p><strong>Location:</strong> <span id="reviewLocation"></span></p>
-                <p><strong>Business Description:</strong> <span id="reviewDescription"></span></p>
-                 <a href="index.html" style="margin-right: 20px;">Go back</a>
-                <button class = "button" type="button" onclick="prevStep(3)">Back</button>
-                <button class = "button" id = "register-btn" type="submit">Register</button>
+                <p><strong>Description du Business:</strong> <span id="reviewDescription"></span></p>
+                 <a href="index.html" style="margin-right: 20px;">retourner</a>
+                <button class = "button" type="button" onclick="prevStep(3)">Changer Vos Information</button>
+                <button class = "button" id = "register-btn" type="submit">S'incrire Comme Vendeur</button>
             </div>
         </form>
     </div>

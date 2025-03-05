@@ -13,17 +13,17 @@ let accountId = await loadUserData()
 console.log(accountId);
 
 const categories = {
-  electronics: ["Smartphones", "Laptops", "Tablets", "Cameras", "Headphones", "Smartwatches", "Gaming Consoles", "Televisions", "Speakers"],
-  clothing: ["Men's Clothing", "Women's Clothing", "Kids' Clothing", "Shoes", "Bags", "Accessories", "Hats", "Watches", "Eyewear"],
-  homeappliances: ["Refrigerators", "Microwaves", "Washing Machines", "Air Conditioners", "Vacuum Cleaners", "Dishwashers", "Water Heaters", "Fans", "Coffee Makers"],
-  books: ["Fiction", "Non-Fiction", "Educational", "Comics & Graphic Novels", "Biographies", "Self-Help", "Science & Technology", "Children's Books", "Mystery & Thriller"],
-  beauty: ["Skincare", "Makeup", "Haircare", "Fragrances", "Nail Care", "Men’s Grooming", "Beauty Tools", "Bath & Body", "Oral Care"],
-  toys: ["Action Figures", "Dolls", "Board Games", "Building Blocks", "Remote Control Toys", "Educational Toys", "Outdoor Toys", "Plush Toys", "Musical Toys"],
-  furniture: ["Living Room Furniture", "Bedroom Furniture", "Dining Room Furniture", "Office Furniture", "Outdoor Furniture", "Storage Solutions", "Kids' Furniture", "Mattresses", "Lighting"],
-  sports: ["Fitness Equipment", "Outdoor Sports", "Team Sports", "Water Sports", "Winter Sports", "Cycling", "Racket Sports", "Combat Sports", "Running Gear"],
-  health: ["Vitamins & Supplements", "Personal Care", "Medical Supplies", "Fitness & Nutrition", "Wellness Devices", "Weight Management", "First Aid", "Oral Hygiene", "Mental Health"],
-  automotive: ["Car Accessories", "Motorcycle Accessories", "Car Care", "Tires & Wheels", "GPS & Navigation", "Car Electronics", "Oils & Fluids", "Replacement Parts", "Tools & Equipment"],
-  food: ["Fresh Produce", "Dairy & Eggs", "Meat & Seafood", "Snacks", "Beverages", "Canned Goods", "Bakery Items", "Condiments & Spices", "Frozen Foods"]
+  electronique: ["Smartphones", "Ordinateurs portables", "Tablettes", "Appareils photo", "Casques audio", "Montres connectées", "Consoles de jeu", "Télévisions", "Haut-parleurs"],
+  vêtements: ["Vêtements homme", "Vêtements femme", "Vêtements enfants", "Chaussures", "Sacs", "Accessoires", "Chapeaux", "Montres", "Lunettes"],
+  électroménager: ["Réfrigérateurs", "Micro-ondes", "Machines à laver", "Climatiseurs", "Aspirateurs", "Lave-vaisselle", "Chauffe-eau", "Ventilateurs", "Cafetières"],
+  livres: ["Fiction", "Non-fiction", "Éducatif", "Bandes dessinées & Romans graphiques", "Biographies", "Développement personnel", "Science & Technologie", "Livres pour enfants", "Policier & Thriller"],
+  beauté: ["Soins de la peau", "Maquillage", "Soins capillaires", "Parfums", "Soins des ongles", "Soins pour hommes", "Outils de beauté", "Bain & Corps", "Hygiène bucco-dentaire"],
+  jouets: ["Figurines", "Poupées", "Jeux de société", "Blocs de construction", "Jouets télécommandés", "Jouets éducatifs", "Jouets d'extérieur", "Peluches", "Jouets musicaux"],
+  meubles: ["Meubles de salon", "Meubles de chambre", "Meubles de salle à manger", "Meubles de bureau", "Meubles d'extérieur", "Solutions de rangement", "Meubles pour enfants", "Matelas", "Éclairage"],
+  sport: ["Équipement de fitness", "Sports de plein air", "Sports collectifs", "Sports nautiques", "Cyclisme", "Sports de raquette", "Sports de combat", "Équipement de course"],
+  santé: ["Vitamines & Compléments", "Soins personnels", "Fournitures médicales", "Fitness & Nutrition", "Dispositifs de bien-être", "Gestion du poids", "Premiers secours", "Hygiène bucco-dentaire", "Santé mentale"],
+  automobile: ["Accessoires auto", "Accessoires moto", "Entretien auto", "Pneus & Roues", "GPS & Navigation", "Électronique auto", "Huiles & Fluides", "Pièces de rechange", "Outils & Équipements"],
+  alimentation: ["Fruits & Légumes", "Produits laitiers & Œufs", "Viande & Fruits de mer", "Snacks", "Boissons", "Produits en conserve", "Boulangerie", "Condiments & Épices", "Produits surgelés"]
 };
 
 
@@ -87,10 +87,10 @@ window.updateDatabaseCartProduct = async function (productId) {
        UserId: accountId,
     })
 
-      alert("Product added to cart successfully!");
+      alert( "Produit ajouté au panier avec succès !");
   } catch (error) {
       console.error("Error updating product:", error);
-      alert("Failed to add product to cart.");
+      alert("Échec de l'ajout du produit au panier. Veuillez vérifier votre réseau");
   };
 }
 window.showSidebar = function () {
@@ -132,10 +132,10 @@ window.goBackToMain = () => {
       categoryloadMoreBtn2.style.display = "none";
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');;
       console.log(buttonText)
-      document.getElementById('product-title').textContent = `products in ${buttonText}`;
+      document.getElementById('product-title').textContent = `Produits dans la catégorie ${buttonText}`;
       if ( buttonText === "view all"){
         document.getElementById("modal").classList.add("active");
-        document.querySelector('#products h2').textContent = "Featured Products"
+        document.querySelector('#products h2').textContent = "Produits Phares"
       location.reload()
       document.getElementById("modal").classList.remove("active");
         return
@@ -185,10 +185,10 @@ window.goBack = () => {
       categoryloadMoreBtn2.style.display = "none";
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
       console.log(buttonText)
-      document.getElementById('product-title').textContent = `products in ${buttonText}`;
-      if ( buttonText === "view all"){
+      document.getElementById('product-title').textContent = `Produits dans la catégorie ${buttonText}`;
+      if ( buttonText === "tout voir"){
         document.getElementById("modal").classList.add("active");
-        document.querySelector('#products h2').textContent = "Featured Products"
+        document.querySelector('#products h2').textContent = "produits phares"
       location.reload()
       document.getElementById("modal").classList.remove("active");
         return
@@ -249,7 +249,7 @@ window.showProductInDetails =  async function (productId) {
   const product =  uniqueProducts.find(aproduct => aproduct.$id === productId) ||  products.find(aproduct => aproduct.$id === productId) ;
   if (!product) {
     console.error("Product not found:", productId);
-    alert("Product not found!");
+    alert("Produit non trouvé");
     return;
   }
   console.log(product)
@@ -274,8 +274,8 @@ window.showProductInDetails =  async function (productId) {
         <p><strong>Price: BIF${product.price}</strong></p>
       </div>
       <div class="contact-buttons1" >
-        <a id = "whatsapp-btn" href="" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></a>
-        <a href="tel:${product.whatsapp}" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg></a>
+     
+        <a href="tel:${product.phone}" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg></a>
        <a class="btn-contact" onclick = " updateDatabaseCartProduct('${product.$id}')"><svg height="20" width="20" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></a>
         <div  class="dropdown" >
                           <button class="dropdown-icon">...</button>
@@ -305,6 +305,7 @@ window.showProductInDetails =  async function (productId) {
     }
   });
   attachHoverEvents(); // Reattach hover events
+  /*
   const whatsappbtn = document.getElementById('whatsapp-btn');
   if (product.whatsapp) {
     whatsappbtn.href = `https://wa.me/${product.whatsapp.replace(/\D/g, "")}`;
@@ -313,13 +314,13 @@ window.showProductInDetails =  async function (productId) {
 } else {
     whatsappbtn.remove() // Hide button if no WhatsApp
 }
-
+*/
 
   await showSimilarProducts(product.Name, product.category);
   console.log(product.Name)
 
 console.log(uniqueProducts)
-document.querySelector('#products h2').textContent = "similar Products"
+document.querySelector('#products h2').textContent = "Produits similaire"
 
   window.scrollTo({
     top: 0,
@@ -482,7 +483,7 @@ console.log(products)
         console.log(uniqueProducts)
     } catch (error) {
         console.error("Error fetching products:", error);
-        homeProductList.innerHTML = "Error loading products. Please try again.";
+        homeProductList.innerHTML = "Erreur lors du chargement des produits. Veuillez réessayer.";
         document.getElementById("modal").classList.remove("active");
     }
     loadi = false;
@@ -512,10 +513,10 @@ categoryButtons.forEach(button => {
     categoryloadMoreBtn2.style.display = "none";
     const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
     console.log(buttonText)
-    document.getElementById('product-title').textContent = `products in ${buttonText}`;
-    if ( buttonText === "view all"){
+    document.getElementById('product-title').textContent = `produits dans la category ${buttonText}`;
+    if ( buttonText === "tout voir"){
       document.getElementById("modal").classList.add("active");
-      document.querySelector('#products h2').textContent = "Featured Products"
+      document.querySelector('#products h2').textContent = "produits phares"
     location.reload()
     document.getElementById("modal").classList.remove("active");
       return
@@ -555,7 +556,7 @@ window.searchProducts = async function() {
   const searchInputValue = searchInput.value || smallsearchInput.value;
  
   if (!searchInputValue) {
-      alert("Please enter a product name to search.");
+      alert("Veuillez entrer un nom de produit pour effectuer la recherche.");
       return;
   }
  
@@ -591,7 +592,7 @@ window.searchProducts = async function() {
           document.getElementById("modal").classList.remove("active");
       } catch (error) {
           console.error("Error fetching products:", error);
-          homeProductList.innerHTML = "Error loading products. Please try again.";
+          homeProductList.innerHTML ="Erreur lors du chargement des produits. Veuillez réessayer.";
           document.getElementById("modal").classList.remove("active");
       }
       
@@ -747,7 +748,7 @@ function clearSmallSearchHistory() {
 
 window.rate = async function ()  {
   if(!accountId){
-    alert('please Login to rate');
+    alert('Veuillez vous connecter pour évaluer');
     return
   }
   if(document.getElementById('seller')){
@@ -794,7 +795,7 @@ window.submitRating = async function() {
  
   const selectedRating = document.querySelector('input[name="rating"]:checked');
   if (!selectedRating) {
-      alert("Please select a rating before submitting.");
+      alert("Veuillez sélectionner une note avant de soumettre.");
       return;
   }
   document.getElementById("modal").classList.add("active");
@@ -802,7 +803,7 @@ window.submitRating = async function() {
   console.log(rating)
   const existingRating = await checkUserRating();
   if (existingRating) {
-      alert("You have already rated this product.");
+      alert("Vous avez deja evaluer ce produit");
       document.getElementById("modal").classList.remove("active");
       return;
       
@@ -813,7 +814,7 @@ window.submitRating = async function() {
       rating: rating
   });
  
-  alert("Rating submitted! To see the new rating, refresh and search for the product Again");
+  alert("Évaluation soumise ! Pour voir la nouvelle évaluation, actualisez et recherchez à nouveau le produit.");
   fetchAverageRating();
   
  uniqueProducts = [];
@@ -833,7 +834,7 @@ async function fetchAverageRating() {
   const totalRatings = ratings.length;
   const average = ratings.reduce((a, b) => a + b, 0) / totalRatings || 0;
   
-  document.getElementById("average-rating").innerText = `Average Rating: ${average.toFixed(1)} (${totalRatings} ratings)`;
+  document.getElementById("average-rating").innerText = `Note Moyenne: ${average.toFixed(1)} (${totalRatings} R)`;
   
   // Update star display
   
@@ -856,7 +857,7 @@ async function fetchAverageRating() {
         averageRating: Math.round(average), 
         totalRatings: totalRatings,
     });
-    console.log("Updated product average rating successfully.");
+    console.log("Note moyenne du produit mise à jour avec succès.");
 } catch (error) {
     console.error("Failed to update product rating:", error);
 }
@@ -885,30 +886,30 @@ document.getElementById("submit-rating").addEventListener("click", submitRating)
          console.log(response)
         // Check if seller data exists
         if (!respo) {
-            modalProductDetails2.innerHTML += `<p>Error: Seller not found</p>`;
+            modalProductDetails2.innerHTML += `<p>Erreur : Vendeur non trouvé</p>`;
             return;
         }
 
         // Update modal with fetched seller data
         modalProductDetails2.innerHTML += `
             <div id = 'seller'>
-                <h3>Review Seller Information</h3>
+                <h3>Vérifier les informations du vendeur</h3>
                 <img src="${response[0].profile || '/icons/user.svg'}" alt="Profile Preview" 
                      style="display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: auto;">
-                ${response[0].Name ? `<p><strong>Full Name:</strong> ${response[0].Name}</p>` : ""}
-                ${response[0].businessName ? `<p><strong>Business Name:</strong> ${response[0].businessName}</p>` : ""}
-                ${response[0].phoneNumber ? `<p><strong>Phone Number:</strong> ${response[0].phoneNumber}</p>` : ""}
-                ${response[0].whatsAppNumber ? `<p><strong>WhatsApp Number:</strong> ${response[0].whatsAppNumber}</p>` : ""}
+                ${response[0].Name ? `<p><strong>Nom:</strong> ${response[0].Name}</p>` : ""}
+                ${response[0].businessName ? `<p><strong>Nom du Business:</strong> ${response[0].businessName}</p>` : ""}
+                ${response[0].phoneNumber ? `<p><strong>Numero de telephone:</strong> ${response[0].phoneNumber}</p>` : ""}
+               
                 ${response[0].email ? `<p><strong>Email:</strong> ${response[0].email}</p>` : ""}
                 ${response[0].location ? `<p><strong>Location:</strong> ${response[0].location}</p>` : ""}
-                ${response[0].businessDescription ? `<p><strong>Business Description:</strong> ${response[0].businessDescription}</p>` : ""}
+                ${response[0].businessDescription ? `<p><strong> Description du Business:</strong> ${response[0].businessDescription}</p>` : ""}
             </div>
         `;
         document.getElementById("modal").classList.remove("active");
     } catch (error) {
         console.error("Error fetching seller:", error);
         document.getElementById("modal").classList.remove("active");
-        modalProductDetails2.innerHTML = `<p>Error fetching seller details</p>`;
+        modalProductDetails2.innerHTML = `<p>Erreur lors de la récupération des détails du vendeur, Verifier votre connection</p>`;
     }
 
     // Prevent interactions with the rest of the page
@@ -1029,7 +1030,7 @@ homeProductList.innerHTML = '';}
      } catch (error) {
       document.getElementById("modal").classList.remove("active");
          console.error("Error fetching products:", error);
-         alert('please check Your Internet Connection')
+         alert('Erreur lors de la récupération des produits. Veuillez vérifier votre connexion Internet')
      }
      
      loa = false; // Reset loading after request is done

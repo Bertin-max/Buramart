@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seller Dashboard - Buramart</title>
+  <title>Buramart - vendeur</title>
   <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
@@ -13,7 +13,7 @@
       <h1><svg  height = "20px"  width = "24px" fill = "white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M36.8 192l566.3 0c20.3 0 36.8-16.5 36.8-36.8c0-7.3-2.2-14.4-6.2-20.4L558.2 21.4C549.3 8 534.4 0 518.3 0L121.7 0c-16 0-31 8-39.9 21.4L6.2 134.7c-4 6.1-6.2 13.2-6.2 20.4C0 175.5 16.5 192 36.8 192zM64 224l0 160 0 80c0 26.5 21.5 48 48 48l224 0c26.5 0 48-21.5 48-48l0-80 0-160-64 0 0 160-192 0 0-160-64 0zm448 0l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32l0-256-64 0z"/></svg>
         Buramart</h1>
           <div class="search-bar">
-            <input id = "search-input"  type="text" placeholder="Search products..." />
+            <input id = "search-input"  type="text" placeholder="Rechercher tes produits..." />
            <a href="#products"> <button onclick= "searchProducts()" type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg></button></a>
            <div id="doll" onclick="location.href='#products';" class ="doll">
            
@@ -22,16 +22,16 @@
           <nav>
             <ul class="sidebar">
              <li onclick="hideSidebar()"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill = "blue" ><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a></li>
-             <li><a href="#uploaded-products">My Products</a></li>
+             <li><a href="#uploaded-products">Mes Produits</a></li>
             
             
              
              <li class="account">
-              <a href="#">Account</a>
+              <a href="#">Mon Compte</a>
               <ul class="account-dropdown">
-                <li><a href="auth.html">SignUp</a></li>
-                <li><a href="seller-registration.html">Register</a></li>
-                <li><a href="auth.html">Switch User</a></li>
+                <li><a href="auth.html">Se Connecter</a></li>
+                <li><a href="seller-registration.html">S'inscrire en tant que vendeur</a></li>
+                <li><a href="auth.html">Changer d' utilisateur</a></li>
               </ul>
             </li>
            
@@ -40,22 +40,22 @@
           <nav >
             <ul>
               <a class="home-icon active"  href="index.html"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg></a>
-              <li class="account"><a href="index.html" onclick= "goBackToMain()" class = "hideOnMobile active account">Home</a>
+              <li class="account"><a href="index.html" onclick= "goBackToMain()" class = "hideOnMobile active account">Tout</a>
                 <ul class="account-dropdown">
                   <li><a href="#categories">Categories</a></li>
-                  <li><a href="#products">Products</a></li>
+                  <li><a href="#products">Produits</a></li>
                   <li><a href="#footer">Contact</a></li>
                 
                 </ul>
               </li>
-             <li><a href="#uploaded-products"class="hideOnMobile"> My Products</a></li>
+             <li><a href="#uploaded-products"class="hideOnMobile"> Mes Produits</a></li>
             
              <li class="account">
               <a class="accounts-icon"href="index.html"><svg class="account-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" /></svg></a>
               <ul class="account-dropdown">
-                <li><a href="auth.html">SignUp</a></li>
-                <li><a href="seller-registration.html">Register</a></li>
-                <li><a href="auth.html">Switch User</a></li>
+                <li><a href="auth.html">Se Connecter</a></li>
+                <li><a href="seller-registration.html">S'inscrire en tant que vendeur</a></li>
+                <li><a href="auth.html">Changer d'utilisateur</a></li>
               </li>
               </ul>
             </li>
@@ -77,45 +77,45 @@
       </header>
   
   <div class="small-search-bar">
-    <input  id = "small-search-input" type="text" placeholder="Search products..." />
-    <a href="#uploaded-products"><button onclick= "searchProducts()" type="submit">Search</button></a>
+    <input  id = "small-search-input" type="text" placeholder="Rechercher tes produits..." />
+    <a href="#uploaded-products"><button onclick= "searchProducts()" type="submit">Rechercher</button></a>
     <div id="small-doll" onclick="location.href='#products';" class ="small-doll"></div>
   </div>
   <main>
     <!-- Form Section -->
     <section id="form-section" class="form-section">
       <div id="main-content">
-      <h2>Upload Your Product</h2>
+      <h2>Téléchargez votre produit</h2>
       <form id = "product-form" action="#" method="post">
-        <label for="product-name">Product Name:</label>
+        <label for="product-name">Nom du produits:</label>
         <input type="text" id="product-name" name="product-name" placeholder="Enter product name" required>
 
         <label for="product-description">Description:</label>
         <textarea id="product-description" name="product-description" placeholder="Enter product description" required></textarea>
 
-        <label for="product-price">Price (BIF):</label>
+        <label for="product-price">Prix (BIF):</label>
         <input type="number" id="product-price" name="product-price" placeholder="Enter price" required>
         
-        <label for="product-category">Category:</label>
+        <label for="product-category">Catégorie:</label>
         <select id="product-category" name="product-category" onchange="updateSubcategories()" required>
-          <option value="" disabled selected>Select a category</option>
-          <option value="electronics">Electronics</option>
-          <option value="clothing">Clothing</option>
-          <option value="homeappliances">Home-Appliances</option>
-          <option value="toys">Toys</option>
-          <option value="books">Books</option>
-          <option value="furniture">Furniture</option>
-          <option value="sports">Sports</option>
-          <option value="beauty">Beauty</option>
-          <option value="health">Health</option>
-          <option value="food">Food</option>
-          <option value="automotive">Automotive</option>
+          <option value="" disabled selected>Sélectionnez une catégorie</option>
+          <option value="electronique">electronique</option>
+          <option value="vêtements">vêtements</option>
+          <option value="électroménager">électroménager</option>
+          <option value="jouets">jouets</option>
+          <option value="livres"> livres</option>
+          <option value="meubles">meubles</option>
+          <option value="sport">Sport</option>
+          <option value="beauté"> beauté</option>
+          <option value="santé">santé</option>
+          <option value="alimentation">alimentation</option>
+          <option value="automobile">automobile</option>
         </select>
-        <label for="subcategory">Select Subcategory:</label>
+        <label for="subcategory"> Sélectionnez une sous-catégorie:</label>
         <select id="subcategory">
-            <option value="">Select a subcategory</option>
+            <option value=""> Sélectionnez une sous-catégorie</option>
         </select> 
-        <label for="product-image">Product Image :</label>
+        <label for="product-image"> Image du produit :</label>
         <input type="file" id="product-image" name="product-image" placeholder="Enter image URL" >
         <img id="image-preview" style="max-width: 200px; margin-top: 10px; display: none;">
         <button type="submit" id = "submit-btn" class="submit-btn">Upload Product</button>
@@ -132,7 +132,7 @@
 </div>
     <!-- Uploaded Products Section -->
     <section id="uploaded-products" class="uploaded-products">
-      <h2>My Uploaded Products</h2>
+      <h2>Mes produits téléchargés</h2>
       <div id = "product-list"class="product-list">
         <div   class="product-card ">
           <div>
@@ -282,29 +282,29 @@
       <div class="footer-container">
         <!-- About Section -->
         <div class="footer-about">
-          <h3>About Buramart</h3>
-          <p>Your trusted marketplace for quality products and amazing deals.</p>
+          <h3>À propos de Buramart</h3>
+          <p>>Votre marché de confiance pour des produits de qualité et des offres incroyables!</p>
         </div>
         <!-- Quick Links -->
         <div class="footer-links">
-          <h3>Quick Links</h3>
+          <h3>Liens rapides</h3>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#form-section">Upload Product</a></li>
-            <li><a href="#uploaded-products">My products</a></li>
+            <li><a href="index.html">Tout</a></li>
+            <li><a href="#form-section">Telecharger Vos Produits</a></li>
+            <li><a href="#uploaded-products">Mes produits</a></li>
            
           </ul>
         </div>
         <!-- Contact Section -->
         <div class="footer-contact">
-          <h3>Contact Us</h3>
-          <p>Email: buramartburundi@gmail.com</p>
-          <p>Phone: +257 68154810</p>
-          <p>WhatsApp: +257 69154810</p>
+          <h3>Contactez-nous</h3>
+          <p>Courriel : buramartburundi@gmail.com</p>
+          <p>Téléphone : +257 68154810</p>
+          <p>WhatsApp: +257 68154810</p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 Buramart. All rights reserved.</p>
+        <p>© 2025 Buramart. Tous droits réservés.</p>
       </div>
     </footer>
     

@@ -52,7 +52,7 @@ const storage = new Appwrite.Storage(client);
 let accountEmail = await loadUserData();
 console.log(accountEmail);
 if(!accountEmail){
-    alert('please Login before registering');
+    alert('Veuillez vous connecter avant de vous inscrire');
     window.location.href = "index.html";
   }
 
@@ -72,20 +72,20 @@ if (registered && accountEmail) {
                 document.getElementById('step4').style.display = 'block';
 
                 document.getElementById('step4').innerHTML = `
-                    <h3>Your Information</h3>
+                    <h3>Votre Information</h3>
                     <img id="reviewProfilePreview" src="${seller[0].profile ? seller[0].profile : "icons/user.svg"}" alt="Profile Preview" 
                  
                         style="display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: auto;">
-                    <p><strong>Full Name:</strong> <span id="reviewFullName">${seller[0].Name}</span></p>
-                    <p><strong>Business Name:</strong> <span id="reviewBusinessName">${seller[0].businessName}</span></p>
-                    <p><strong>Phone Number:</strong> <span id="reviewPhoneNumber">${seller[0].phoneNumber}</span></p>
-                    <p><strong>WhatsApp Number:</strong> <span id="reviewWhatsappNumber">${seller[0].whatsAppNumber}</span></p>
+                    <p><strong>Nom:</strong> <span id="reviewFullName">${seller[0].Name}</span></p>
+                    <p><strong>Nom du Business:</strong> <span id="reviewBusinessName">${seller[0].businessName}</span></p>
+                    <p><strong>Numero de telephone:</strong> <span id="reviewPhoneNumber">${seller[0].phoneNumber}</span></p>
+                   
                     <p><strong>Email:</strong> <span id="reviewEmail">${seller[0].email}</span></p>
                     <p><strong>Location:</strong> <span id="reviewLocation">${seller[0].location}</span></p>
-                    <p><strong>Business Description:</strong> <span id="reviewDescription">${seller[0].businessDescription}</span></p>
-                     <a href="index.html" style = "margin-right: 20px">Go back</a>
-                    <button type="button" id = "edit-btn" onclick="editProfile('${seller[0].$id}')">Edit</button>
-                    <button id="update-btn">Update</button>
+                    <p><strong>Description du Business:</strong> <span id="reviewDescription">${seller[0].businessDescription}</span></p>
+                     <a href="index.html" style = "margin-right: 20px">Retourner</a>
+                    <button type="button" id = "edit-btn" onclick="editProfile('${seller[0].$id}')">Change votre Information</button>
+                    <button id="update-btn">Mettre a jour</button>
                 `;
                 console.log(seller[0].$id)
                 document.getElementById('update-btn').addEventListener('click', async (event) => {
@@ -104,7 +104,7 @@ displaySeller()
 
 // Function to Fill Form for Editing
 window.editProfile = async (sellerId) => {
-    if (!confirm("Are you sure you want to change your profile!, it may take days for you to be able to sell again or view your products")) return;
+    if (!confirm("Êtes-vous sûr de vouloir modifier votre profil ! Cela peut prendre plusieurs jours avant que vous puissiez à nouveau vendre ou voir vos produits.")) return;
     accountAlreadyClaimed = false;
     db.getDocument(DATABASE_ID, SELLER_REGISTRATION_ID, sellerId)
         .then((seller) => {
@@ -153,7 +153,7 @@ window.updateProfile = async (sellerId) => {
     const imageFile = document.getElementById('profilePicture').files[0];
 
     if (!fullName || !phoneNumber || !location) {
-        alert('Please fill in your name, phone number, and location.');
+        alert('Veuillez remplir votre nom, numéro de téléphone et emplacement.');
         document.getElementById("modal").classList.remove("active");
         return;
     }
@@ -182,7 +182,7 @@ window.updateProfile = async (sellerId) => {
             Registered: false,
         });
 
-        alert('Profile updated successfully!');
+        alert('Profil mis à jour avec succès !Veuillez patienter quelques jours pour que nous confirmions votre nouveau Information');
           // Wait before fetching new data (to prevent UI refresh from showing old data)
           displaySeller();
           document.getElementById("modal").classList.remove("active");
@@ -194,7 +194,7 @@ window.updateProfile = async (sellerId) => {
         document.getElementById('loadingModal').style.display = 'none';
         console.error('Error updating profile:', error);
         document.getElementById('show-error').textContent = error;
-        alert('Failed to update profile. please verify Internet Connection and try again');
+        alert('Échec de la mise à jour du profil. Veuillez vérifier la connexion Internet et réessayer.');
     }
 };
 
@@ -208,7 +208,7 @@ window.nextStep = function(step) {
    
   
     if(accountAlreadyClaimed){
-        alert('an account Already Exists with this email');
+        alert('Un compte existe déjà avec cet e-mail.');
         return
     }
     document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
@@ -218,7 +218,7 @@ window.nextStep = function(step) {
         document.getElementById('reviewFullName').textContent = document.getElementById('fullName').value;
         document.getElementById('reviewBusinessName').textContent = document.getElementById('businessName').value;
         document.getElementById('reviewPhoneNumber').textContent = document.getElementById('phoneNumber').value;
-        document.getElementById('reviewWhatsappNumber').textContent = document.getElementById('whatsappNumber').value;
+       
         document.getElementById('reviewEmail').textContent =        document.getElementById('email').value || accountEmail;
         document.getElementById('reviewLocation').textContent = document.getElementById('location').value;
         document.getElementById('reviewDescription').textContent = document.getElementById('description').value;
@@ -246,7 +246,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
     const imageFile = document.getElementById('profilePicture').files[0];
   
     if (!fullName || !phoneNumber || !location) {
-        alert('Please fill in your name or phoneNumber or location.');
+        alert('Veuillez remplir votre nom, numéro de téléphone ou emplacement');
         return;
     }
   
@@ -276,7 +276,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
              businessDescription: businessDescription,
         });
   
-        alert('Profile created successfully! please wait a few days for us to comfirm your registration');
+        alert('Profil créé avec succès ! Veuillez patienter quelques jours pour que nous confirmions votre inscription.');
         // Refresh product list
   
         document.getElementById('sellerRegistrationForm').reset();
@@ -286,6 +286,6 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
         document.getElementById("modal").classList.remove("active");
         document.getElementById('register-btn').style.display = "block";
         console.error('Error updating product:', error);
-        alert('Failed to update product.');
+        alert('Échec de la création du profil. Veuillez réessayer.');
     }
   });

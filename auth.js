@@ -13,14 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
               
                 await account.create('unique()', email, password);
-                alert('Signup successful! Please log in.');
+                alert('Inscription réussie ! Veuillez vous connecter.');
 
                 showLogin();
                 document.getElementById("modal").classList.remove("active");
             } catch (error) {
                 console.error(error);
                 document.getElementById("modal").classList.remove("active");
-                alert(`Signup failed! : ${error}`);
+                alert(`Échec de l'inscription ! : ce compte existe deja ou veuillez verifier que votre email est valide et votre mot de passe doit etre plus long que 8 charactere`);
             }
         });
     } else {
@@ -37,7 +37,7 @@ document.querySelector('#login-box form').addEventListener('submit', async (e) =
     document.getElementById("modal").classList.add("active");
     try {
         await account.createEmailPasswordSession(email, password);
-        alert('Login successful!');
+        alert('Connexion réussie !');
         window.location.href = "index.html"; // Change URL to your target page
 
         document.getElementById('logout-btn').style.display = 'block';
@@ -50,7 +50,7 @@ document.querySelector('#login-box form').addEventListener('submit', async (e) =
     } catch (error) {
         console.error(error);
         document.getElementById("modal").classList.remove("active");
-        alert(`Login failed! : ${error}`);
+        alert(`Échec de la connexion ! Vérifiez le mot de passe ou l'email. `);
     }
 });
 
@@ -59,7 +59,7 @@ async function handleLogout() {
     document.getElementById("modal").classList.add("active");
     try {
         await account.deleteSession('current');
-        alert('Logged out successfully!');
+        alert('Déconnexion réussie !');
         document.getElementById('logout-btn').style.display = 'none';
 
         // Reset UI
@@ -70,7 +70,7 @@ async function handleLogout() {
     } catch (error) {
         console.error(error);
         document.getElementById("modal").classList.remove("active");
-        alert('Logout failed! Please try again');
+        alert('Échec de la déconnexion ! Veuillez réessayer');
     }
 }
 
@@ -87,7 +87,7 @@ async function handleLogout() {
             document.getElementById('user-email-display').innerText = `Logged in as: ${user.email}`;
          
             
-            alert(`Welcome back, ${user.email}`);
+            alert(`Bon retour !, ${user.email}`);
         }
     } catch {
         console.log('Not logged in');

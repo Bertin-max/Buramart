@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up & Login</title>
+    <title>S'inscrire & Se Connecter</title>
     <link rel="stylesheet" href="styles.css">
     
 </head>
 <body >
     <main class = "body">
     <div class="containerofauth">
-        <a href="index.html">Go back</a>
+        <a href="index.html">← Retour</a>
         <div class="form-boxofauth" id="signup-box">
-            <h2>Sign Up</h2>
+            <h2>S'inscrire</h2>
             <form>
                 <input class="inputofauth" type="text" placeholder="Full Name" required>
               
                 <input class="inputofauth" id="signup-email" type="email" placeholder="Email" required>
                 <input class = "inputofauth" id="signup-password" type="password" placeholder="Password" required>
-                <button class = "buttonofauth" type="submit">Sign Up</button>
-                <p >Already have an account? <a  href="#" id = "show-login-prompt" >Login</a></p>
+                <button class = "buttonofauth" type="submit">S'inscrire</button>
+                <p >Vous avez déjà un compte ?<a  href="#" id = "show-login-prompt" >Se connecter</a></p>
             </form>
         </div>
 
         <div class="form-boxofauth" id="login-box" style="display: none;">
-            <h2>Login</h2>
+            <h2>Se Connecter</h2>
             <form id = "login-form">
                 <input class = "inputofauth" id="login-email" type="email" placeholder="Email" required>
                 <input class = "inputofauth" id="login-password" type="password" placeholder="Password" required>
-                <button class = "buttonofauth" type="submit" id="login-btn">Login</button>
-                <p id="login-text">Don't have an account? <a href="#" id="show-signup-prompt">Sign Up</a></p>
+                <button class = "buttonofauth" type="submit" id="login-btn">Se Connecter</button>
+                <p id="login-text">Vous n'avez pas de compte ? <a href="#" id="show-signup-prompt">S'inscrire</a></p>
             </form>
             <p id = "user-email-display"></p>
-            <button class="buttonofauth"  id ="logout-btn"  style="display:none;">Logout</button>
+            <button class="buttonofauth"  id ="logout-btn"  style="display:none;">Se deconnecter</button>
         </div>
     </div>
     <div class="modal" id="modal">
