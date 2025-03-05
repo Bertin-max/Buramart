@@ -78,7 +78,7 @@ let lastDocumen = null;
 let search = null;
 window.updateDatabaseCartProduct = async function (productId) {
   if(!accountId){
-    alert('please login to add the cart');
+    alert('Veuillez vous connecter pour ajouter au panier.');
     return;
   }
   try {
@@ -280,8 +280,8 @@ window.showProductInDetails =  async function (productId) {
         <div  class="dropdown" >
                           <button class="dropdown-icon">...</button>
                           <div class="dropdown-content">
-                              <button class="show-details-btn" onclick = " event.stopPropagation();showSeller()" >About Seller</button>
-                              <button class ="edit-btn" onclick = "rate()" >Rate</button>
+                              <button class="show-details-btn" onclick = " event.stopPropagation();showSeller()" >Infrormation sur le vendeur</button>
+                              <button class ="edit-btn" onclick = "rate()" >Evaluer avec des etoiles</button>
                              
                           </div>
                       </div>
