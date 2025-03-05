@@ -513,7 +513,7 @@ categoryButtons.forEach(button => {
     const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
     console.log(buttonText)
     document.getElementById('product-title').textContent = `products in ${buttonText}`;
-    if ( buttonText === "View All"){
+    if ( buttonText === "view all"){
       document.getElementById("modal").classList.add("active");
       document.querySelector('#products h2').textContent = "Featured Products"
     location.reload()
