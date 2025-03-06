@@ -31,6 +31,7 @@ const categories = {
 let subcategoryterm = "";
 let productNameOfProduct = '';
 let categoryOfProduct = '';
+let subcategoryOfProduct = '';
 let subcat = [];
 const homeProductList = document.getElementById("home-list");
 const storedProduct = localStorage.getItem('products');
@@ -73,6 +74,7 @@ let products = [];
 let foundProducts = [];
 let uniqueProducts = [];
 let unrep = [] ;
+let productNamesArray = [];
 let previousButton = null;
 let lastDocumen = null;
 let search = null;
@@ -133,24 +135,25 @@ window.goBackToMain = () => {
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');;
       console.log(buttonText)
       document.getElementById('product-title').textContent = `Produits dans la catégorie ${buttonText}`;
-      if ( buttonText === "view all"){
+      if ( buttonText === "tout voir"){
         document.getElementById("modal").classList.add("active");
         document.querySelector('#products h2').textContent = "Produits Phares"
       location.reload()
       document.getElementById("modal").classList.remove("active");
         return
       }
-     productNameOfProduct = 'noth';
+     productNameOfProduct = '';
+     subcategoryOfProduct = ""
      categoryOfProduct = buttonText;
      previousButton = buttonClicked;
     
      
      showSubcategories(buttonText);
      if(previousButton){
-      await showSimilarProducts ('noth', buttonText)
+      await showSimilarProducts ('noth', "noth")
       return
     }
-   await    showSimilarProducts('noth', buttonText)
+   await    showSimilarProducts('noth', "noth")
   
   
   
@@ -194,16 +197,17 @@ window.goBack = () => {
         return
       }
      productNameOfProduct = 'noth';
+     subcategoryOfProduct = '';
      categoryOfProduct = buttonText;
      previousButton = buttonClicked;
     
      
      showSubcategories(buttonText);
      if(previousButton){
-      await showSimilarProducts ('noth', buttonText)
+      await showSimilarProducts ('noth', "noth")
       return
     }
-   await    showSimilarProducts('noth', buttonText)
+   await    showSimilarProducts('noth', "noth")
   
   
   
@@ -258,7 +262,8 @@ window.showProductInDetails =  async function (productId) {
   selectedProductCategory = product.category;
   fetchAverageRating()
    productNameOfProduct = product.Name;
-   categoryOfProduct = product.category;
+   categoryOfProduct = "";
+   subcategoryOfProduct = product.subCategory;
   main.innerHTML  += `
         <div class="product-details-container">
           <button onclick = 'goBackToMain()' style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
@@ -316,7 +321,7 @@ window.showProductInDetails =  async function (productId) {
 }
 */
 
-  await showSimilarProducts(product.Name, product.category);
+  await showSimilarProducts(product.Name, product.subcategory);
   console.log(product.Name)
 
 console.log(uniqueProducts)
@@ -413,7 +418,7 @@ console.log(products)
    let loadi = false;
    let lastDocum = null;
    
-   window.showSimilarProducts = async function(productName, category) {
+   window.showSimilarProducts = async function(productName, subcategory) {
     document.getElementById("modal").classList.add("active");
     loadMoreBtn.style.display = "none" ; 
        categoryloadMoreBtn2.style.display = "none";
@@ -422,14 +427,20 @@ console.log(products)
     if(loadi)return
     loadi = true;
   productName = productName;
-  category = category;
+  subcategory = subcategory;
    
     categoryloadMoreBtn.style.display = "block"
     try {
-      const orQuery = Query.or([
+      let orQuery = Query.or([
         Query.equal('Name', productName),
-        Query.equal('category', category)]
-    );
+        Query.equal('subCategory', subcategoryOfProduct)
+    ]);
+    if(categoryOfProduct){
+      orQuery = Query.or([
+        Query.equal('Name', productName),
+        Query.equal('category', categoryOfProduct)
+    ]);
+    }
     const queries = [
       orQuery,
       Query.orderDesc('CreatedAt'),
@@ -488,9 +499,11 @@ console.log(products)
     }
     loadi = false;
   };
-  categoryloadMoreBtn.addEventListener('click', () =>
-  
-    showSimilarProducts(productNameOfProduct, categoryOfProduct)
+  categoryloadMoreBtn.addEventListener('click', () =>{
+    if(categoryOfProduct){
+      showSimilarProducts('noth', 'noth');
+    }
+    showSimilarProducts(productNameOfProduct, subcategoryOfProduct)}
   );
 
 
@@ -502,17 +515,18 @@ const categoryButtons = document.querySelectorAll('.category-btn')
 categoryButtons.forEach(button => {
   button.addEventListener('click',  async function(event) {
     if(previousButton){
-   homeProductList.innerHTML = '';
+   
    lastDocum = null;
   
 };
-
+homeProductList.innerHTML = '';
     const buttonClicked = event.target.closest('.category-btn');
     
     event.preventDefault()
     categoryloadMoreBtn2.style.display = "none";
     const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
-    console.log(buttonText)
+    console.log(buttonText);
+    
     document.getElementById('product-title').textContent = `produits dans la category ${buttonText}`;
     if ( buttonText === "tout voir"){
       document.getElementById("modal").classList.add("active");
@@ -524,13 +538,14 @@ categoryButtons.forEach(button => {
     
     showSubcategories(buttonText);
    productNameOfProduct = 'noth';
+   subcategoryOfProduct = '';
    categoryOfProduct = buttonText;
    previousButton = buttonClicked;
    if(previousButton){
-    await showSimilarProducts ('noth', buttonText)
+    await showSimilarProducts ('noth', "noth")
     return
   }
- await    showSimilarProducts('noth', buttonText)
+ await    showSimilarProducts('noth', "noth")
 
 
 
@@ -540,7 +555,12 @@ categoryButtons.forEach(button => {
 
 
 let loadin = false;
+let searchValue = "";
+let attempt = 0;
 window.searchProducts = async function() {
+  productNameOfProduct = '';
+   subcategoryOfProduct = '';
+  categoryOfProduct = '';
   document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
   searchloadMoreBtn.style.display = "none";
   categoryloadMoreBtn.style.display = "none";
@@ -553,7 +573,7 @@ window.searchProducts = async function() {
  
   goBackToMain();
 
-  const searchInputValue = searchInput.value || smallsearchInput.value;
+  const searchInputValue = searchValue || searchInput.value || smallsearchInput.value;
  
   if (!searchInputValue) {
       alert("Veuillez entrer un nom de produit pour effectuer la recherche.");
@@ -570,18 +590,44 @@ window.searchProducts = async function() {
           let queries = [
             window.Appwrite.Query.orderDesc("CreatedAt"),
               window.Appwrite.Query.limit(30),
-              window.Appwrite.Query.equal('Name', searchInputValue)
+              window.Appwrite.Query.search('Name', searchInputValue)
              // Fetch 10 products at a time
           ];
   
           
       
           let response = await db.listDocuments(DATABASE_ID, SELLER_PRODUCTS_ID, queries);
-        
-        
-          if (response.documents.length > 0) {
+         
+          if (response.documents.length === 0) {
+            console.log("No exact match found, searching word by word...");
+      
+            const words = searchInputValue.trim().split(/\s+/); // Split input into words
+      
+            for (let i = 0; i < words.length && attempt < 5; i++) {
+              let word = words[i];
+              console.log(`Attempt ${attempt + 1}: Checking if '${word}' is a valid product name...`);
+      
+              if (productNamesArray.includes(word)) { // Check if word is in productNamesArray
+                console.log(`Match found: ${word}, restarting search...`);
+                searchValue = word;
+                attempt++
+                searchProducts(); // Restart search with found word, increment attempt
+                return; // Stop further execution
+              }
+             
+            }
+      
+            console.log("No matching words found in product names array after 5 attempts.");
+            homeProductList.innerHTML = "Aucun produit trouvé.";
+            attempt = 0;
+            searchValue = "";
+          }
+
+           else {
+            attempt = 0;
+            searchValue = "";
             search = true;
-            
+             console.log(response.documents)
               response.documents.forEach((prod) =>
               uniqueProducts.push(prod)
               ) // Update last document
@@ -614,7 +660,7 @@ const showFilteredSearchHistory = async () => {
   console.log(productNames)
       // Filter results based on search query
       const results = productNames
-     
+      productNamesArray = results;
   let searchTerm = searchInput.value.trim().toLowerCase() 
 
   searchResultsContainer.innerHTML = "";
@@ -653,19 +699,28 @@ const showFilteredSearchHistory = async () => {
 
 
 // Filter history as the user types
-searchInput.addEventListener("input", function () {
-  if (searchInput.value.trim().length > 0) {  // Trimmed input check
-    console.log("showFilteredSearchHistory called");
-    showFilteredSearchHistory();
-  } else {
-    console.log("showFilteredSearchHistory not called");
-    clearSearchHistory(); 
-  }
-});
+// Ensure the search input exists before adding the event listener
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    let inputValue = searchInput.value.trim(); // Trim input value
+
+    if (inputValue.length > 0) {
+      console.log("showFilteredSearchHistory called");
+      showFilteredSearchHistory();  // Ensure this function exists
+    } else {
+      console.log("showFilteredSearchHistory not called");
+      clearSearchHistory();
+    }
+  });
+}
+
 function clearSearchHistory() {
-  // Example: Remove search history results from the UI
-  document.getElementById("doll").innerHTML = ""; 
-  document.getElementById('doll').style.display = "none";
+  let searchHistoryContainer = document.getElementById("doll");
+  
+  if (searchHistoryContainer) {
+    searchHistoryContainer.style.display = "none";
+    searchHistoryContainer.innerHTML = ""; // Clear previous search results
+  }
 }
 
 
@@ -684,7 +739,7 @@ const showSmallFilteredSearchHistory = async () => {
   console.log(productNames)
       // Filter results based on search query
       const results = productNames
-     
+      productNamesArray = results;
   let searchTerm = smallsearchInput.value.trim().toLowerCase() 
 
   smallsearchResultsContainer.innerHTML = "";
@@ -929,6 +984,7 @@ function closeModal2() {
 }
 
 window.showSubcategories = (category) =>  {
+  categoryOfProduct = "";
   // Hide categories
   document.getElementById("categories").style.display = "none";
   document.getElementById("subcategories-header").textContent = category;
