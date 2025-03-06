@@ -272,7 +272,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
             Name: fullName,
             businessName:businessName,
             phoneNumber: phoneNumber,
-            whatsAppNumber:whatsAppNumber,
+           
             email: email,
             profile: imageUrl,
              location: location,
