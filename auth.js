@@ -44,7 +44,7 @@ document.querySelector('#login-box form').addEventListener('submit', async (e) =
         document.getElementById('login-form').style.display = 'none'
 
         // Update UI with email
-        document.getElementById('user-email-display').innerText = `Logged in as: ${email}`;
+        document.getElementById('user-email-display').innerText = `Connecter: ${email}`;
         document.getElementById("modal").classList.remove("active");
         
     } catch (error) {
@@ -59,7 +59,7 @@ async function handleLogout() {
     document.getElementById("modal").classList.add("active");
     try {
         await account.deleteSession('current');
-        alert('Déconnexion réussie !');
+        alert('Déconnecte !');
         document.getElementById('logout-btn').style.display = 'none';
 
         // Reset UI
@@ -84,7 +84,7 @@ async function handleLogout() {
             document.getElementById('login-box').style.display = 'block'
            document.getElementById('login-form').style.display = 'none'
             // Display logged-in user's email
-            document.getElementById('user-email-display').innerText = `Logged in as: ${user.email}`;
+            document.getElementById('user-email-display').innerText = `Connecte: ${user.email}`;
          
             
             alert(`Bon retour !, ${user.email}`);

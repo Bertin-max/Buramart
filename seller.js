@@ -15,6 +15,7 @@ let phoneNumber = "";
 let whatsappNumber = "";
 let registered = false;
 let sellerId = "";
+
 async function setSellerDetails() {
     const sellerInfo = await getSellerInfo();
 
@@ -49,7 +50,7 @@ const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
 const BUCKET_ID = '67b5a6a900035fb44480';
 const db = new Appwrite.Databases(client, DATABASE_ID); // Replace with your actual Database ID
 const storage = new Appwrite.Storage(client);
-
+let oldImageUrl = '';
 
 if(!registered){
   alert('Veuillez vous inscrire pour vendre');
@@ -291,13 +292,15 @@ window.editProduct = async function(index) {
   document.getElementById('product-name').value = product.Name;
   document.getElementById('product-price').value = product.price;
   document.getElementById('product-description').value = product.description;
-  document.getElementById('product-category').value = product.category;
-  document.getElementById('product-category').value = product.category;
+  document.getElementById('product-category').value = '';
+ 
   document.getElementById('subcategory').value = product.subCategory;
   document.getElementById('image-preview').src = product.image;
+  oldImageUrl = product.image;
+  document.getElementById('image-preview').style.display = 'flex';
   // Show image preview
-  
-
+  console.log(document.getElementById('image-preview'))
+console.log(product.image)
   // Store the product ID in dataset to delete later
   document.getElementById('product-form').dataset.productId = product.$id;
   document.getElementById('product-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -375,7 +378,10 @@ productForm.addEventListener('submit', async (event) => {
       if (imageFile) {
           const uploadResponse = await storage.createFile(BUCKET_ID, 'unique()', imageFile);
           imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${BUCKET_ID}/files/${uploadResponse.$id}/view?project=67b35038002044fd8dfa`;
-          
+          const fileId = extractFileId(oldImageUrl);
+          if (fileId) {
+              await storage.deleteFile(BUCKET_ID, fileId);
+          }
       } else {
           // Keep existing image if no new image was uploaded
           imageUrl = document.getElementById('image-preview')?.src || '';

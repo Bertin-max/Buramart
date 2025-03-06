@@ -142,14 +142,17 @@ window.goBackToMain = () => {
       document.getElementById("modal").classList.remove("active");
         return
       }
+    categoryOfProduct = buttonText;
+    console.log(categoryOfProduct)
      productNameOfProduct = '';
-     subcategoryOfProduct = ""
-     categoryOfProduct = buttonText;
+     subcategoryOfProduct = "";
+    
      previousButton = buttonClicked;
     
      
      showSubcategories(buttonText);
      if(previousButton){
+      categoryOfProduct = buttonText;
       await showSimilarProducts ('noth', "noth")
       return
     }
@@ -440,7 +443,9 @@ console.log(products)
         Query.equal('Name', productName),
         Query.equal('category', categoryOfProduct)
     ]);
+   
     }
+    console.log(categoryOfProduct)
     const queries = [
       orQuery,
       Query.orderDesc('CreatedAt'),
