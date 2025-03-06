@@ -353,7 +353,7 @@ async function fetchProducts() {
       document.getElementById("modal").classList.add("active");
         let queries = [
           window.Appwrite.Query.orderDesc("$createdAt"),
-            window.Appwrite.Query.limit(6),
+            window.Appwrite.Query.limit(20),
           
            // Fetch 10 products at a time
         ];
@@ -370,7 +370,7 @@ async function fetchProducts() {
             lastDocument = response.documents[response.documents.length - 1]; // Update last document
             console.log("Updated lastDocument:", lastDocument);
             displayProducts(response.documents); // Function to render products on UI
-        } if(response.documents.length < 6) {
+        } if(response.documents.length < 20) {
           loadMoreBtn.style.display = "none";
             console.log("No more products to load.");
         }
@@ -449,7 +449,7 @@ console.log(products)
     const queries = [
       orQuery,
       Query.orderDesc('CreatedAt'),
-      window.Appwrite.Query.limit(2),
+      window.Appwrite.Query.limit(10),
     ];
     if (lastDocum) {
       queries.push(window.Appwrite.Query.cursorAfter(lastDocum.$id));
@@ -486,7 +486,7 @@ console.log(products)
              
             displayProducts(nameOrCategoryResponse.documents)
               // Function to render products on UI
-          } if(nameOrCategoryResponse.documents.length < 2) {
+          } if(nameOrCategoryResponse.documents.length < 10) {
             categoryloadMoreBtn.style.display = "none";
               console.log("No more products to load.");
           }
@@ -594,7 +594,7 @@ window.searchProducts = async function() {
       try {
           let queries = [
             window.Appwrite.Query.orderDesc("CreatedAt"),
-              window.Appwrite.Query.limit(30),
+              window.Appwrite.Query.limit(20),
               window.Appwrite.Query.search('Name', searchInputValue)
              // Fetch 10 products at a time
           ];
@@ -1062,7 +1062,7 @@ homeProductList.innerHTML = '';}
      try {
          let queries = [
            window.Appwrite.Query.orderDesc("CreatedAt"),
-             window.Appwrite.Query.limit(2),
+             window.Appwrite.Query.limit(10),
              window.Appwrite.Query.equal('subCategory', subcategoryterm)
             // Fetch 10 products at a time
          ];
@@ -1083,7 +1083,7 @@ homeProductList.innerHTML = '';}
              })   // Update last document
              console.log("Updated lastDocument:", lastDoc);
              displayProducts(response.documents); // Function to render products on UI
-         } if(response.documents.length < 2 ) {
+         } if(response.documents.length < 10 ) {
              subcategoryloadMoreBtn.style.display = "none";
              console.log("No more products to load.");
          }
