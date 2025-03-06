@@ -72,7 +72,7 @@ if (registered && accountEmail) {
                 document.getElementById('step4').style.display = 'block';
 
                 document.getElementById('step4').innerHTML = `
-                    <h3>Votre Information</h3>
+                    <h3>Vos Informations</h3>
                     <img id="reviewProfilePreview" src="${seller[0].profile ? seller[0].profile : "icons/user.svg"}" alt="Profile Preview" 
                  
                         style="display: block; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: auto;">

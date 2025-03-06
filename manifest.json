@@ -1,0 +1,21 @@
+{
+    "name": "Buramart",
+    "short_name": "Buramart",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0078d7",
+      "theme_color": "#0078d7",
+    "icons": [
+      {
+        "src": "/icons/store.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icons/store.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
