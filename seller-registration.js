@@ -190,13 +190,14 @@ window.updateProfile = async (sellerId) => {
           document.getElementById("modal").classList.remove("active");
           window.location.href = "index.html"; // Hide loading modal after checks
     } catch (error) {
+        alert('Échec de la mise à jour du profil. Veuillez vérifier la connexion Internet et réessayer.');
         document.getElementById("modal").classList.remove("active");
         document.getElementById('edit-btn').style.display = "flex";
         document.getElementById('update-btn').style.display = "flex";
        
         console.error('Error updating profile:', error);
         document.getElementById('show-error').textContent = error;
-        alert('Échec de la mise à jour du profil. Veuillez vérifier la connexion Internet et réessayer.');
+      
     }
 };
 
