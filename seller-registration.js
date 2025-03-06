@@ -32,7 +32,7 @@ async function setSellerDetails() {
        
         console.log("Updated Values:");
         console.log("Phone:", phoneNumber);
-        console.log("WhatsApp:", whatsappNumber);
+       
         console.log("Registered:", registered);
     }
 }
@@ -83,9 +83,9 @@ if (registered && accountEmail) {
                     <p><strong>Email:</strong> <span id="reviewEmail">${seller[0].email}</span></p>
                     <p><strong>Location:</strong> <span id="reviewLocation">${seller[0].location}</span></p>
                     <p><strong>Description du Business:</strong> <span id="reviewDescription">${seller[0].businessDescription}</span></p>
-                     <a href="index.html" style = "margin-right: 20px">Retourner</a>
-                    <button type="button" id = "edit-btn" onclick="editProfile('${seller[0].$id}')">Change votre Information</button>
-                    <button id="update-btn">Mettre a jour</button>
+                     <a href="index.html" style = "margin-right: 20px ;color: rgb(84, 84, 247);" ">← Retour</a>
+                    <button class = "button" type="button" id = "edit-btn" onclick="editProfile('${seller[0].$id}')">Changer </button>
+                    <button class = "button" id="update-btn">Mettre a jour</button>
                 `;
                 console.log(seller[0].$id)
                 document.getElementById('update-btn').addEventListener('click', async (event) => {
@@ -104,21 +104,23 @@ displaySeller()
 
 // Function to Fill Form for Editing
 window.editProfile = async (sellerId) => {
+   
     if (!confirm("Êtes-vous sûr de vouloir modifier votre profil ! Cela peut prendre plusieurs jours avant que vous puissiez à nouveau vendre ou voir vos produits.")) return;
     accountAlreadyClaimed = false;
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('step4').style.display = 'none';
     db.getDocument(DATABASE_ID, SELLER_REGISTRATION_ID, sellerId)
         .then((seller) => {
             document.getElementById('fullName').value = seller.Name;
             document.getElementById('businessName').value = seller.businessName;
             document.getElementById('phoneNumber').value = seller.phoneNumber;
-            document.getElementById('whatsappNumber').value = seller.whatsAppNumber;
-            document.getElementById('email').value = seller.email;
+          
+           
             document.getElementById('location').value = seller.location;
             document.getElementById('description').value = seller.businessDescription;
             document.getElementById('profilePreview').src = 'icons/user.svg';
             document.getElementById('profilePicture').value = '';
-            document.getElementById('step1').style.display = 'block';
-            document.getElementById('step4').style.display = 'none';
+          
         })
         .catch((error) => console.error("Error fetching seller details:", error));
 
@@ -129,7 +131,7 @@ window.editProfile = async (sellerId) => {
             const url = new URL(document.profile);
             const pathSegments = url.pathname.split('/');
             const fileId = pathSegments[pathSegments.indexOf('files') + 1];
-
+            console.log(fileId)
             if (fileId) {
                 // Delete the file from the storage bucket
                 await storage.deleteFile(SELLER_IMAGES_ID, fileId);
@@ -146,8 +148,8 @@ window.updateProfile = async (sellerId) => {
     const fullName = document.getElementById('fullName').value;
     const businessName = document.getElementById('businessName').value;
     const phoneNumber = document.getElementById('phoneNumber').value;
-    const whatsAppNumber = document.getElementById('whatsappNumber').value;
-    const email = document.getElementById('email').value || accountEmail;
+    
+    const email =  accountEmail;
     const location = document.getElementById('location').value;
     const businessDescription = document.getElementById('description').value;
     const imageFile = document.getElementById('profilePicture').files[0];
@@ -174,7 +176,7 @@ window.updateProfile = async (sellerId) => {
             Name: fullName,
             businessName: businessName,
             phoneNumber: phoneNumber,
-            whatsAppNumber: whatsAppNumber,
+            
             email: email,
             location: location,
             businessDescription: businessDescription,
@@ -191,7 +193,7 @@ window.updateProfile = async (sellerId) => {
         document.getElementById("modal").classList.remove("active");
         document.getElementById('edit-btn').style.display = "flex";
         document.getElementById('update-btn').style.display = "flex";
-        document.getElementById('loadingModal').style.display = 'none';
+       
         console.error('Error updating profile:', error);
         document.getElementById('show-error').textContent = error;
         alert('Échec de la mise à jour du profil. Veuillez vérifier la connexion Internet et réessayer.');
@@ -219,7 +221,7 @@ window.nextStep = function(step) {
         document.getElementById('reviewBusinessName').textContent = document.getElementById('businessName').value;
         document.getElementById('reviewPhoneNumber').textContent = document.getElementById('phoneNumber').value;
        
-        document.getElementById('reviewEmail').textContent =        document.getElementById('email').value || accountEmail;
+        document.getElementById('reviewEmail').textContent = accountEmail;
         document.getElementById('reviewLocation').textContent = document.getElementById('location').value;
         document.getElementById('reviewDescription').textContent = document.getElementById('description').value;
     }
