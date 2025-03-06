@@ -284,11 +284,11 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
   
         document.getElementById('sellerRegistrationForm').reset();
         document.getElementById("modal").classList.remove("active");
-  
+     location.href = "index.html";
     } catch (error) {
         document.getElementById("modal").classList.remove("active");
         document.getElementById('register-btn').style.display = "block";
         console.error('Error updating product:', error);
-        alert(error);
+        alert(error, imageUrl);
     }
   });
