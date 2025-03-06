@@ -289,6 +289,6 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
         document.getElementById("modal").classList.remove("active");
         document.getElementById('register-btn').style.display = "block";
         console.error('Error updating product:', error);
-        alert('Échec de la création du profil. Veuillez réessayer.');
+        alert(error);
     }
   });
