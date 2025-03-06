@@ -242,8 +242,8 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
   const fullName = document.getElementById('fullName').value;
     const businessName = document.getElementById('businessName').value;
    const  phoneNumber = document.getElementById('phoneNumber').value;
-   const  whatsAppNumber = document.getElementById('whatsappNumber').value;
-   const  email = document.getElementById('email').value || accountEmail;
+ 
+   const  email =  accountEmail;
     const location = document.getElementById('location').value;
     const businessDescription = document.getElementById('description').value;
     const imageFile = document.getElementById('profilePicture').files[0];
