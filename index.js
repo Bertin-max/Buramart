@@ -938,9 +938,7 @@ document.getElementById("submit-rating").addEventListener("click", submitRating)
 
 
   window.showSeller = async () => {
-    if(document.getElementById('seller')){
-  modalProductDetails2.innerHTML = '';
-    }
+  
     modalOverlay2.style.display = 'flex';
    
     // Dummy placeholder values before fetching real data
@@ -962,7 +960,7 @@ document.getElementById("submit-rating").addEventListener("click", submitRating)
         }
 
         // Update modal with fetched seller data
-        modalProductDetails2.innerHTML += `
+        modalProductDetails2.innerHTML = `
             <div id = 'seller'>
                 <h3>Vérifier les informations du vendeur</h3>
                 <img src="${response[0].profile || '/icons/user.svg'}" alt="Profile Preview" 
