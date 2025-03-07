@@ -1,5 +1,5 @@
 const CACHE_NAME = "buramart-cache-v2"; // Updated cache version
-const OFFLINE_PAGE = "/offline.html"
+const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",
   "/index.js",
@@ -21,26 +21,34 @@ const urlsToCache = [
 // Install event: Cache core assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
 });
 
 // Fetch event: Serve cached files & fallback if offline
 self.addEventListener("fetch", (event) => {
+  // Ignore non-GET requests (prevents errors)
+  if (event.request.method !== "GET") {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((response) => {
       return (
         response ||
         fetch(event.request)
           .then((networkResponse) => {
-            // Cache new requests dynamically (except external requests)
-            if (!event.request.url.includes("http")) return networkResponse;
-            return caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
-              return networkResponse;
-            });
+            // Only cache GET requests from the same origin
+            if (
+              event.request.url.startsWith(self.location.origin) &&
+              networkResponse.ok
+            ) {
+              return caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, networkResponse.clone());
+                return networkResponse;
+              });
+            }
+            return networkResponse;
           })
           .catch(() => caches.match(OFFLINE_PAGE)) // Show fallback page when offline
       );
