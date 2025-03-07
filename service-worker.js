@@ -1,4 +1,4 @@
-const CACHE_NAME = "buramart-cache-v2"; // Updated cache version
+const CACHE_NAME = "buramart-cache-v3"; // Updated cache version
 const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",
@@ -15,11 +15,12 @@ const urlsToCache = [
   "/seller-registration.js",
   "/styles.css",
   "/icons/store.png",
-  "/offline.html", // Ensure fallback page is cached
+  "/offline.html" // Ensure fallback page is cached
 ];
 
 // Install event: Cache core assets
 self.addEventListener("install", (event) => {
+  self.skipWaiting(); // Force new service worker to activate immediately
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
@@ -56,7 +57,7 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Activate event: Remove old caches
+// Activate event: Remove old caches & claim clients immediately
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -69,4 +70,5 @@ self.addEventListener("activate", (event) => {
       );
     })
   );
+  self.clients.claim(); // Immediately take control of open tabs
 });
