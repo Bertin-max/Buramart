@@ -938,6 +938,9 @@ document.getElementById("submit-rating").addEventListener("click", submitRating)
 
 
   window.showSeller = async () => {
+    if(document.getElementById('seller')){
+  modalProductDetails2.innerHTML = '';
+    }
     modalOverlay2.style.display = 'flex';
    
     // Dummy placeholder values before fetching real data
