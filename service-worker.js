@@ -1,6 +1,5 @@
 const CACHE_NAME = "buramart-cache-v2"; // Updated cache version
-const OFFLINE_PAGE = "/offline.html"; // Fallback page for offline users
-
+const OFFLINE_PAGE = "/offline.html"
 const urlsToCache = [
   "/index.html",
   "/index.js",
@@ -16,7 +15,7 @@ const urlsToCache = [
   "/seller-registration.js",
   "/styles.css",
   "/icons/store.png",
-  OFFLINE_PAGE, // Ensure fallback page is cached
+  "/offline.html", // Ensure fallback page is cached
 ];
 
 // Install event: Cache core assets
