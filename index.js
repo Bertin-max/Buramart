@@ -885,7 +885,7 @@ window.submitRating = async function() {
   alert("Évaluation soumise ! Pour voir la nouvelle évaluation, actualisez et recherchez à nouveau le produit.");
   fetchAverageRating();
   
- uniqueProducts = [];
+ 
 
   document.getElementById("modal").classList.remove("active");
  
