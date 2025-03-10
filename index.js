@@ -117,7 +117,7 @@ window.hideSidebar = function (){
 hidesidebarbtn.addEventListener('click', hideSidebar)
 window.goBackToMain = () => {
   document.getElementById('categories').style.display = "block";
-  document.getElementById('home').style.display = "block";
+ 
   if( document.querySelector(".product-details-container")){
   document.getElementById("main-content").querySelector(".product-details-container").remove();}
   document.getElementById("subcategories").style.display = "none";
