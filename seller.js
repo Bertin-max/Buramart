@@ -417,7 +417,7 @@ productForm.addEventListener('submit', async (event) => {
   } catch (error) {
     document.getElementById('submit-btn').style.display = "block";
       console.error('Error updating product:', error);
-      alert('Échec du téléchargement du produit. Veuillez réessayer.');
+      alert(`Échec du téléchargement du produit. Veuillez réessayer. ${error}`);
       document.getElementById("modal").classList.remove("active");
   }
 });
