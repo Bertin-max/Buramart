@@ -39,7 +39,7 @@ window.showProductInDetails = (productId) => {
    
 
   main.innerHTML  = `
-        <div class="product-details-container">
+        <div  class="product-details-container">
         <!-- X Button -->
       <button  onclick="location.reload()" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
       <div class="product-image">
@@ -72,6 +72,9 @@ window.showProductInDetails = (productId) => {
 
 
 window.deleteProduct = async (productId) => {
+  if(document.getElementById('product')){
+    document.getElementById("main-content").querySelector(".product-details-container").remove();
+  }
    /* cartProducts.splice(index, 1); // Remove the product from the array
     localStorage.setItem('cartProducts', JSON.stringify(cartProducts)); // Update local storage
     displayProducts(); // Re-render the product list
@@ -142,10 +145,11 @@ function displayProducts(products) {
                 <img src="${product.image}" alt="${product.Name}">
                 <h3>${product.Name}</h3>
                 <p class="price">BIF  ${product.price}</p>
-                <div>
+                
+            </div>
+            <div>
                     <button class="remove-btn" onclick="deleteProduct('${product.$id}')">supprimer</button>
                 </div>
-            </div>
         </div>`;
     });
 }
