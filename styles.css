@@ -399,6 +399,7 @@ header .sidebar li a{
   justify-content: center;
   flex-wrap: wrap;
   gap: 15px;
+ 
 }
 /* Category Buttons */
 .category-btn {
@@ -646,6 +647,15 @@ form textarea {
 }
 /* Responsive Navbar for Home Page */
 @media (max-width: 768px) {
+  .category-list {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 15px;
+    overflow-x: auto; /* Ensure horizontal scrolling */
+    white-space: nowrap; /* Prevent buttons from wrapping */
+    padding: 10px; /* Add padding for better visibility */
+}
   .cart-icon{
    position: relative;
    top: 7px;

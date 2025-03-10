@@ -251,7 +251,7 @@ window.showProductInDetails =  async function (productId) {
     document.getElementById("main-content").querySelector(".product-details-container").remove();
   }
   document.getElementById('categories').style.display = "none";
-  document.getElementById('home').style.display = "none";
+  
   if(document.getElementById("subcategories")){
   document.getElementById("subcategories").style.display = "none";}
   loadMoreBtn.style.display = "none" ; 
