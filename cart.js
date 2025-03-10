@@ -86,6 +86,7 @@ window.deleteProduct = async (productId) => {
     setTimeout(() => {
       alert('Cart Product deleted successfully!');
     }, 100);  // Delay the alert slightly}*/
+    document.getElementById("modal").classList.add("active");
     try {
       const response = await db.listDocuments(DATABASE_ID,CART_ID, [
         window.Appwrite.Query.equal('productId', productId)
@@ -97,13 +98,15 @@ window.deleteProduct = async (productId) => {
 
       location.reload();
       alert("Produit retiré de votre panier avec succès !");
-     
+      document.getElementById("modal").classList.remove("active");
   } catch (error) {
+    document.getElementById("modal").classList.remove("active");
       console.error("Error updating product:", error);
       alert("Échec de la suppression du produit de votre panier. Veuillez réessayer");
   };
   }
   async function fetchProducts() {
+    document.getElementById("modal").classList.add("active");
     try {
         const resp = await db.listDocuments(DATABASE_ID, CART_ID, [
             window.Appwrite.Query.equal("UserId", accountId)
@@ -127,10 +130,11 @@ window.deleteProduct = async (productId) => {
         products = crtproducts;
         console.log(products);
         displayProducts(crtproducts); // Now products are fully fetched
-        
+        document.getElementById("modal").classList.remove("active");
 
     } catch (error) {
         console.error("Error fetching products:", error);
+        document.getElementById("modal").classList.remove("active");
     }
 }
 
