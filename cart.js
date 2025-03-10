@@ -106,8 +106,9 @@ window.deleteProduct = async (productId) => {
   };
   }
   async function fetchProducts() {
-    document.getElementById("modal").classList.add("active");
+   
     try {
+      document.getElementById("modal").classList.add("active");
         const resp = await db.listDocuments(DATABASE_ID, CART_ID, [
             window.Appwrite.Query.equal("UserId", accountId)
         ]);
@@ -125,6 +126,8 @@ window.deleteProduct = async (productId) => {
         );
         if(crtproducts.length === 0){
           cartList.innerHTML = '<p style="margin: auto; text-align: center; font-size: 18px; color: gray;">Votre panier est vide</p>';
+          document.getElementById("modal").classList.remove("active");
+
           return
         }
         products = crtproducts;
