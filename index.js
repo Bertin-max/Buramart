@@ -142,10 +142,10 @@ window.goBackToMain = () => {
       categoryloadMoreBtn2.style.display = "none";
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');;
       console.log(buttonText)
-      document.getElementById('product-title').textContent = `Produits dans la catégorie ${buttonText}`;
+      document.getElementById('product-title').textContent = `${buttonText}`;
       if ( buttonText === "tout voir"){
         document.getElementById("modal").classList.add("active");
-        document.querySelector('#products h2').textContent = "Produits Phares"
+        document.querySelector('#products h2').textContent = "Tout"
       location.reload()
       document.getElementById("modal").classList.remove("active");
         return
@@ -199,10 +199,10 @@ window.goBack = () => {
       categoryloadMoreBtn2.style.display = "none";
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
       console.log(buttonText)
-      document.getElementById('product-title').textContent = `Produits dans la catégorie ${buttonText}`;
+      document.getElementById('product-title').textContent = `${buttonText}`;
       if ( buttonText === "tout voir"){
         document.getElementById("modal").classList.add("active");
-        document.querySelector('#products h2').textContent = "produits phares"
+        document.querySelector('#products h2').textContent = "Tout"
       location.reload()
       document.getElementById("modal").classList.remove("active");
         return
@@ -540,10 +540,10 @@ homeProductList.innerHTML = '';
     const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
     console.log(buttonText);
     
-    document.getElementById('product-title').textContent = `produits dans la category ${buttonText}`;
+    document.getElementById('product-title').textContent = `${buttonText}`;
     if ( buttonText === "tout voir"){
       document.getElementById("modal").classList.add("active");
-      document.querySelector('#products h2').textContent = "produits phares"
+      document.querySelector('#products h2').textContent = "Tout"
     location.reload()
     document.getElementById("modal").classList.remove("active");
       return
@@ -1001,7 +1001,7 @@ window.showSubcategories = (category) =>  {
   categoryOfProduct = "";
   // Hide categories
   document.getElementById("categories").style.display = "none";
-  document.getElementById("subcategories-header").textContent = category;
+ 
 console.log(category)
   // Get subcategories for the selected category
   const subcategories = categories[category.toLowerCase().replace(/[-]/,'')] || [];
