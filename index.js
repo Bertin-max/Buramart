@@ -31,7 +31,9 @@ const categories = {
   sport: ["Équipement de fitness", "Sports de plein air", "Sports collectifs", "Sports nautiques", "Cyclisme", "Sports de raquette", "Sports de combat", "Équipement de course"],
   santé: ["Vitamines & Compléments", "Soins personnels", "Fournitures médicales", "Fitness & Nutrition", "Dispositifs de bien-être", "Gestion du poids", "Premiers secours", "Hygiène bucco-dentaire", "Santé mentale"],
   automobile: ["Accessoires auto", "Accessoires moto", "Entretien auto", "Pneus & Roues", "GPS & Navigation", "Électronique auto", "Huiles & Fluides", "Pièces de rechange", "Outils & Équipements"],
-  alimentation: ["Fruits & Légumes", "Produits laitiers & Œufs", "Viande & Fruits de mer", "Snacks", "Boissons", "Produits en conserve", "Boulangerie", "Condiments & Épices", "Produits surgelés"]
+  alimentation: ["Fruits & Légumes", "Produits laitiers & Œufs", "Viande & Fruits de mer", "Snacks", "Boissons", "Produits en conserve", "Boulangerie", "Condiments & Épices", "Produits surgelés"],
+  
+ 
 };
 
 
@@ -52,6 +54,7 @@ const closeModalBtn = document.getElementById('close-modal-btn');
 const closeModalBtn2 = document.getElementById('close-modal-btn2');
 const originalModalContent = modalProductDetails.innerHTML;
 const averageStars = document.getElementById("average-stars");
+const slidesContainer = document.getElementById('slides-container');
 let sellerId = '';
 let selectedProductId = '';
 let selectedProductCategory = '';
@@ -117,7 +120,7 @@ window.hideSidebar = function (){
 hidesidebarbtn.addEventListener('click', hideSidebar)
 window.goBackToMain = () => {
   document.getElementById('categories').style.display = "block";
- 
+ document.getElementById('home').style.display = "block";
   if( document.querySelector(".product-details-container")){
   document.getElementById("main-content").querySelector(".product-details-container").remove();}
   document.getElementById("subcategories").style.display = "none";
@@ -143,7 +146,7 @@ window.goBackToMain = () => {
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');;
       console.log(buttonText)
       document.getElementById('product-title').textContent = `${buttonText}`;
-      if ( buttonText === "tout voir"){
+      if ( buttonText === "tout"){
         document.getElementById("modal").classList.add("active");
         document.querySelector('#products h2').textContent = "Tout"
       location.reload()
@@ -177,7 +180,7 @@ window.goBack = () => {
   // Show main categories again
   document.getElementById("categories").style.display = "block";
   document.getElementById("subcategories").style.display = "none";
-
+document.getElementById('home').style.display = "block"
 
    
 
@@ -200,7 +203,7 @@ window.goBack = () => {
       const buttonText = event.target.closest('.category-btn').textContent.trim().toLowerCase().replace('-', '');
       console.log(buttonText)
       document.getElementById('product-title').textContent = `${buttonText}`;
-      if ( buttonText === "tout voir"){
+      if ( buttonText === "tout"){
         document.getElementById("modal").classList.add("active");
         document.querySelector('#products h2').textContent = "Tout"
       location.reload()
@@ -251,7 +254,7 @@ window.showProductInDetails =  async function (productId) {
     document.getElementById("main-content").querySelector(".product-details-container").remove();
   }
   document.getElementById('categories').style.display = "none";
-  
+  document.getElementById('home').style.display = "none";
   if(document.getElementById("subcategories")){
   document.getElementById("subcategories").style.display = "none";}
   loadMoreBtn.style.display = "none" ; 
@@ -547,7 +550,7 @@ homeProductList.innerHTML = '';
     console.log(buttonText);
     
     document.getElementById('product-title').textContent = `${buttonText}`;
-    if ( buttonText === "tout voir"){
+    if ( buttonText === "tout"){
       document.getElementById("modal").classList.add("active");
       document.querySelector('#products h2').textContent = "Tout"
     location.reload()
@@ -1107,6 +1110,73 @@ homeProductList.innerHTML = '';}
          console.error("Error fetching products:", error);
          alert('Erreur lors de la récupération des produits. Veuillez vérifier votre connexion Internet')
      }
-     
+ 
      loa = false; // Reset loading after request is done
+}
+let offresSpeciales = 'offresSpeciales';
+    async function bonusFetch(offresSpeciales) {
+      try {
+          const response = await db.listDocuments(
+              DATABASE_ID, // Replace with your database ID
+              SELLER_PRODUCTS_ID, // Replace with your collection ID
+              [Query.equal("category", offresSpeciales)]
+          );
+          console.log(response.documents)
+response.documents.forEach((deal) => {
+   slidesContainer.innerHTML += `
+   <div class="slide" onclick = "showProductInDetails('${deal.$id}')">
+            <img src="${deal.image}" alt="Deal 1">
+            <div class="slide-text">🔥 ${deal.description} 🔥</div>
+          </div>
+   `
+})
+         
+      } catch (error) {
+          console.error("Error fetching products:", error);
+          return [];
+      }
+  }
+await bonusFetch(offresSpeciales)
+
+
+    const slides = document.querySelector(".slides");
+    const images = document.querySelectorAll(".slide"); // Change to .slide instead of img
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    
+    let index = 0;
+    const totalSlides = images.length;
+    
+    // Function to move slides
+    function moveSlides() {
+      slides.style.transform = `translateX(-${index * 100}%)`;
     }
+    
+    // Auto-slide function
+    function autoSlide() {
+      index = (index + 1) % totalSlides; // Loop back to start
+      moveSlides();
+    }
+    
+    // Next and Previous Buttons
+    nextBtn.addEventListener("click", () => {
+      index = (index + 1) % totalSlides;
+      moveSlides();
+    });
+    
+    prevBtn.addEventListener("click", () => {
+      index = (index - 1 + totalSlides) % totalSlides;
+      moveSlides();
+    });
+    
+    // Auto-slide every 3 seconds
+    let slideInterval = setInterval(autoSlide, 7000);
+    
+    // Pause on hover, resume on leave
+    document.querySelector(".hero-slider").addEventListener("mouseenter", () => {
+      clearInterval(slideInterval);
+    });
+    document.querySelector(".hero-slider").addEventListener("mouseleave", () => {
+      slideInterval = setInterval(autoSlide, 7000);
+    });
+    

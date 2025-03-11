@@ -1,4 +1,4 @@
-const CACHE_NAME = "buramart-cache-v8"; // Updated cache version
+const CACHE_NAME = "buramart-cache-v0"; // Updated cache version
 const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",

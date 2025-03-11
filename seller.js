@@ -68,7 +68,16 @@ const categories = {
   sport: ["Équipement de fitness", "Sports de plein air", "Sports collectifs", "Sports nautiques", "Cyclisme", "Sports de raquette", "Sports de combat", "Équipement de course"],
   santé: ["Vitamines & Compléments", "Soins personnels", "Fournitures médicales", "Fitness & Nutrition", "Dispositifs de bien-être", "Gestion du poids", "Premiers secours", "Hygiène bucco-dentaire", "Santé mentale"],
   automobile: ["Accessoires auto", "Accessoires moto", "Entretien auto", "Pneus & Roues", "GPS & Navigation", "Électronique auto", "Huiles & Fluides", "Pièces de rechange", "Outils & Équipements"],
-  alimentation: ["Fruits & Légumes", "Produits laitiers & Œufs", "Viande & Fruits de mer", "Snacks", "Boissons", "Produits en conserve", "Boulangerie", "Condiments & Épices", "Produits surgelés"]
+  alimentation: ["Fruits & Légumes", "Produits laitiers & Œufs", "Viande & Fruits de mer", "Snacks", "Boissons", "Produits en conserve", "Boulangerie", "Condiments & Épices", "Produits surgelés"],
+  offresSpeciales: [
+    "Réduction immédiate",
+    "Achat 1, obtenez 1 gratuit",
+    "Offre limitée",
+    "Codes promo",
+    "Remises exceptionnelles",
+    "Offres de dernière minute",
+    "Ventes privées"
+  ],
 };
 
 window.updateSubcategories = () => {
@@ -81,7 +90,7 @@ window.updateSubcategories = () => {
   subcategorySelect.disabled = !selectedCategory;
   // Clear existing subcategories
   subcategorySelect.innerHTML = '<option value="">Sélectionnez une sous-catégorie</option>';
-
+console.log(categories[selectedCategory])
   // If a valid category is selected, populate subcategories
   if (selectedCategory && categories[selectedCategory]) {
       categories[selectedCategory].forEach(sub => {
