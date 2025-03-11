@@ -1001,7 +1001,6 @@ window.showSubcategories = (category) =>  {
   categoryOfProduct = "";
   // Hide categories
   document.getElementById("categories").style.display = "none";
- 
 console.log(category)
   // Get subcategories for the selected category
   const subcategories = categories[category.toLowerCase().replace(/[-]/,'')] || [];
