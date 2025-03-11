@@ -378,7 +378,7 @@ async function fetchProducts() {
             lastDocument = response.documents[response.documents.length - 1]; // Update last document
             console.log("Updated lastDocument:", lastDocument);
             displayProducts(response.documents); // Function to render products on UI
-        } if(response.documents.length < 20) {
+        } if(response.documents.length < 18) {
           loadMoreBtn.style.display = "none";
             console.log("No more products to load.");
         }
