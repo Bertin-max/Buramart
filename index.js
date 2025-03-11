@@ -361,7 +361,7 @@ async function fetchProducts() {
       document.getElementById("modal").classList.add("active");
         let queries = [
           window.Appwrite.Query.orderDesc("$createdAt"),
-            window.Appwrite.Query.limit(20),
+            window.Appwrite.Query.limit(18),
           
            // Fetch 10 products at a time
         ];
@@ -395,16 +395,22 @@ async function fetchProducts() {
 fetchProducts();
 loadMoreBtn.addEventListener('click', fetchProducts)
 
-
+window.shuffleArray = function(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // Get random index
+      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+  return array;
+}
 
 
 const displayProducts = (products) => {
 
-  
+  let shuffledProducts = shuffleArray([...products]); 
  loadingHtml.forEach((el) => el.style.display = "none")
 console.log(products)
 
-  products.forEach((product,index) => {  // Now iterating over the correct variable
+  shuffledProducts.forEach((product,index) => {  // Now iterating over the correct variable
     homeProductList.innerHTML += `
       <div onclick = showProductInDetails('${product.$id}') class="product-card">
         <div>
