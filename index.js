@@ -583,6 +583,8 @@ window.searchProducts = async function() {
   productNameOfProduct = '';
    subcategoryOfProduct = '';
   categoryOfProduct = '';
+  document.getElementById('categories').style.display = "none";
+  document.getElementById('home').style.display = "none";
   document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
   searchloadMoreBtn.style.display = "none";
   categoryloadMoreBtn.style.display = "none";
@@ -594,7 +596,8 @@ window.searchProducts = async function() {
   document.getElementById("modal").classList.add("active");
  
   goBackToMain();
-
+  document.getElementById('categories').style.display = "none";
+  document.getElementById('home').style.display = "none";
   const searchInputValue = searchValue || searchInput.value || smallsearchInput.value;
  
   if (!searchInputValue) {
