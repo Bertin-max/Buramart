@@ -1126,7 +1126,7 @@ response.documents.forEach((deal) => {
    slidesContainer.innerHTML += `
    <div class="slide" onclick = "showProductInDetails('${deal.$id}')">
             <img src="${deal.image}" alt="Deal 1">
-            <div class="slide-text">🔥 ${deal.description} 🔥</div>
+            <div class="slide-text"> ${deal.description} </div>
           </div>
    `
 })
