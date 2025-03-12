@@ -211,7 +211,7 @@ window.nextStep = function(step) {
    
   
     if(accountAlreadyClaimed){
-        alert('Un compte existe déjà avec cet e-mail.');
+        alert('Un compte existe déjà avec cet e-mail.Nous confirmons vos informations et nous vous contacterons bientôt.');
         return
     }
     document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
