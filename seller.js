@@ -395,7 +395,11 @@ productForm.addEventListener('submit', async (event) => {
           // Keep existing image if no new image was uploaded
           imageUrl = document.getElementById('image-preview')?.src || '';
       }
-
+     if(!imageUrl){
+    alert('Vous ne pouvez pas telecharger le produit sans image');
+    document.getElementById("modal").classList.remove("active");
+    return
+     }
       // Create new product entry
       await db.createDocument(DATABASE_ID, SELLER_PRODUCTS_ID, 'unique()', {
           UserId: sellerId,

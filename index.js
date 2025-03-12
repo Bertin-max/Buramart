@@ -1119,7 +1119,8 @@ let offresSpeciales = 'offresSpeciales';
           const response = await db.listDocuments(
               DATABASE_ID, // Replace with your database ID
               SELLER_PRODUCTS_ID, // Replace with your collection ID
-              [Query.equal("category", offresSpeciales)]
+              [ Query.orderDesc("CreatedAt"),
+                Query.equal("category", offresSpeciales)]
           );
           console.log(response.documents)
 response.documents.forEach((deal) => {
