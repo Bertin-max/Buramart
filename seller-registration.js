@@ -274,7 +274,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
             phoneNumber: phoneNumber,
            
             email: email,
-            profile: imageUrl,
+            ...(imageUrl && { profile: imageUrl }),
              location: location,
              businessDescription: businessDescription,
         });
@@ -284,7 +284,7 @@ document.getElementById('register-btn').addEventListener('click', async (event) 
   
         document.getElementById('sellerRegistrationForm').reset();
         document.getElementById("modal").classList.remove("active");
-     location.href = "index.html";
+     window.location.href = "index.html";
     } catch (error) {
         document.getElementById("modal").classList.remove("active");
         document.getElementById('register-btn').style.display = "block";
