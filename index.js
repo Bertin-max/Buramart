@@ -1185,7 +1185,7 @@ await bonusFetch(offresSpeciales)
     });
     
 
-    
+  /*  
       let deferredPrompt;
       const installButton = document.getElementById("install-button");
   
@@ -1240,4 +1240,4 @@ window.install = () => {
 if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) {
     document.getElementById("install-button").style.display = "none";
 }
-   
+   */
