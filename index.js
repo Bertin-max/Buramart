@@ -1184,3 +1184,60 @@ await bonusFetch(offresSpeciales)
       slideInterval = setInterval(autoSlide, 7000);
     });
     
+
+    
+      let deferredPrompt;
+      const installButton = document.getElementById("install-button");
+  
+      if (!installButton) {
+          console.error("❌ Install button not found!");
+          
+      }
+  
+// Detect if the app is already installed on iOS
+if (window.navigator.standalone) {
+    console.log("Running as PWA on iOS");
+} else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    if (navigator.userAgent.includes("CriOS")) {
+        // User is on Chrome on iOS
+        alert("To install Buramart, please open this site in Safari, tap 'Share', and select 'Add to Home Screen'.");
+    } else {
+        // User is on Safari on iOS
+        alert("To install Buramart, tap 'Share' and select 'Add to Home Screen'.");
+    }
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  console.log("beforeinstallprompt event fired!");
+  // Prevent the default prompt from appearing
+  
+  // Save the event for triggering the install prompt later
+  deferredPrompt = event;
+
+  // Show the install button only if the app is not installed
+  if (!window.matchMedia("(display-mode: standalone)").matches) {
+    document.getElementById("install-button").style.display = "block";
+  }
+});
+  
+console.log(document.getElementById('install-button'))
+// Handle install button click
+window.install = () => {
+  if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === "accepted") {
+                console.log("User accepted the install prompt");
+            }
+            deferredPrompt = null;
+            document.getElementById("install-button").style.display = "none";
+        });
+    
+      }
+};
+
+// Hide button if already installed
+if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) {
+    document.getElementById("install-button").style.display = "none";
+}
+   
