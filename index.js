@@ -363,7 +363,7 @@ async function fetchProducts() {
     try {
       document.getElementById("modal").classList.add("active");
         let queries = [
-          window.Appwrite.Query.orderDesc("$createdAt"),
+          window.Appwrite.Query.orderDesc("totalRatings"),
             window.Appwrite.Query.limit(18),
           
            // Fetch 10 products at a time
