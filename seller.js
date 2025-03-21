@@ -397,6 +397,7 @@ productForm.addEventListener('submit', async (event) => {
       }
      if(!imageUrl){
     alert('Vous ne pouvez pas telecharger le produit sans image');
+    document.getElementById('submit-btn').style.display = "block";
     document.getElementById("modal").classList.remove("active");
     return
      }
