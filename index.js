@@ -1185,7 +1185,7 @@ await bonusFetch(offresSpeciales)
     });
     
 
-  /*  
+  
       let deferredPrompt;
       const installButton = document.getElementById("install-button");
   
@@ -1206,7 +1206,7 @@ if (window.navigator.standalone) {
         alert("To install Buramart, tap 'Share' and select 'Add to Home Screen'.");
     }
 }
-
+window.addEventListener("beforeinstallprompt", () => console.log("beforeinstallprompt fired!"));
 window.addEventListener("beforeinstallprompt", (event) => {
   console.log("beforeinstallprompt event fired!");
   // Prevent the default prompt from appearing
@@ -1240,4 +1240,4 @@ window.install = () => {
 if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) {
     document.getElementById("install-button").style.display = "none";
 }
-   */
+ 
