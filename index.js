@@ -1403,6 +1403,7 @@ document.getElementById('home').style.display = "none"
           
           homeProductList.innerHTML = "";
           displayProducts([productData]);
+          categoryloadMoreBtn.style.display = 'none'
       }
   }
 }
