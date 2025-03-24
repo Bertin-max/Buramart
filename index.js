@@ -1252,7 +1252,9 @@ let offresSpeciales = 'offresSpeciales';
                 Query.equal("category", offresSpeciales)]
           );
           console.log(response.documents)
+          
 response.documents.forEach((deal) => {
+  uniqueProducts.push(deal)
    slidesContainer.innerHTML += `
    <div class="slide" onclick = "showProductInDetails('${deal.$id}')">
             <img src="${deal.image1}" alt="Deal 1">
