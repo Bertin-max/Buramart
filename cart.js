@@ -31,6 +31,9 @@ let products = [];
 const goBackToProducts = () => {
   displayProducts();  // This function should render the original product list
 };
+function formatNumberWithCommas(num) {
+  return Math.floor(num).toLocaleString('en-US');
+}
 window.showProductInDetails = (productId) => {
   console.log(products)
   //const products = JSON.parse(localStorage.getItem('cartProducts'));
@@ -50,7 +53,7 @@ window.showProductInDetails = (productId) => {
       <div class="product-info">
         <h2>${product.Name}</h2>
         <p>${product.description}</p>
-        <p><strong>Price: BIF  ${product.price}</strong></p>
+        <p><strong>${formatNumberWithCommas(product.price)}Fbu</strong></p>
       </div>
       <div class="contact-buttons1" >
        
@@ -224,7 +227,7 @@ function displayProducts(products) {
             <div onclick="showProductInDetails('${product.$id}')">
                 <img src="${product.image1}" alt="${product.Name}">
                 <h3>${product.Name}</h3>
-                <p class="price">BIF  ${product.price}</p>
+                <p class="price">${formatNumberWithCommas(product.price)}Fbu</p>
                 
             </div>
             <div>

@@ -48,6 +48,7 @@ client.setProject('67b35038002044fd8dfa');
 const DATABASE_ID = '67b5a1b2003647bb7108';
 const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
 const BUCKET_ID = '67b5a6a900035fb44480';
+const CART_ID = '67c05ddb0001a5f11990';
 const db = new Appwrite.Databases(client, DATABASE_ID); // Replace with your actual Database ID
 const storage = new Appwrite.Storage(client);
 let oldImageUrl = '';
@@ -253,7 +254,9 @@ console.log(imageUrl)
       alert("Échec de la suppression du produit.");
   }
 }
-
+function formatNumberWithCommas(num) {
+  return Math.floor(num).toLocaleString('en-US');
+}
 window.showProductInDetails = async function(index) {
   // Find the product by its inde.log(x
   const product = products[index];
@@ -270,7 +273,7 @@ window.showProductInDetails = async function(index) {
         <button id="nextBtn">&#10095;</button>
 
     </div>
-    <p><strong>Prix:</strong> BIF ${product.price}</p>
+    <p><strong>Prix:</strong> ${formatNumberWithCommas(product.price)}Fbu</p>
     <p><strong>Categorie:</strong>${product.category}</p>
     <p><strong>Sous-category:</strong>${product.subCategory}</p>
     <p><strong>Description:</strong> ${product.description}</p>
@@ -428,7 +431,7 @@ const query = Appwrite.Query.equal('UserId', accountId);
                       </div>
                   </div>
                   <div class="product-details">
-                      <p class="price">BIF ${product.price}</p>
+                      <p class="price">${formatNumberWithCommas(product.price)}Fbu</p>
                        <div class="average-stars" id="average-stars">
         ${generateStars(product.averageRating)}(${product.totalRatings}R)
       </div>
@@ -579,6 +582,19 @@ productForm.addEventListener('submit', async (event) => {
       if (productIdToDelete) {
           await db.deleteDocument(DATABASE_ID, SELLER_PRODUCTS_ID, productIdToDelete);
           console.log(`Deleted old product: ${productIdToDelete}`);
+
+          const response = await db.listDocuments(DATABASE_ID, CART_ID, [
+           window.Appwrite.Query.equal("productId", productIdToDelete) // Assuming "number" is the field name
+          ]);
+          console.log(response)
+          if (response.documents.length !== 0) {
+            for (const prod of response.documents) {
+                let productCartId = prod.$id;
+                await db.deleteDocument(DATABASE_ID, CART_ID, productCartId);
+                console.log(`Deleted old product: ${productCartId}`);
+            }
+        }
+        
       }
 
       // Upload new image if a new one is selected
@@ -716,7 +732,7 @@ console.log(foundProducts)
                 </div>
             </div>
             <div class="product-details">
-                <p class="price">$${product.product.price}</p>
+                <p class="price">${formatNumberWithCommas(product.product.price)}Fbu</p>
                        <div class="average-stars" id="average-stars">
         ${generateStars(product.product.averageRating)}(${product.product.totalRatings}R)
       </div>
