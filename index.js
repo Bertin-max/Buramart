@@ -273,6 +273,7 @@ window.showProductInDetails =  async function (productId) {
   console.log(product)
   sellerId = product.UserId;
   selectedProductId = product.$id;
+  const productUrl = `https://buramart.netlify.app/?id=${product.$id}`
   selectedProductCategory = product.category;
   fetchAverageRating()
    productNameOfProduct = product.Name;
@@ -282,25 +283,27 @@ window.showProductInDetails =  async function (productId) {
         <div class="product-details-container">
           <button onclick = 'goBackToMain()' style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
       <div class="product-image">
-        <img src="${product.image}" alt="${product.Name}">
+        <img src="${product.image1}" alt="${product.Name}" id = "prev-img">
+         <button id="prevButton">&#10094;</button>
+        <button id="nextButton">&#10095;</button>
       </div>
       <div class="product-info">
         <h2>${product.Name}</h2>
-         <div class="average-stars" id="average-stars">
+         <div class="average-stars" onclick = "rate()" id="average-stars">
         ${generateStars(product.averageRating)}(${product.totalRatings}R)
       </div>
         <p>${product.description}</p>
         <p><strong>Price: BIF${product.price}</strong></p>
       </div>
       <div class="contact-buttons1" >
-     
+        <a id="copy-link-button" class="btn-contact"> <svg height = 20px width = 20px fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg> </button>
         <a href="tel:${product.phone}" class="btn-contact"><svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" fill="white"viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z"/></svg></a>
        <a class="btn-contact" onclick = " updateDatabaseCartProduct('${product.$id}')"><svg height="20" width="20" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></a>
         <div  class="dropdown" >
-                          <button class="dropdown-icon">...</button>
+                          <button class="dropdown-icon" onclick = " event.stopPropagation();showSeller()">...</button>
                           <div class="dropdown-content">
-                              <button class="show-details-btn" onclick = " event.stopPropagation();showSeller()" >Infrormation sur le vendeur</button>
-                              <button class ="edit-btn" onclick = "rate()" >Evaluer avec des etoiles</button>
+                              <button class="show-details-btn"  >Infrormation sur le vendeur</button>
+                             
                              
                           </div>
                       </div>
@@ -308,7 +311,7 @@ window.showProductInDetails =  async function (productId) {
     </div>
       
   `;
-  document.addEventListener("click", (event) => {
+  /*document.addEventListener("click", (event) => {
     if (!event.target.matches('.dropdown-icon')) {
       const dropdowns = document.querySelectorAll('.dropdown-content');
       dropdowns.forEach((dropdown) => {
@@ -322,7 +325,116 @@ window.showProductInDetails =  async function (productId) {
       const dropdownContent = event.target.nextElementSibling;
       dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
     }
-  });
+  });*/
+  const nextBtn = document.getElementById('nextButton');
+  const prevBtn = document.getElementById('prevButton');
+  function disableButtons() {
+    nextBtn.disabled = true;
+    prevBtn.disabled = true;
+    setTimeout(() => {
+      nextBtn.disabled = false;
+      prevBtn.disabled = false;
+    }, 300); // Adjust delay if needed
+  }
+  // Prevent interactions with the rest of the page
+  document.body.style.overflow = 'hidden'; // Disable scrolling
+  
+  // Function to move slides
+  let previousImageNumber = 1;
+  
+  // Determine total number of images dynamically
+  let totalNumberOfImages = 1;
+  for (let i = 2; i <= 4; i++) {
+    if (product[`image${i}`]) {
+      totalNumberOfImages = i;
+    }
+  }
+  console.log(totalNumberOfImages);
+  
+  // Hide buttons if only one image exists
+  if (totalNumberOfImages === 1) {
+    nextBtn.style.display = "none";
+    prevBtn.style.display = "none";
+  }
+  
+  // Function to update image source
+  function moveimages() {
+    document.getElementById('prev-img').src = product[`image${previousImageNumber}`];
+  }
+  
+  // Next button click event
+  
+
+
+  function handleNext() {
+    if (nextBtn.disabled) return; // Prevent multiple clicks
+    disableButtons();
+    if (previousImageNumber === totalNumberOfImages) {
+      previousImageNumber = 1;
+    } else {
+      previousImageNumber++;
+    }
+    moveimages(); // Call only once
+  }
+  function handlePrev() {
+    if (prevBtn.disabled) return; // Prevent multiple clicks
+    disableButtons();
+    if (previousImageNumber === 1) {
+      previousImageNumber = totalNumberOfImages;
+    } else {
+      previousImageNumber--;
+    }
+    moveimages(); // Call only once
+  }
+  // Ensure only one event listener per button
+nextBtn.removeEventListener("click", handleNext);
+prevBtn.removeEventListener("click", handlePrev);
+
+nextBtn.addEventListener("click", handleNext);
+prevBtn.addEventListener("click", handlePrev);
+  const copyLinkButton = document.querySelector('#copy-link-button');
+  copyLinkButton.addEventListener('click', function() {
+    // Get the product ID from the closest parent product div
+    
+    
+   
+    
+    copyToClipboard(productUrl);
+});
+// Get all 'Copy Link' buttons
+const copyLinkButtons = document.querySelectorAll('.copy-link-button');
+
+// Add event listener for each 'Copy Link' button
+copyLinkButtons.forEach(button => {
+    button.addEventListener('click', function(event) {
+        // Get the product ID from the closest parent product div
+        const productId = event.target.closest('.product').getAttribute('data-id');
+        
+        // Construct the product URL
+        const productUrl = `https://buramart.netlify.app/?id=${productId}`;
+        
+        // Copy the URL to the clipboard
+        copyToClipboard(productUrl);
+    });
+});
+
+
+
+// Function to copy text to the clipboard using the Clipboard API
+async function copyToClipboard(text) {
+    try {
+        // Write the text to the clipboard
+        await navigator.clipboard.writeText(text);
+        
+        // Optionally, notify the user that the link has been copied
+        alert('Product link copied to clipboard!');
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy the product link!');
+    }
+}
+
+
   attachHoverEvents(); // Reattach hover events
   /*
   const whatsappbtn = document.getElementById('whatsapp-btn');
@@ -418,7 +530,7 @@ console.log(products)
       <div onclick = showProductInDetails('${product.$id}') class="product-card">
         <div>
           <h3 style="padding: 0; margin: 0; gap: 0;">${product.Name}</h3>
-          <img  src="${product.image}" alt="${product.Name}"> 
+          <img  src="${product.image1}" alt="${product.Name}"> 
         </div> 
         <div class="product-details">
           <p class="price">BIF       ${product.price}</p>
@@ -672,8 +784,22 @@ window.searchProducts = async function() {
       smallsearchResultsContainer.style.display = "none"
 };
 
-
-
+document.getElementById("search-input").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+      event.preventDefault(); // Prevents default form submission (if inside a form)
+      if (this.value.trim() !== "") {
+          searchProducts();
+      }
+  }
+});
+document.getElementById("small-search-input").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+      event.preventDefault(); // Prevents default form submission (if inside a form)
+      if (this.value.trim() !== "") {
+          searchProducts();
+      }
+  }
+});
 const showFilteredSearchHistory = async () => {
   const collectionId = "67c2c8900005644a66d9";
   const documentId = "67c2cbee00257344ec2b";
@@ -1129,7 +1255,7 @@ let offresSpeciales = 'offresSpeciales';
 response.documents.forEach((deal) => {
    slidesContainer.innerHTML += `
    <div class="slide" onclick = "showProductInDetails('${deal.$id}')">
-            <img src="${deal.image}" alt="Deal 1">
+            <img src="${deal.image1}" alt="Deal 1">
             <div class="slide-text"> ${deal.description} </div>
           </div>
    `
@@ -1241,3 +1367,43 @@ if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.
     document.getElementById("install-button").style.display = "none";
 }
  
+function getProductIdFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('id');
+}
+
+// Function to fetch product data using Appwrite's getDocument
+async function fetchProductData(productId) {
+
+  try {
+      const product = await db.getDocument(DATABASE_ID,SELLER_PRODUCTS_ID, productId); // Replace with your collection ID
+      return product;
+  } catch (error) {
+      console.error('Error fetching product data:', error);
+      return null;
+  }
+}
+
+
+
+// Main function to load the product and display it
+async function loadProductAndDisplay() {
+  const productId = getProductIdFromUrl();
+  console.log(productId) // Get product ID from URL
+  if (productId) {
+      const productData = await fetchProductData(productId); // Fetch the product data
+      
+      if (productData) {
+          // Wrap the fetched product in an array to pass to displayProducts
+          document.getElementById("categories").style.display = "none";
+ 
+document.getElementById('home').style.display = "none"
+          
+          homeProductList.innerHTML = "";
+          displayProducts([productData]);
+      }
+  }
+}
+
+
+loadProductAndDisplay();

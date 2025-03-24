@@ -52,6 +52,9 @@ const db = new Appwrite.Databases(client, DATABASE_ID); // Replace with your act
 const storage = new Appwrite.Storage(client);
 let oldImageUrl = '';
 
+let  oldImageUrl2 =  '';
+ let oldImageUrl3 =  '';
+ let oldImageUrl4 =  '';
 if(!registered){
   alert('Veuillez vous inscrire pour vendre');
   window.location.href = "seller-registration.html";
@@ -113,9 +116,87 @@ const searchResultsContainer = document.getElementById("doll");
 const smallsearchResultsContainer = document.getElementById('small-doll');
 let products = []
  
+let currentInput = 1;
+
+function showPlusButton(inputNumber) {
+    let plusButton = document.getElementById("plusButton");
+
+    // Show "+" button only when first input is selected
+    if (inputNumber === 1) {
+        plusButton.style.display = "inline-block";
+    }
+}
+
+window.showNextInput = () => {
+    currentInput++; // Move to the next input
+    let nextInput = document.getElementById("product-image" + currentInput);
+
+    if (nextInput) {
+        nextInput.style.display = "block"; // Show the next input
+    }
+
+    // Hide "+" button if all inputs are visible
+    if (currentInput === 4) {
+        document.getElementById("plusButton").style.display = "none";
+    }
+}
+
+
+
+
+
 document.getElementById('product-image').addEventListener('change', function(event) {
+  showPlusButton(1)
   const file = event.target.files[0];
   const preview = document.getElementById('image-preview');
+
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+  } else {
+      preview.style.display = 'none';
+  }
+});
+document.getElementById('product-image2').addEventListener('change', function(event) {
+ 
+  const file = event.target.files[0];
+  const preview = document.getElementById('image-preview2');
+
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+  } else {
+      preview.style.display = 'none';
+  }
+});
+document.getElementById('product-image3').addEventListener('change', function(event) {
+  
+  const file = event.target.files[0];
+  const preview = document.getElementById('image-preview3');
+
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+  } else {
+      preview.style.display = 'none';
+  }
+});
+document.getElementById('product-image4').addEventListener('change', function(event) {
+  
+  const file = event.target.files[0];
+  const preview = document.getElementById('image-preview4');
 
   if (file) {
       const reader = new FileReader();
@@ -136,7 +217,7 @@ function extractFileId(imageUrl) {
   return filePart; 
 }
 
-window.deleteProduct = async function(productId, imageUrl) {
+window.deleteProduct = async function(productId, imageUrl, imageURL2, imageURL3, imageURL4) {
   
   if (!confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) return;
 console.log(imageUrl)
@@ -147,6 +228,24 @@ console.log(imageUrl)
       if (fileId) {
           await storage.deleteFile(BUCKET_ID, fileId);
       }
+      if(imageURL2){
+      const fileId2 = extractFileId(imageURL2);
+      if (fileId2) {
+          await storage.deleteFile(BUCKET_ID, fileId2);
+      }
+    }
+    if(imageURL3){
+      const fileId3 = extractFileId(imageURL3);
+      if (fileId3) {
+          await storage.deleteFile(BUCKET_ID, fileId3);
+      }
+    }
+    if(imageURL4){
+      const fileId4 = extractFileId(imageURL4);
+      if (fileId4) {
+          await storage.deleteFile(BUCKET_ID, fileId4);
+      }
+    }
       // Refresh the product list
       fetchProducts(); 
   } catch (error) {
@@ -166,7 +265,11 @@ window.showProductInDetails = async function(index) {
   // Set the modal content with the product details
   modalProductDetails.innerHTML = `
     <h3>${(product.Name)}</h3>
-    <img src="${product.image}" alt="Product Image" >
+    <div><img src="${product.image1}" id = "prev-img" alt="Product Image" >
+        <button id="prevBtn">&#10094;</button>
+        <button id="nextBtn">&#10095;</button>
+
+    </div>
     <p><strong>Prix:</strong> BIF ${product.price}</p>
     <p><strong>Categorie:</strong>${product.category}</p>
     <p><strong>Sous-category:</strong>${product.subCategory}</p>
@@ -179,9 +282,75 @@ window.showProductInDetails = async function(index) {
   // Add an event listener to the close button
   const closeModalBtn = document.getElementById('close-modal-btn');
   closeModalBtn.addEventListener('click', closeModal);
+ 
 
+
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  function disableButtons() {
+    nextBtn.disabled = true;
+    prevBtn.disabled = true;
+    setTimeout(() => {
+      nextBtn.disabled = false;
+      prevBtn.disabled = false;
+    }, 300); // Adjust delay if needed
+  }
   // Prevent interactions with the rest of the page
   document.body.style.overflow = 'hidden'; // Disable scrolling
+  
+  // Function to move slides
+  let previousImageNumber = 1;
+  
+  // Determine total number of images dynamically
+  let totalNumberOfImages = 1;
+  for (let i = 2; i <= 4; i++) {
+    if (product[`image${i}`]) {
+      totalNumberOfImages = i;
+    }
+  }
+  console.log(totalNumberOfImages);
+  
+  // Hide buttons if only one image exists
+  if (totalNumberOfImages === 1) {
+    nextBtn.style.display = "none";
+    prevBtn.style.display = "none";
+  }
+  
+  // Function to update image source
+  function moveimages() {
+    document.getElementById('prev-img').src = product[`image${previousImageNumber}`];
+  }
+  
+
+
+
+  function handleNext() {
+    if (nextBtn.disabled) return; // Prevent multiple clicks
+    disableButtons();
+    if (previousImageNumber === totalNumberOfImages) {
+      previousImageNumber = 1;
+    } else {
+      previousImageNumber++;
+    }
+    moveimages(); // Call only once
+  }
+  function handlePrev() {
+    if (prevBtn.disabled) return; // Prevent multiple clicks
+    disableButtons();
+    if (previousImageNumber === 1) {
+      previousImageNumber = totalNumberOfImages;
+    } else {
+      previousImageNumber--;
+    }
+    moveimages(); // Call only once
+  }
+  // Ensure only one event listener per button
+nextBtn.removeEventListener("click", handleNext);
+prevBtn.removeEventListener("click", handlePrev);
+
+nextBtn.addEventListener("click", handleNext);
+prevBtn.addEventListener("click", handlePrev);
+
 }
 
 function closeModal() {
@@ -248,13 +417,13 @@ const query = Appwrite.Query.equal('UserId', accountId);
               <div class="product-card">
                   <div class="product-header">
                       <h3>${product.Name}</h3>
-                      <img src="${product.image}" alt="Product Image">
+                      <img src="${product.image1}" alt="Product Image">
                       <div class="dropdown">
                           <button class="dropdown-icon">...</button>
                           <div class="dropdown-content">
                               <button class="show-details-btn" onclick="event.stopPropagation(); showProductInDetails(${index})">Show Details</button>
                               <button class="edit-btn" onclick="event.stopPropagation(); editProduct(${index})" ;>Edit</button>
-                              <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.$id}','${product.image}')">Delete</button>
+                              <button class="delete-btn" onclick="event.stopPropagation(); deleteProduct('${product.$id}','${product.image}','${product.image2}','${product.image3}','${product.image4}')">Delete</button>
                           </div>
                       </div>
                   </div>
@@ -304,11 +473,34 @@ window.editProduct = async function(index) {
   document.getElementById('product-category').value = '';
  
   document.getElementById('subcategory').value = product.subCategory;
-  document.getElementById('image-preview').src = product.image;
-  oldImageUrl = product.image;
+  document.getElementById('image-preview').src = product.image1;
+  if(product.image2){
+  document.getElementById('image-preview2').src = product.image2;}
+  if(product.image3){
+  document.getElementById('image-preview3').src = product.image3;}
+  if(product.image4){
+  document.getElementById('image-preview4').src = product.image4;}
+  if(!product.image2 || !product.image3 || !product.image4){
+    document.getElementById('plusButton').style.display = "inline-block";
+  }
+  oldImageUrl = product.image1 || '';
+ oldImageUrl2 = product.image2|| '';
+  oldImageUrl3 = product.image3|| '';
+  oldImageUrl4 = product.image4 || '';
   document.getElementById('image-preview').style.display = 'flex';
+  if(product.image2){
+  document.getElementById('product-image2').style.display = 'flex';
+  document.getElementById('image-preview2').style.display = 'flex';}
+  if(product.image3){
+  document.getElementById('product-image3').style.display = 'flex';
+  document.getElementById('image-preview3').style.display = 'flex';}
+  console.log(product.image4)
+  console.log( document.getElementById('image-preview4'))
+  if(product.image4){
+  document.getElementById('product-image4').style.display = 'flex';
+  document.getElementById('image-preview4').style.display = 'flex';}
   // Show image preview
-  console.log(document.getElementById('image-preview'))
+  console.log(document.getElementById('image-preview3'))
 console.log(product.image)
   // Store the product ID in dataset to delete later
   document.getElementById('product-form').dataset.productId = product.$id;
@@ -346,7 +538,7 @@ const updateSearchKeywords = async (productName) => {
 
 // Example: Call this function when a seller uploads a product
 
-
+const maxImages = 6;
 
 
 productForm.addEventListener('submit', async (event) => {
@@ -365,13 +557,19 @@ productForm.addEventListener('submit', async (event) => {
   const category = document.getElementById('product-category').value;
   const subCategory = document.getElementById('subcategory').value;
   const imageFile = document.getElementById('product-image').files[0];
-
+  const imageFile2 = document.getElementById('product-image2').files[0];
+  const imageFile3 = document.getElementById('product-image3').files[0];
+  const imageFile4 = document.getElementById('product-image4').files[0];
+ 
   if (!name || !price) {
       alert('Veuillez remplir tous les details.');
       return;
   }
   updateSearchKeywords(name);
   let imageUrl = '';
+  let imageUrl2 = '';
+  let imageUrl3 = '';
+  let imageUrl4 = '';
   const productIdToDelete = productForm.dataset.productId; // Get product ID from dataset
 
   try {
@@ -395,6 +593,42 @@ productForm.addEventListener('submit', async (event) => {
           // Keep existing image if no new image was uploaded
           imageUrl = document.getElementById('image-preview')?.src || '';
       }
+
+      if (imageFile2) {
+        const uploadResponse = await storage.createFile(BUCKET_ID, 'unique()', imageFile2);
+        imageUrl2 = `https://cloud.appwrite.io/v1/storage/buckets/${BUCKET_ID}/files/${uploadResponse.$id}/view?project=67b35038002044fd8dfa`;
+        const fileId2 = extractFileId(oldImageUrl2);
+        if (fileId2) {
+            await storage.deleteFile(BUCKET_ID, fileId2);
+        }
+    } else {
+        // Keep existing image if no new image was uploaded
+        imageUrl2 = document.getElementById('image-preview2')?.src || '';
+    }
+    if (imageFile3) {
+      const uploadResponse = await storage.createFile(BUCKET_ID, 'unique()', imageFile3);
+      imageUrl3 = `https://cloud.appwrite.io/v1/storage/buckets/${BUCKET_ID}/files/${uploadResponse.$id}/view?project=67b35038002044fd8dfa`;
+      const fileId = extractFileId(oldImageUrl3);
+      if (fileId) {
+          await storage.deleteFile(BUCKET_ID, fileId);
+      }
+  } else {
+      // Keep existing image if no new image was uploaded
+      imageUrl3 = document.getElementById('image-preview3')?.src || '';
+  }
+
+  if (imageFile4) {
+    const uploadResponse = await storage.createFile(BUCKET_ID, 'unique()', imageFile4);
+    imageUrl4 = `https://cloud.appwrite.io/v1/storage/buckets/${BUCKET_ID}/files/${uploadResponse.$id}/view?project=67b35038002044fd8dfa`;
+    const fileId = extractFileId(oldImageUrl4);
+    if (fileId) {
+        await storage.deleteFile(BUCKET_ID, fileId);
+    }
+} else {
+    // Keep existing image if no new image was uploaded
+    imageUrl4 = document.getElementById('image-preview4')?.src || '';
+}
+
      if(!imageUrl){
     alert('Vous ne pouvez pas telecharger le produit sans image');
     document.getElementById('submit-btn').style.display = "block";
@@ -405,7 +639,7 @@ productForm.addEventListener('submit', async (event) => {
       await db.createDocument(DATABASE_ID, SELLER_PRODUCTS_ID, 'unique()', {
           UserId: sellerId,
           Name: name,
-          image: imageUrl,
+          ...(imageUrl && { image1: imageUrl }),
           category: category,
           description: description,
           price: price,
@@ -414,6 +648,9 @@ productForm.addEventListener('submit', async (event) => {
           whatsapp: whatsappNumber,
           CreatedAt: new Date(),
           random: Math.random(),
+          ...(imageUrl2 && { image2: imageUrl2 }),
+          ...(imageUrl3 && { image3: imageUrl3 }),
+          ...(imageUrl4 && { image4: imageUrl4 }),
       });
 
       alert('Produit téléchargé avec succès !');
@@ -421,7 +658,16 @@ productForm.addEventListener('submit', async (event) => {
       fetchProducts(); // Refresh product list
 
       productForm.reset();
-      document.getElementById('image-preview').style.display = 'none'
+      document.getElementById('image-preview').src = '';
+      document.getElementById('product-image2').value = '';
+      document.getElementById('product-image2').style.display = 'none';
+      document.getElementById('image-preview2').src ='';
+      document.getElementById('product-image3').value ='';
+      document.getElementById('product-image3').style.display ='none';
+      document.getElementById('image-preview3').src ='';
+      document.getElementById('product-image4').value= '';
+      document.getElementById('product-image4').style.display= 'none';
+      document.getElementById('image-preview4').src = '';
       delete productForm.dataset.productId; // Clear product ID
       const existingImagePreview = document.getElementById('existing-image-preview');
       if (existingImagePreview) existingImagePreview.remove(); // Remove preview image
@@ -459,7 +705,7 @@ console.log(foundProducts)
         <div class="product-card">
             <div class="product-header">
                 <h3>${product.product.Name}</h3>
-                <img src="${product.product.image}" alt="Product Image">
+                <img src="${product.product.image1}" alt="Product Image">
                 <div class="dropdown">
                     <button class="dropdown-icon">...</button>
                     <div class="dropdown-content">
@@ -557,6 +803,21 @@ products.forEach(product => {
 searchInput.addEventListener("input", liveSearch);
 
 
-
+document.getElementById("search-input").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+      event.preventDefault(); // Prevents default form submission (if inside a form)
+      if (this.value.trim() !== "") {
+          searchProducts();
+      }
+  }
+});
+document.getElementById("small-search-input").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+      event.preventDefault(); // Prevents default form submission (if inside a form)
+      if (this.value.trim() !== "") {
+          searchProducts();
+      }
+  }
+});
 
 

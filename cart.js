@@ -43,7 +43,9 @@ window.showProductInDetails = (productId) => {
         <!-- X Button -->
       <button  onclick="location.reload()" style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; font-size: 18px; cursor: pointer;">X</button>
       <div class="product-image">
-        <img src="${product.image}" alt="${product.Name}">
+        <img src="${product.image1}" alt="${product.Name}" id = "prev-img" >
+           <button id="prevBtn">&#10094;</button>
+        <button id="nextBtn">&#10095;</button>
       </div>
       <div class="product-info">
         <h2>${product.Name}</h2>
@@ -65,6 +67,77 @@ window.showProductInDetails = (productId) => {
 } else {
     whatsappbtn.style.display = "none"; // Hide button if no WhatsApp
 }*/
+
+
+const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  function disableButtons() {
+    nextBtn.disabled = true;
+    prevBtn.disabled = true;
+    setTimeout(() => {
+      nextBtn.disabled = false;
+      prevBtn.disabled = false;
+    }, 300); // Adjust delay if needed
+  }
+  // Prevent interactions with the rest of the page
+  document.body.style.overflow = 'hidden'; // Disable scrolling
+  
+  // Function to move slides
+  let previousImageNumber = 1;
+  
+  // Determine total number of images dynamically
+  let totalNumberOfImages = 1;
+  for (let i = 2; i <= 4; i++) {
+    if (product[`image${i}`]) {
+      totalNumberOfImages = i;
+    }
+  }
+  console.log(totalNumberOfImages);
+  
+  // Hide buttons if only one image exists
+  if (totalNumberOfImages === 1) {
+    nextBtn.style.display = "none";
+    prevBtn.style.display = "none";
+  }
+  
+  // Function to update image source
+  function moveimages() {
+    document.getElementById('prev-img').src = product[`image${previousImageNumber}`];
+  }
+  
+
+
+
+  function handleNext() {
+    if (nextBtn.disabled) return; // Prevent multiple clicks
+    disableButtons();
+    if (previousImageNumber === totalNumberOfImages) {
+      previousImageNumber = 1;
+    } else {
+      previousImageNumber++;
+    }
+    moveimages(); // Call only once
+  }
+  function handlePrev() {
+    if (prevBtn.disabled) return; // Prevent multiple clicks
+    disableButtons();
+    if (previousImageNumber === 1) {
+      previousImageNumber = totalNumberOfImages;
+    } else {
+      previousImageNumber--;
+    }
+    moveimages(); // Call only once
+  }
+  // Ensure only one event listener per button
+nextBtn.removeEventListener("click", handleNext);
+prevBtn.removeEventListener("click", handlePrev);
+
+nextBtn.addEventListener("click", handleNext);
+prevBtn.addEventListener("click", handlePrev);
+
+
+
+
   window.scrollTo({
     top: 0,
     behavior: 'smooth' });
@@ -149,7 +222,7 @@ function displayProducts(products) {
         cartList.innerHTML += `
         <div class="cart-item">
             <div onclick="showProductInDetails('${product.$id}')">
-                <img src="${product.image}" alt="${product.Name}">
+                <img src="${product.image1}" alt="${product.Name}">
                 <h3>${product.Name}</h3>
                 <p class="price">BIF  ${product.price}</p>
                 
@@ -259,4 +332,20 @@ products.forEach(product => {
 };
 // Add event listener for live search
 searchInput.addEventListener("input", liveSearch);
-smallsearchInput.addEventListener('input',smallliveSearch)
+smallsearchInput.addEventListener('input',smallliveSearch);
+document.getElementById("search-input").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+      event.preventDefault(); // Prevents default form submission (if inside a form)
+      if (this.value.trim() !== "") {
+          searchProducts();
+      }
+  }
+});
+document.getElementById("small-search-input").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+      event.preventDefault(); // Prevents default form submission (if inside a form)
+      if (this.value.trim() !== "") {
+          searchProducts();
+      }
+  }
+});

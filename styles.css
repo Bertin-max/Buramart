@@ -400,7 +400,26 @@ header .sidebar li a{
 #prevBtn:hover, #nextBtn:hover {
   background: rgba(0, 0, 0, 0.8);
 }
+/* Second Navigation Buttons */
+#prevButton, #nextButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+}
 
+#prevButton { left: 10px; }
+#nextButton { right: 10px; }
+
+#prevButton:hover, #nextButton:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
 /* Responsive Design */
 
 
@@ -1720,4 +1739,20 @@ a {
 
 .button:hover {
   background: #1565c0; /* Darker blue on hover */
+}
+#plusButton {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 30px;
+  
+  background-color: rgb(233, 230, 230);
+  color: black;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: none;
+  transition: 0.3s  ease;
+}
+#plusButton:hover{
+  background-color: gray;
 }

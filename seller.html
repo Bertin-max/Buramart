@@ -118,8 +118,17 @@
             <option value=""> Sélectionnez une sous-catégorie</option>
         </select> 
         <label for="product-image"> Image du produit :</label>
-        <input type="file" id="product-image" name="product-image" placeholder="Enter image URL" >
+        <input type="file" id="product-image" name="product-image" placeholder="Enter image URL"  >
         <img id="image-preview" style="max-width: 200px; margin-top: 10px; display: none;">
+       
+        <input type="file" id="product-image2" name="product-image2" placeholder="Enter image URL" style="display: none;" >
+       
+        <img id="image-preview2" style="max-width: 200px; margin-top: 10px; display: none;">
+        <input type="file" id="product-image3" name="product-image3" placeholder="Enter image URL" style="display: none;" >
+        <img id="image-preview3" style="max-width: 200px; margin-top: 10px; display: none;">
+        <input type="file" id="product-image4" name="product-image4" placeholder="Enter image URL" style="display: none;" >
+        <img id="image-preview4" style="max-width: 200px; margin-top: 10px; display: none;">
+        <button type= "button" id="plusButton" onclick="showNextInput()" style="display: none;">+</button>
         <button type="submit" id = "submit-btn" class="submit-btn">Telecharger le produit</button>
       </form>
       </div>
