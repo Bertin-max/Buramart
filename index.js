@@ -531,7 +531,7 @@ console.log(products)
     homeProductList.innerHTML += `
       <div onclick = showProductInDetails('${product.$id}') class="product-card">
         <div>
-          <h3 style="padding: 0; margin: 0; gap: 0;">${product.Name}</h3>
+          <h3 style="padding: 0; margin: 0; gap: 0;">${product.Name.length > 50 ? product.Name.substring(0, 50) + '...' : product.Name}</h3>
           <img  src="${product.image1}" alt="${product.Name}"> 
         </div> 
         <div class="product-details">

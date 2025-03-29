@@ -1,4 +1,4 @@
-const CACHE_NAME = "buramart-cache-v0.17"; // Updated cache version
+const CACHE_NAME = "buramart-cache-v0.29"; // Updated cache version
 const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",
@@ -72,3 +72,4 @@ self.addEventListener("activate", (event) => {
   );
   self.clients.claim(); // Immediately take control of open tabs
 });
+
