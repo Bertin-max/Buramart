@@ -153,7 +153,7 @@ async function fetchLatestSpecialDeal() {
                 navigator.serviceWorker.controller.postMessage({
                   title: "🔥 Buramart",
                   body: `${latestProduct.subCategory}: ${latestProduct.Name} - ${latestProduct.price}Fbu`,
-                  icon: "https://buramart.netlify.app/icons/store.png",
+                  icon: "/icons/stor.png",
                   imageUrl: latestProduct.image1,
                   productId: latestProduct.$id
                 });

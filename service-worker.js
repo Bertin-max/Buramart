@@ -1,4 +1,4 @@
-const CACHE_NAME = "buramart-cache-v0.33"; // Updated cache version
+const CACHE_NAME = "buramart-cache-v0.34"; // Updated cache version
 const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",
@@ -98,7 +98,7 @@ self.addEventListener("message", function(event) {
       icon: data.icon, // Use the icon that was passed
       image: data.imageUrl || "", // Use the image URL if available
       vibrate: [200, 100, 200], // Vibration pattern
-      badge: data.imageUrl, // Badge icon for the notification
+      badge: data.icon, // Badge icon for the notification
       data: { url: `https://buramart.netlify.app/?id=${productId}` }
     });
   }
