@@ -1,4 +1,6 @@
-const client = new Appwrite.Client();
+  
+  
+  const client = new Appwrite.Client();
 client.setProject('67b35038002044fd8dfa'); // Your project ID
 
 export const account = new Appwrite.Account(client);
@@ -96,3 +98,117 @@ async function getAccountStatus() {
 // ✅ Export the function
 export { getSellerInfo };
 export { getAccountStatus};
+
+client.setProject('67b35038002044fd8dfa');
+
+
+const SELLER_PRODUCTS_ID = '67b5a252002e43ecbff9';
+
+const CART_ID = '67c05ddb0001a5f11990';
+
+const Query = window.Appwrite.Query;
+let latestProductId = localStorage.getItem("latestProductId") || ''; // Load stored ID first
+const offresSpeciale = "offresSpeciales";
+
+// Function to fetch the latest "Special Deals" product
+async function fetchLatestSpecialDeal() {
+    try {
+        const response = await db.listDocuments(
+            DATABASE_ID,
+            SELLER_PRODUCTS_ID,
+            [
+                Query.orderDesc("CreatedAt"),
+                Query.equal("category", offresSpeciale)
+            ]
+        );
+
+        if (response.documents.length > 0) {
+            const latestProduct = response.documents[0];
+
+            // Access stored product ID from localStorage
+            let storedProductId = localStorage.getItem("latestProductId");
+
+            // If the latest product is the same as the stored one, do nothing
+            if (storedProductId === latestProduct.$id) {
+                console.log("No new product, skipping...");
+                return;
+            }
+
+            // Update latestProductId and store it in localStorage
+            latestProductId = latestProduct.$id;
+            localStorage.setItem("latestProductId", latestProductId);
+           
+
+            console.log("New special deal:", latestProduct);
+
+            if (navigator.serviceWorker.controller) {
+                console.log("Sending data to Service Worker:", {
+                  title: "🔥 Buramart",
+                  body: `${latestProduct.subCategory}: ${latestProduct.Name} - ${latestProduct.price}Fbu`,
+                  icon: "/icons/store.png",
+                  imageUrl: latestProduct.image1,
+                  productId: latestProduct.$id
+                });
+
+                navigator.serviceWorker.controller.postMessage({
+                  title: "🔥 Buramart",
+                  body: `${latestProduct.subCategory}: ${latestProduct.Name} - ${latestProduct.price}Fbu`,
+                  icon: "/icons/store.png",
+                  imageUrl: latestProduct.image1,
+                  productId: latestProduct.$id
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching special deals:", error);
+    }
+}
+
+// Load the latest product from localStorage on page load
+window.addEventListener("load", () => {
+    const storedProduct = localStorage.getItem("latestProduct");
+    if (storedProduct) {
+        console.log("Loaded latest product from storage:", JSON.parse(storedProduct));
+    }
+});
+
+
+// Function to check if a product is new and send notification
+/*
+function checkAndNotify(product) {
+    const lastNotifiedId = localStorage.getItem("lastNotifiedProductId");
+    const isPushEnabled = localStorage.getItem("pushNotifications") === "true";
+    localStorage.setItem("lastNotifiedProductId", product.$id);
+    if (isPushEnabled && lastNotifiedId !== product.$id) {
+    
+        sendPushNotification(product);
+        
+    }else{
+      console.log('different')
+    }
+}
+
+// Function to send push notification
+function sendPushNotification(product) {
+    if (Notification.permission === "granted") {
+      console.log("granted")
+        new Notification(`Buramart`, {
+            body: `🔥${product.subCategory} ${product.Name} - ${product.price}$`,
+             // Path to the Buramart icon (store.png in icons folder)
+            image: product.image1,  // Path to the product image
+            tag: product.subCategory,  // Optional: Tag for unique notifications
+        });
+    }else{
+      console.log('notifiication not allowed')
+    }
+}
+*/
+
+// Run the check every 5 minutes (only if push notifications are enabled)
+setInterval(() => {
+    if (localStorage.getItem("pushNotifications") === "true") {
+        fetchLatestSpecialDeal();
+    }
+}, 300); // 5 minutes
+
+console.log('user')

@@ -1413,107 +1413,16 @@ document.getElementById('home').style.display = "none"
 
 loadProductAndDisplay();
 
+
+
+
+
+
 /*
-
-const pushNotificationRadio = document.getElementById("push-notification");
-
 // Check stored preference on page load
 document.addEventListener("DOMContentLoaded", () => {
     const isEnabled = localStorage.getItem("pushNotifications") === "true";
     pushNotificationRadio.checked = isEnabled;
 });
-
-// Handle push notification toggle
-pushNotificationRadio.addEventListener("change", async function () {
-    if (this.checked) {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-            localStorage.setItem("pushNotifications", "true");
-            console.log("Push notifications enabled");
-        } else {
-            this.checked = false;
-            console.log("Push notifications denied");
-        }
-    } else {
-        localStorage.setItem("pushNotifications", "false");
-        console.log("Push notifications disabled");
-    }
-});*/
-let offresSpeciale = 'offresSpeciales';
-// Function to fetch the latest "Special Deals" product
-async function fetchLatestSpecialDeal() {
-    try {
-        const response = await db.listDocuments(
-            DATABASE_ID,  // Replace with your Appwrite database ID
-            SELLER_PRODUCTS_ID, // Replace with your products collection ID
-            [
-              Query.orderDesc("CreatedAt"),
-                Query.equal("category", offresSpeciale)  
-            ]
-        );
-
-        if (response.documents.length > 0) {
-            const latestProduct = response.documents[0];
-            console.log(latestProduct);
-console.log(navigator.serviceWorker.controller)
-            if (!navigator.serviceWorker.controller){
-                console.log('nav')
-            }
-
-            if (navigator.serviceWorker.controller) {
-                console.log("Sending data to Service Worker:", {
-                  title: "🔥 Special Deal!",
-                  body: `Check out: ${latestProduct.Name} - ${latestProduct.price}$`,
-                  icon: "/icons/store.png",
-                  imageUrl: latestProduct.imageUrl
-                });
-                navigator.serviceWorker.controller.postMessage({
-                  title: "🔥 Buramart",
-                  body: `${latestProduct.subCategory}: ${latestProduct.Name} - ${latestProduct.price}$`,
-                  icon: "/icons/store.png",
-                  imageUrl: latestProduct.image1
-                });
-              }
-        }
-    } catch (error) {
-        console.error("Error fetching special deals:", error);
-    }
-}
-fetchLatestSpecialDeal()
-// Function to check if a product is new and send notification
-/*
-function checkAndNotify(product) {
-    const lastNotifiedId = localStorage.getItem("lastNotifiedProductId");
-    const isPushEnabled = localStorage.getItem("pushNotifications") === "true";
-    localStorage.setItem("lastNotifiedProductId", product.$id);
-    if (isPushEnabled && lastNotifiedId !== product.$id) {
-    
-        sendPushNotification(product);
-        
-    }else{
-      console.log('different')
-    }
-}
-
-// Function to send push notification
-function sendPushNotification(product) {
-    if (Notification.permission === "granted") {
-      console.log("granted")
-        new Notification(`Buramart`, {
-            body: `🔥${product.subCategory} ${product.Name} - ${product.price}$`,
-             // Path to the Buramart icon (store.png in icons folder)
-            image: product.image1,  // Path to the product image
-            tag: product.subCategory,  // Optional: Tag for unique notifications
-        });
-    }else{
-      console.log('notifiication not allowed')
-    }
-}
-
-// Run the check every 5 minutes (only if push notifications are enabled)
-setInterval(() => {
-    if (localStorage.getItem("pushNotifications") === "true") {
-       fetchLatestSpecialDeal();
-    }
-}, 300); // 5 minutes
 */
+// Handle push notification toggle

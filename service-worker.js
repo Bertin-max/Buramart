@@ -1,4 +1,4 @@
-const CACHE_NAME = "buramart-cache-v0.30"; // Updated cache version
+const CACHE_NAME = "buramart-cache-v0.32"; // Updated cache version
 const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",
@@ -91,13 +91,24 @@ self.addEventListener("message", function(event) {
 
   if (data) {
     // Show the notification using the received data
+    const productId = data.productId || "";
+
     self.registration.showNotification(data.title, {
       body: data.body,
       icon: data.icon, // Use the icon that was passed
       image: data.imageUrl || "", // Use the image URL if available
       vibrate: [200, 100, 200], // Vibration pattern
-      badge: "/icons/store.png" // Badge icon for the notification
+      badge: data.imageUrl, // Badge icon for the notification
+      data: { url: `https://buramart.netlify.app/?id=${productId}` }
     });
   }
 });
+self.addEventListener("notificationclick", function (event) {
+  event.notification.close(); // Close the notification
 
+  if (event.notification.data && event.notification.data.url) {
+      event.waitUntil(
+          clients.openWindow(event.notification.data.url) // Open product URL
+      );
+  }
+});
