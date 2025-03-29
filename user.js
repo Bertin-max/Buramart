@@ -153,7 +153,7 @@ async function fetchLatestSpecialDeal() {
                 navigator.serviceWorker.controller.postMessage({
                   title: "🔥 Buramart",
                   body: `${latestProduct.subCategory}: ${latestProduct.Name} - ${latestProduct.price}Fbu`,
-                  icon: "/icons/stor.png",
+                  icon: "/icons/stores.png",
                   imageUrl: latestProduct.image1,
                   productId: latestProduct.$id
                 });
