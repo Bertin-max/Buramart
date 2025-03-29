@@ -1,4 +1,4 @@
-const CACHE_NAME = "buramart-cache-v0.29"; // Updated cache version
+const CACHE_NAME = "buramart-cache-v0.30"; // Updated cache version
 const OFFLINE_PAGE = "/offline.html";
 const urlsToCache = [
   "/index.html",
@@ -71,5 +71,33 @@ self.addEventListener("activate", (event) => {
     })
   );
   self.clients.claim(); // Immediately take control of open tabs
+});
+// sw.js (Service Worker)
+self.addEventListener('install', (event) => {
+  console.log('Service Worker Installed');
+  event.waitUntil(self.skipWaiting()); // Force the service worker to activate
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('Service Worker Activated');
+  event.waitUntil(self.clients.claim()); // Make sure it controls all pages
+});
+self.addEventListener("message", function(event) {
+  console.log("Service Worker received message:", event.data);
+  let data = event.data;
+
+  // Log the received data (for debugging purposes)
+  console.log("Service Worker received message:", data);
+
+  if (data) {
+    // Show the notification using the received data
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: data.icon, // Use the icon that was passed
+      image: data.imageUrl || "", // Use the image URL if available
+      vibrate: [200, 100, 200], // Vibration pattern
+      badge: "/icons/store.png" // Badge icon for the notification
+    });
+  }
 });
 

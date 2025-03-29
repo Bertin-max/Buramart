@@ -48,15 +48,34 @@ async function fetchLatestSpecialDeal() {
 
         if (response.documents.length > 0) {
             const latestProduct = response.documents[0];
-            console.log(latestProduct)
-            checkAndNotify(latestProduct);
+            console.log(latestProduct);
+
+            if (!navigator.serviceWorker.controller){
+                console.log('nav')
+            }
+
+            if (navigator.serviceWorker.controller) {
+                console.log("Sending data to Service Worker:", {
+                  title: "🔥 Special Deal!",
+                  body: `Check out: ${latestProduct.name} - ${latestProduct.price}$`,
+                  icon: "/icons/store.png",
+                  imageUrl: latestProduct.imageUrl
+                });
+                navigator.serviceWorker.controller.postMessage({
+                  title: "🔥 Special Deal!",
+                  body: `Check out: ${latestProduct.name} - ${latestProduct.price}$`,
+                  icon: "/icons/store.png",
+                  imageUrl: latestProduct.imageUrl
+                });
+              }
         }
     } catch (error) {
         console.error("Error fetching special deals:", error);
     }
 }
-
+fetchLatestSpecialDeal()
 // Function to check if a product is new and send notification
+/*
 function checkAndNotify(product) {
     const lastNotifiedId = localStorage.getItem("lastNotifiedProductId");
     const isPushEnabled = localStorage.getItem("pushNotifications") === "true";
@@ -91,4 +110,4 @@ setInterval(() => {
        fetchLatestSpecialDeal();
     }
 }, 300); // 5 minutes
-
+*/
